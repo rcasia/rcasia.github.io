@@ -1,4 +1,4 @@
 User-agent: *
 Disallow:
 
-Sitemap: http://ricardocasia.com/sitemap.xml
+Sitemap: https://ricardocasia.com/sitemap.xml
