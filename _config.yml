@@ -5,7 +5,7 @@
 title: blank # the website title (if blank, full name will be used instead)
 first_name: Ricardo
 middle_name:
-last_name: Casía
+last_name: Casía Moka
 email: ricardocasia.dev@gmail.com
 description: > # the ">" symbol means to ignore newlines until "footer_text:"
   A simple, whitespace theme for academics. Based on [*folio](https://github.com/bogoli/-folio) design.
@@ -175,9 +175,9 @@ collections:
       layout: post
     output: true
     permalink: /news/:path/
-  projects:
-    output: true
-    permalink: /projects/:path/
+  # projects:
+  #   output: true
+  #   permalink: /projects/:path/
 
 announcements:
   enabled: true
