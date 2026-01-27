@@ -1,22 +1,35 @@
 #!/bin/bash
 
-CONFIG_FILE=_config.yml 
+CONFIG_FILE=_config.yml
 
-/bin/bash -c "rm -f Gemfile.lock && exec jekyll serve --watch --port=8080 --host=0.0.0.0 --livereload --verbose --trace --force_polling"&
+# Start Jekyll with live reload
+start_jekyll() {
+  bundle exec jekyll serve \
+    --watch \
+    --port=8080 \
+    --host=0.0.0.0 \
+    --livereload \
+    --livereload-port=35729 \
+    --force_polling \
+    --verbose \
+    --trace &
+}
 
+# Initial start
+start_jekyll
+
+# Watch for config file changes
 while true; do
-
   inotifywait -q -e modify,move,create,delete $CONFIG_FILE
 
   if [ $? -eq 0 ]; then
- 
     echo "Change detected to $CONFIG_FILE, restarting Jekyll"
 
-    jekyll_pid=$(pgrep -f jekyll)
-    kill -KILL $jekyll_pid
+    jekyll_pid=$(pgrep -f "jekyll serve")
+    if [ ! -z "$jekyll_pid" ]; then
+      kill -KILL $jekyll_pid
+    fi
 
-    /bin/bash -c "rm -f Gemfile.lock && exec jekyll serve --watch --port=8080 --host=0.0.0.0 --livereload --verbose --trace --force_polling"&
-
+    start_jekyll
   fi
-
 done

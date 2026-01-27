@@ -11,3 +11,5 @@ services:
       - .:/srv/jekyll
     environment:
       - JEKYLL_ENV=development
+      - LIVERELOAD_PORT=35729
+    command: /tmp/entry_point.sh
