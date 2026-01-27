@@ -850,6 +850,50 @@ html.transition *:after {
 
 // Extra Markdown style (post Customization)
 .post {
+  .post-header {
+    margin-bottom: 2.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--global-divider-color);
+  }
+
+  .post-title {
+    font-size: 2.5rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    line-height: 1.2;
+  }
+
+  .desc {
+    font-size: 1.1rem;
+    color: var(--global-text-color-light);
+    font-weight: 400;
+    margin-top: 0.5rem;
+  }
+
+  article {
+    p {
+      line-height: 1.8;
+      margin-bottom: 1.5rem;
+      font-size: 1.05rem;
+    }
+
+    p:not(:last-child) {
+      margin-bottom: 1.75rem;
+    }
+
+    a {
+      color: var(--global-theme-color);
+      text-decoration: none;
+      border-bottom: 1px solid transparent;
+      transition: all 0.2s ease;
+
+      &:hover {
+        border-bottom-color: var(--global-theme-color);
+        color: var(--global-theme-color);
+      }
+    }
+  }
+
   .post-meta {
     color: var(--global-text-color-light);
     font-size: 0.875rem;
