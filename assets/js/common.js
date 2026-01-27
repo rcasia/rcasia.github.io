@@ -51,4 +51,30 @@ $(document).ready(function () {
       });
     }
   });
+
+  // Wow component animation
+  function initWowComponent() {
+    const wowComponent = document.querySelector('.wow-component');
+    if (!wowComponent) return;
+
+    const delay = wowComponent.getAttribute('data-wow-delay') || '0.3s';
+    const delayMs = parseFloat(delay) * 1000;
+
+    // Check if user prefers reduced motion
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    
+    if (prefersReducedMotion) {
+      // Just show it immediately without animation
+      wowComponent.classList.add('wow-animated');
+      return;
+    }
+
+    // Trigger animation after delay
+    setTimeout(function() {
+      wowComponent.classList.add('wow-animated');
+    }, delayMs);
+  }
+
+  // Initialize on page load
+  initWowComponent();
 });

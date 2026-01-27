@@ -1109,3 +1109,121 @@ swiper-container {
     border-bottom: 2px solid var(--global-text-color);
   }
 }
+
+// Wow Component
+.wow-component {
+  position: relative;
+  margin: 3rem 0;
+  padding: 2rem;
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--global-card-bg-color) 0%, var(--global-bg-color) 100%);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(30px) scale(0.95);
+  transition: all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  &.wow-animated {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+
+  .wow-content {
+    position: relative;
+    z-index: 2;
+  }
+
+  .wow-title {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: var(--global-theme-color);
+    margin-bottom: 1rem;
+    background: linear-gradient(135deg, var(--global-theme-color) 0%, var(--global-hover-color) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: titleGlow 2s ease-in-out infinite alternate;
+  }
+
+  .wow-text {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: var(--global-text-color);
+    margin-bottom: 0;
+  }
+
+  .wow-highlight {
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, var(--global-theme-color) 0%, transparent 70%);
+    opacity: 0.1;
+    animation: rotateGlow 8s linear infinite;
+    pointer-events: none;
+  }
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    animation: shimmer 3s infinite;
+  }
+}
+
+@keyframes titleGlow {
+  0% {
+    opacity: 0.9;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1.02);
+  }
+}
+
+@keyframes rotateGlow {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    left: -100%;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wow-component {
+    transition: opacity 0.3s ease;
+    transform: none;
+    
+    &.wow-animated {
+      transform: none;
+    }
+  }
+  
+  .wow-title {
+    animation: none;
+  }
+  
+  .wow-highlight {
+    animation: none;
+  }
+  
+  .wow-component::before {
+    animation: none;
+  }
+}
