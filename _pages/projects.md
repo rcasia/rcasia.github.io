@@ -2,10 +2,12 @@
 layout: page
 title: projects
 permalink: /projects/
-nav: false
+nav: true
+nav_order: 2
 ---
 
 {% if site.projects.size > 0 %}
+
   <div class="projects">
     <div class="row">
       {% for project in site.projects %}
