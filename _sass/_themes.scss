@@ -4,17 +4,17 @@
 
 :root {
   --global-bg-color: #{$white-color};
-  --global-code-bg-color: #{$code-bg-color-light};
-  --global-text-color: #{$black-color};
-  --global-text-color-light: #{$grey-color};
-  --global-theme-color: #{$purple-color};
-  --global-hover-color: #{$purple-color};
+  --global-code-bg-color: #f8f9fa;
+  --global-text-color: #1a1a1a;
+  --global-text-color-light: #6b7280;
+  --global-theme-color: #6366f1; // Modern indigo
+  --global-hover-color: #4f46e5; // Darker indigo on hover
   --global-hover-text-color: #{$white-color};
   --global-footer-bg-color: #{$grey-color-dark};
   --global-footer-text-color: #{$grey-color-light};
   --global-footer-link-color: #{$white-color};
   --global-distill-app-color: #{$grey-color};
-  --global-divider-color: rgba(0, 0, 0, 0.1);
+  --global-divider-color: rgba(0, 0, 0, 0.08);
   --global-card-bg-color: #{$white-color};
   --global-highlight-color: #{$red-color-dark};
 
@@ -54,19 +54,19 @@
 }
 
 html[data-theme="dark"] {
-  --global-bg-color: #{$grey-color-dark};
-  --global-code-bg-color: #{$code-bg-color-dark};
-  --global-text-color: #{$grey-color-light};
-  --global-text-color-light: #{$grey-color};
-  --global-theme-color: #{$cyan-color};
-  --global-hover-color: #{$cyan-color};
+  --global-bg-color: #0f172a; // Slate 900 - deep tech blue
+  --global-code-bg-color: #1e293b; // Slate 800
+  --global-text-color: #e2e8f0; // Slate 200
+  --global-text-color-light: #94a3b8; // Slate 400
+  --global-theme-color: #00d9ff; // Bright tech cyan
+  --global-hover-color: #00b8d9; // Slightly darker cyan
   --global-hover-text-color: #{$white-color};
-  --global-footer-bg-color: #{$grey-color-light};
-  --global-footer-text-color: #{$grey-color-dark};
-  --global-footer-link-color: #{$black-color};
+  --global-footer-bg-color: #1e293b;
+  --global-footer-text-color: #94a3b8;
+  --global-footer-link-color: #{$white-color};
   --global-distill-app-color: #{$grey-color-light};
-  --global-divider-color: #424246;
-  --global-card-bg-color: #{$grey-900};
+  --global-divider-color: #334155; // Slate 700
+  --global-card-bg-color: #1e293b; // Slate 800
 
   --global-tip-block: #42b983;
   --global-tip-block-bg: #e2f5ec;
