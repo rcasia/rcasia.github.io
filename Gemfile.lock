@@ -1,19 +1,18 @@
 GEM
   remote: https://rubygems.org/
   specs:
-    activesupport (7.1.6)
+    activesupport (7.2.3.1)
       base64
       benchmark (>= 0.3)
       bigdecimal
-      concurrent-ruby (~> 1.0, >= 1.0.2)
+      concurrent-ruby (~> 1.0, >= 1.3.1)
       connection_pool (>= 2.2.5)
       drb
       i18n (>= 1.6, < 2)
       logger (>= 1.4.2)
-      minitest (>= 5.1)
-      mutex_m
+      minitest (>= 5.1, < 6)
       securerandom (>= 0.3)
-      tzinfo (~> 2.0)
+      tzinfo (~> 2.0, >= 2.0.5)
     addressable (2.9.0)
       public_suffix (>= 2.0.2, < 8.0)
     base64 (0.3.0)
@@ -21,7 +20,7 @@ GEM
     bibtex-ruby (6.1.0)
       latex-decode (~> 0.0)
       racc (~> 1.7)
-    bigdecimal (4.0.1)
+    bigdecimal (4.1.1)
     citeproc (1.0.10)
       namae (~> 1.0)
     citeproc-ruby (1.1.14)
@@ -32,7 +31,7 @@ GEM
       matrix (~> 0.4)
     colorator (1.1.0)
     concurrent-ruby (1.3.6)
-    connection_pool (2.4.1)
+    connection_pool (3.0.2)
     crass (1.0.6)
     csl (1.6.0)
       namae (~> 1.0)
@@ -162,11 +161,9 @@ GEM
     mini_portile2 (2.8.9)
     mini_racer (0.12.0)
       libv8-node (~> 21.7.2.0)
-    minitest (6.0.1)
-      prism (~> 1.5)
+    minitest (5.27.0)
     multi_xml (0.8.1)
       bigdecimal (>= 3.1, < 5)
-    mutex_m (0.3.0)
     namae (1.2.0)
       racc (~> 1.7)
     net-http (0.9.1)
@@ -193,7 +190,6 @@ GEM
     ostruct (0.6.3)
     pathutil (0.16.2)
       forwardable-extended (~> 2.6)
-    prism (1.9.0)
     public_suffix (7.0.5)
     racc (1.8.1)
     rake (13.3.1)
@@ -264,18 +260,18 @@ DEPENDENCIES
   webrick
 
 CHECKSUMS
-  activesupport (7.1.6) sha256=7f12140a813b1c4922a322663e547129aef1840fc512fa262378f6d7e7fd3a7c
+  activesupport (7.2.3.1) sha256=11ebed516a43a0bb47346227a35ebae4d9427465a7c9eb197a03d5c8d283cb34
   addressable (2.9.0) sha256=7fdf6ac3660f7f4e867a0838be3f6cf722ace541dd97767fa42bc6cfa980c7af
   base64 (0.3.0) sha256=27337aeabad6ffae05c265c450490628ef3ebd4b67be58257393227588f5a97b
   benchmark (0.5.0) sha256=465df122341aedcb81a2a24b4d3bd19b6c67c1530713fd533f3ff034e419236c
   bibtex-ruby (6.1.0) sha256=2631c742be185b1a6df6b431206f78ce673be6528116728d0ace90f88214fdbd
-  bigdecimal (4.0.1) sha256=8b07d3d065a9f921c80ceaea7c9d4ae596697295b584c296fe599dd0ad01c4a7
+  bigdecimal (4.1.1) sha256=1c09efab961da45203c8316b0cdaec0ff391dfadb952dd459584b63ebf8054ca
   citeproc (1.0.10) sha256=829a0a2e291a3afd1cde39dce4880df6253b0fecd26226275265ea59a52e748f
   citeproc-ruby (1.1.14) sha256=63ce5d6c221b69db8c195b7ef2bdab94d91bc9c9a16ccf26a136b60aa1870a29
   classifier-reborn (2.3.0) sha256=e2236322de42b9c8d45d88a951cb0d76e210afa3bb8658b7b5802e2df41ef61c
   colorator (1.1.0) sha256=e2f85daf57af47d740db2a32191d1bdfb0f6503a0dfbc8327d0c9154d5ddfc38
   concurrent-ruby (1.3.6) sha256=6b56837e1e7e5292f9864f34b69c5a2cbc75c0cf5338f1ce9903d10fa762d5ab
-  connection_pool (2.4.1) sha256=0f40cf997091f1f04ff66da67eabd61a9fe0d4928b9a3645228532512fab62f4
+  connection_pool (3.0.2) sha256=33fff5ba71a12d2aa26cb72b1db8bba2a1a01823559fb01d29eb74c286e62e0a
   crass (1.0.6) sha256=dc516022a56e7b3b156099abc81b6d2b08ea1ed12676ac7a5657617f012bd45d
   csl (1.6.0) sha256=33332fab7d2d11ba3cf2481833eafbe3938e84f48791ec7858c2e3bd7fc51159
   csl-styles (1.0.1.11) sha256=e8297b4ee9dae3b7ebb282b0cae83b72e2f820c4b1a8751d42809c7826c54950
@@ -335,9 +331,8 @@ CHECKSUMS
   mini_mime (1.1.5) sha256=8681b7e2e4215f2a159f9400b5816d85e9d8c6c6b491e96a12797e798f8bccef
   mini_portile2 (2.8.9) sha256=0cd7c7f824e010c072e33f68bc02d85a00aeb6fce05bb4819c03dfd3c140c289
   mini_racer (0.12.0) sha256=d3a94f5b4538ea7cbe52bf493a6ce0ef10833db8b0e4f0ac07bee3ac958daaab
-  minitest (6.0.1) sha256=7854c74f48e2e975969062833adc4013f249a4b212f5e7b9d5c040bf838d54bb
+  minitest (5.27.0) sha256=2d3b17f8a36fe7801c1adcffdbc38233b938eb0b4966e97a6739055a45fa77d5
   multi_xml (0.8.1) sha256=addba0290bac34e9088bfe73dc4878530297a82a7bbd66cb44dcd0a4b86edf5a
-  mutex_m (0.3.0) sha256=cfcb04ac16b69c4813777022fdceda24e9f798e48092a2b817eb4c0a782b0751
   namae (1.2.0) sha256=3541ce4b086fd4981d2376630c03e284402bfe1cdbab4e50e2222a72aeb9d59d
   net-http (0.9.1) sha256=25ba0b67c63e89df626ed8fac771d0ad24ad151a858af2cc8e6a716ca4336996
   net-imap (0.6.2) sha256=08caacad486853c61676cca0c0c47df93db02abc4a8239a8b67eb0981428acc6
@@ -350,7 +345,6 @@ CHECKSUMS
   open-uri (0.5.0) sha256=7b4f06fdac39e6946aed15a8da82531580882fbbec80438adcb7c30d388887ca
   ostruct (0.6.3) sha256=95a2ed4a4bd1d190784e666b47b2d3f078e4a9efda2fccf18f84ddc6538ed912
   pathutil (0.16.2) sha256=e43b74365631cab4f6d5e4228f812927efc9cb2c71e62976edcb252ee948d589
-  prism (1.9.0) sha256=7b530c6a9f92c24300014919c9dcbc055bf4cdf51ec30aed099b06cd6674ef85
   public_suffix (7.0.5) sha256=1a8bb08f1bbea19228d3bed6e5ed908d1cb4f7c2726d18bd9cadf60bc676f623
   racc (1.8.1) sha256=4a7f6929691dbec8b5209a0b373bc2614882b55fc5d2e447a21aaa691303d62f
   rake (13.3.1) sha256=8c9e89d09f66a26a01264e7e3480ec0607f0c497a861ef16063604b1b08eb19c
