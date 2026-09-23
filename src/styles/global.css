@@ -251,6 +251,61 @@ a:hover {
   filter: brightness(1.05);
 }
 
+button.btn {
+  font: inherit;
+  cursor: pointer;
+}
+
+.btn-small {
+  padding: 0.25rem 0.6rem;
+  font-size: 0.85rem;
+  border-radius: 8px;
+  margin-left: 0.5rem;
+}
+
+.contact-panel {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1rem 1.25rem;
+  margin: 0 0 2.5rem;
+  scroll-margin-top: 4rem;
+}
+
+.contact-panel[hidden] {
+  display: none;
+}
+
+.contact-title {
+  margin: 0 0 0.5rem;
+}
+
+.contact-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  font-size: 0.95rem;
+}
+
+.contact-list li {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+}
+
+.contact-list code {
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+  background: var(--bg-soft);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0.1rem 0.4rem;
+}
+
 /* Cards */
 .card-grid {
   display: grid;
