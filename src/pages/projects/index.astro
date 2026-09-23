@@ -15,7 +15,7 @@ const projects = (await getCollection('projects')).sort((a, b) => a.data.importa
         return (
           <a class="card" href={`/projects/${project.slug}/`}>
             <div style="display: flex; align-items: center; justify-content: space-between; gap: 0.75rem;">
-              <h3>{project.data.title}</h3>
+              <h3 style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0;">{project.data.title}</h3>
               {repoPath && (
                 <img
                   src={`https://img.shields.io/github/stars/${repoPath}`}
