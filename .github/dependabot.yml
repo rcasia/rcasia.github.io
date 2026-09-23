@@ -18,4 +18,3 @@ updates:
       prefix: "chore"
     labels:
       - "dependencies"
-      - "javascript"
