@@ -13,7 +13,7 @@ const projects = (await getCollection('projects')).sort((a, b) => a.data.importa
       projects.map((project) => {
         const repoPath = project.data.github?.split('github.com/')[1]?.replace(/\/$/, '');
         return (
-          <a class="card" href={`/projects/${project.slug}/`}>
+          <a class="card" href={`/projects/${project.id}/`}>
             <div style="display: flex; align-items: center; justify-content: space-between; gap: 0.75rem;">
               <h3>{project.data.title}</h3>
               {repoPath && (

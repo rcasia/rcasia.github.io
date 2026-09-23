@@ -87,7 +87,7 @@ const latest = posts.slice(0, 3);
       ) : (
         <ul class="post-list">
           {latest.map((post) => {
-            const href = post.data.redirect ?? `/blog/${post.slug}/`;
+            const href = post.data.redirect ?? `/blog/${post.id}/`;
             const external = Boolean(post.data.redirect);
             return (
               <li class="post-item">
