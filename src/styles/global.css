@@ -165,8 +165,8 @@ a:hover {
     grid-template-columns: 1fr;
   }
   .profile-wrap {
-    order: -1;
-    max-width: 320px;
+    order: 2;
+    max-width: 220px;
   }
 }
 
