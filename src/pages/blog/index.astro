@@ -1,0 +1,53 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('blog')).sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+---
+
+<Base current="blog" title="blog" description="Notes on Neovim, testing, and clean code.">
+  <h1 class="page-title">Ricardo Casía | Blog</h1>
+  <p class="page-subtitle">Notes on Neovim, testing, and clean code.</p>
+
+  <ul class="post-list">
+    {
+      posts.map((post) => {
+        const href = post.data.redirect ?? `/blog/${post.slug}/`;
+        const external = Boolean(post.data.redirect);
+        const words = post.body ? post.body.split(/\s+/).length : 120;
+        const readTime = Math.max(1, Math.round(words / 180));
+        return (
+          <li class="post-item">
+            <h2>
+              <a href={href} target={external ? '_blank' : undefined} rel={external ? 'noopener' : undefined}>
+                {post.data.title} {external && <span aria-hidden="true">↗</span>}
+              </a>
+            </h2>
+            <p class="post-desc">{post.data.description}</p>
+            <div class="post-meta">
+              <span>{readTime} min read</span>
+              <span>·</span>
+              <time>
+                {post.data.date.toLocaleDateString('en-US', { month: 'long', day: '2-digit', year: 'numeric' })}
+              </time>
+              {post.data.external_source && (
+                <>
+                  <span>·</span>
+                  <span>Cross-posted on {post.data.external_source}</span>
+                </>
+              )}
+            </div>
+            <div class="post-meta" style="margin-top: 0.4rem;">
+              {post.data.tags.map((tag) => (
+                <span class="tag">#{tag}</span>
+              ))}
+              {post.data.categories.map((cat) => (
+                <span class="tag">◎ {cat}</span>
+              ))}
+            </div>
+          </li>
+        );
+      })
+    }
+  </ul>
+</Base>
