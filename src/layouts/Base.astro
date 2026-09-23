@@ -34,6 +34,7 @@ const canonical = new URL(Astro.url.pathname, SITE.url).toString();
 
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="sitemap" href="/sitemap-index.xml" />
+    <link rel="alternate" type="application/rss+xml" title={SITE.title} href={new URL('/rss.xml', SITE.url).toString()} />
 
     {
       SITE.gaId && (
