@@ -10,7 +10,7 @@ updates:
       - "dependencies"
       - "github_actions"
 
-  - package-ecosystem: "npm"
+  - package-ecosystem: "bun"
     directory: "/"
     schedule:
       interval: "weekly"
