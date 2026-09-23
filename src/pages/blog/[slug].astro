@@ -1,0 +1,27 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog');
+  // Only build local posts; redirect-only posts link out from the index.
+  return posts
+    .filter((post) => !post.data.redirect)
+    .map((post) => ({
+      params: { slug: post.slug },
+      props: { post },
+    }));
+}
+
+const { post } = Astro.props;
+const { Content } = await post.render();
+---
+
+<Base title={post.data.title} description={post.data.description} current="blog">
+  <article class="prose" style="margin-top: 2.5rem;">
+    <p><a href="/blog/">← blog</a></p>
+    <h1>{post.data.title}</h1>
+    <p style="color: var(--muted);">{post.data.description}</p>
+    <Content />
+  </article>
+</Base>

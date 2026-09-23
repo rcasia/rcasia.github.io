@@ -1,0 +1,85 @@
+---
+import Base from '../layouts/Base.astro';
+import { Image } from 'astro:assets';
+import { getCollection } from 'astro:content';
+import { SITE } from '../site';
+import profPic from '../assets/prof_pic.jpg';
+
+const posts = (await getCollection('blog')).sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+const latest = posts.slice(0, 3);
+---
+
+<Base current="about" title="about" description={SITE.description}>
+  <article class="hero">
+    <h1>Ricardo Casía Moka</h1>
+    <p class="subtitle">Senior Software Engineer</p>
+
+    <div class="about-grid">
+      <div>
+        <p>
+          I'm Ricardo Casía Moka, a Senior Software Engineer at Thoughtworks. I architect scalable systems,
+          lead technical initiatives, and mentor development teams for enterprise clients. I'm passionate
+          about clean code, test-driven development, and building software that stands the test of time.
+        </p>
+        <p>
+          I maintain several open source projects focused on developer tooling. These include
+          <a href="/projects/neotest-java/">neotest-java</a> and
+          <a href="/projects/neotest-bash/">neotest-bash</a>, test adapters for Java and Bash workflows
+          in Neovim, and <a href="/projects/ascii-ui-nvim/">ascii-ui.nvim</a>, a library of ASCII-based
+          UI components for Neovim plugins.
+        </p>
+        <p>
+          Through this blog, I share technical insights, engineering practices, and tool configurations
+          to contribute to the developer community.
+        </p>
+        <div class="cta-row">
+          <a class="btn btn-primary" href={`mailto:${SITE.email}`}>Get in touch</a>
+          <a class="btn" href="/projects/">View projects</a>
+          <a class="btn" href="/blog/">Read blog</a>
+          <a class="btn" href={SITE.github} target="_blank" rel="noopener">GitHub</a>
+        </div>
+      </div>
+      <div class="profile-wrap">
+        <Image
+          src={profPic}
+          alt="Portrait of Ricardo Casía Moka"
+          widths={[320, 480, 640]}
+          sizes="(max-width: 640px) 320px, 220px"
+          format="webp"
+          loading="eager"
+        />
+      </div>
+    </div>
+
+    <h2><a href="/blog/" style="color: inherit;">latest posts</a></h2>
+    {
+      latest.length === 0 ? (
+        <p style="color: var(--muted)">No posts yet.</p>
+      ) : (
+        <ul class="post-list">
+          {latest.map((post) => {
+            const href = post.data.redirect ?? `/blog/${post.slug}/`;
+            const external = Boolean(post.data.redirect);
+            return (
+              <li class="post-item">
+                <div style="display:flex;gap:1rem;align-items:baseline;flex-wrap:wrap;">
+                  <time style="color: var(--muted); font-size: 0.9rem; min-width: 90px;">
+                    {post.data.date.toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' })}
+                  </time>
+                  <a href={href} target={external ? '_blank' : undefined} rel={external ? 'noopener' : undefined}>
+                    {post.data.title} {external && <span aria-hidden="true">↗</span>}
+                  </a>
+                </div>
+                {post.data.external_source && (
+                  <div class="post-meta">
+                    <span>Cross-posted on {post.data.external_source}</span>
+                  </div>
+                )}
+              </li>
+            );
+          })}
+        </ul>
+      )
+    }
+  </article>
+</Base>

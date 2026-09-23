@@ -10,16 +10,6 @@ updates:
       - "dependencies"
       - "github_actions"
 
-  - package-ecosystem: "bundler"
-    directory: "/"
-    schedule:
-      interval: "weekly"
-    commit-message:
-      prefix: "chore"
-    labels:
-      - "dependencies"
-      - "ruby"
-
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
