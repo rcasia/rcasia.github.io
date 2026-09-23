@@ -21,6 +21,7 @@ const projects = defineCollection({
     importance: z.number().default(99),
     category: z.string().default('open-source'),
     github: z.string().url().optional(),
+    tech: z.array(z.string()),
   }),
 });
 

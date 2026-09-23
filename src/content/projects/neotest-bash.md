@@ -4,6 +4,7 @@ description: 'Neovim test adapter for Bash scripts'
 importance: 2
 category: 'open-source'
 github: 'https://github.com/rcasia/neotest-bash'
+tech: ['Lua', 'Neovim', 'Bash', 'bashunit']
 ---
 
 A Neovim test adapter plugin for Bash scripts that enables test execution and debugging for shell scripts directly from Neovim. This plugin extends the neotest framework to support Bash testing, making it easier to write and test shell scripts.

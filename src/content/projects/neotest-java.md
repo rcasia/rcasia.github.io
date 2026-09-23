@@ -4,7 +4,10 @@ description: 'Neovim test adapter for Java projects using JUnit 5'
 importance: 1
 category: 'open-source'
 github: 'https://github.com/rcasia/neotest-java'
+tech: ['Lua', 'Neovim', 'Java', 'JUnit 5', 'Maven', 'Gradle']
 ---
+
+<!-- GitHub README is source of truth, sync manually on changes. -->
 
 A Neovim test adapter plugin for Java projects that integrates with JUnit 5. This plugin enables seamless test execution and debugging directly from Neovim, providing a smooth development experience for Java developers using the neotest framework.
 

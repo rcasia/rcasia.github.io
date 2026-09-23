@@ -3,7 +3,8 @@ title: 'ascii-ui.nvim'
 description: 'ASCII-based UI components for Neovim'
 importance: 3
 category: 'open-source'
-github: 'https://github.com/rcasia/ascii-ui.nvim'
+github: 'https://github.com/ascii-ui/ascii-ui.nvim'
+tech: ['Lua', 'Neovim']
 ---
 
 A Neovim plugin that provides ASCII-based UI components for creating beautiful and functional interfaces within Neovim. This plugin offers a collection of reusable UI elements built with ASCII characters, perfect for building custom Neovim plugins and interfaces.
