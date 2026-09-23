@@ -14,7 +14,17 @@ const projects = (await getCollection('projects')).sort((a, b) => a.data.importa
         const repoPath = project.data.github?.split('github.com/')[1]?.replace(/\/$/, '');
         return (
           <a class="card" href={`/projects/${project.slug}/`}>
-            <h3>{project.data.title}</h3>
+            <div style="display: flex; align-items: center; justify-content: space-between; gap: 0.75rem;">
+              <h3>{project.data.title}</h3>
+              {repoPath && (
+                <img
+                  src={`https://img.shields.io/github/stars/${repoPath}`}
+                  alt={`GitHub stars for ${project.data.title}`}
+                  loading="lazy"
+                  style="flex-shrink: 0;"
+                />
+              )}
+            </div>
             <p>{project.data.description}</p>
             <div class="card-meta" style="flex-wrap: wrap;">
               {project.data.github && (
@@ -27,13 +37,6 @@ const projects = (await getCollection('projects')).sort((a, b) => a.data.importa
               {project.data.tech.map((t) => (
                 <span>{t}</span>
               ))}
-              {repoPath && (
-                <img
-                  src={`https://img.shields.io/github/stars/${repoPath}`}
-                  alt={`GitHub stars for ${project.data.title}`}
-                  loading="lazy"
-                />
-              )}
             </div>
           </a>
         );
