@@ -12,15 +12,15 @@ Personal site for Ricardo Casía Moka. Migrated from Jekyll al-folio to Astro.
 ## Develop
 
 ```sh
-npm install
-npm run dev
+bun install
+bun run dev
 ```
 
 ## Build
 
 ```sh
-npm run build
-npm run preview
+bun run build
+bun run preview
 ```
 
 Output in `dist/`. Deployed to GitHub Pages via `.github/workflows/deploy.yml` on push to `main`/`master`. Custom domain via `public/CNAME` (`ricardocasia.com`).
