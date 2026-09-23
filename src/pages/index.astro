@@ -3,6 +3,7 @@ import Base from '../layouts/Base.astro';
 import { Image } from 'astro:assets';
 import { getCollection } from 'astro:content';
 import { SITE } from '../site';
+import { formatDate } from '../dates';
 import profPic from '../assets/prof_pic.jpg';
 
 const posts = (await getCollection('blog')).sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
@@ -92,7 +93,7 @@ const latest = posts.slice(0, 3);
               <li class="post-item">
                 <div style="display:flex;gap:1rem;align-items:baseline;flex-wrap:wrap;">
                   <time style="color: var(--muted); font-size: 0.9rem; min-width: 90px;">
-                    {post.data.date.toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' })}
+                    {formatDate(post.data.date)}
                   </time>
                   <a href={href} target={external ? '_blank' : undefined} rel={external ? 'noopener' : undefined}>
                     {post.data.title} {external && <span aria-hidden="true">↗</span>}
