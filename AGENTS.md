@@ -1,54 +1,61 @@
 # AGENTS.md
 
-Estas reglas son obligatorias para cualquier agente que trabaje en este repositorio.
+These rules are mandatory for any agent working in this repository.
 
-## Rama y estado del repositorio
+## Branch and repository state
 
-- Trabaja directamente sobre `main`.
-- Antes de empezar, comprueba la rama actual, el estado del árbol y los últimos commits.
-- Si no estás en `main`, detente y pide instrucciones. No cambies de rama automáticamente.
-- Si hay cambios locales que no has creado tú, no los reviertas ni los sobrescribas. Detente si interfieren con el trabajo y pide aclaración.
-- Mantén `main` siempre desplegable.
-- No uses comandos destructivos como `git reset --hard` o `git checkout --`.
-- No hagas `push` a `main` hasta haber ejecutado las comprobaciones locales relevantes y confirmado que el cambio funciona.
+- Work in the worktree / branch / directory the user indicates (often a `t3code/*` worktree). Do not switch branches automatically.
+- Before starting, check the current branch, the worktree status, and the recent commits.
+- The upstream reference is `origin/main`. Keep your working version close to it: fetch `origin` and compare (e.g. `git rev-list --left-right --count HEAD...origin/main`). If you are behind or significantly diverged, stop and ask for instructions.
+- If there are local changes you did not create, do not revert or overwrite them. Stop if they interfere with the work and ask for clarification.
+- Keep `main` always deployable.
+- Do not use destructive commands such as `git reset --hard` or `git checkout --`.
+- Do not push to `main` until you have run the relevant local checks and confirmed the change works.
 
-## Antes de implementar
+## Language and content
 
-- Inspecciona primero el stack, la arquitectura, las convenciones y el código afectado.
-- Define el alcance y los criterios de aceptación antes de editar.
-- Si falta contexto, hay varias interpretaciones razonables o el cambio puede afectar producción, detente y pide aclaración. No asumas.
-- No modifiques páginas, módulos o configuraciones fuera del alcance solicitado.
-- No añadas dependencias externas sin una necesidad explícita y justificada.
+- All content in this repo must be in English.
+- If you find anything in Spanish, translate it to English.
+- This applies to UI copy, pages, blog posts, projects, metadata, docs, comments, and commit messages.
+- Preserve proper names and their diacritics (e.g. `Ricardo Casía Moka`); do not "translate" or strip-accents them.
 
-## Implementación
+## Before implementing
 
-- Haz cambios pequeños, enfocados y reversibles.
-- Conserva las convenciones existentes de nombres, estructura y herramientas.
-- No dupliques lógica de negocio, acceso a datos o selección de recursos cuando pueda compartirse de forma clara.
-- Mantén los cambios experimentales detrás de una feature flag cuando deban convivir con la implementación estable.
-- Las feature flags deben estar desactivadas por defecto.
-- Una feature flag es un mecanismo de experimentación, no de autorización ni de seguridad.
-- No añadas controles visibles, textos, metadata ni elementos de navegación para una flag que deba ser invisible para visitantes.
-- Elimina la flag y el camino antiguo cuando la funcionalidad experimental pase a ser la implementación estable, salvo que exista una razón documentada para conservarlos.
+- First inspect the stack, the architecture, the conventions, and the affected code.
+- Define the scope and the acceptance criteria before editing.
+- If context is missing, there are several reasonable interpretations, or the change may affect production, stop and ask for clarification. Do not assume.
+- Do not modify pages, modules, or settings outside the requested scope.
+- Do not add external dependencies without an explicit and justified need.
 
-## Verificación local
+## Implementation
 
-- Ejecuta las comprobaciones apropiadas para el cambio: lint, tipos, tests, build y, cuando corresponda, una verificación funcional.
-- Verifica explícitamente los caminos estable y experimental cuando haya una feature flag.
-- No consideres validado un cambio solo porque no haya errores evidentes durante la edición.
-- Si una comprobación no puede ejecutarse, documenta el comando, el motivo y el impacto en la confianza de la validación.
+- Make small, focused, and reversible changes.
+- Preserve existing naming, structure, and tooling conventions.
+- Do not duplicate business logic, data access, or resource selection when it can be clearly shared.
+- Keep experimental changes behind a feature flag when they must coexist with the stable implementation.
+- Feature flags must be disabled by default.
+- A feature flag is an experimentation mechanism, not an authorization or security mechanism.
+- Do not add visible controls, copy, metadata, or navigation elements for a flag that must be invisible to visitors.
+- Remove the flag and the old path once the experimental functionality becomes the stable implementation, unless there is a documented reason to keep them.
+
+## Local verification
+
+- Run the appropriate checks for the change: lint, types, tests, build and, when applicable, a functional verification.
+- Explicitly verify the stable and experimental paths when there is a feature flag.
+- Do not consider a change validated just because there were no obvious errors during editing.
+- If a check cannot be executed, document the command, the reason, and the impact on validation confidence.
 
 ## Commits
 
-- Cada commit debe ser pequeño, atómico y representar un único cambio lógico.
-- No mezcles refactors no relacionados, formateo masivo o cambios de dependencias con la funcionalidad en curso.
-- Usa mensajes de commit Conventional Commits, por ejemplo: `feat(projects): add browser-controlled experiment flag`.
-- Revisa `git status`, `git diff` y el historial reciente antes de crear un commit.
-- No incluyas secretos, artefactos generados ni cambios ajenos al trabajo.
+- Each commit must be small, atomic, and represent a single logical change.
+- Do not mix unrelated refactors, mass formatting, or dependency changes with the work in progress.
+- Use Conventional Commits messages, for example: `feat(projects): add browser-controlled experiment flag`.
+- Review `git status`, `git diff`, and recent history before creating a commit.
+- Do not include secrets, generated artifacts, or unrelated changes.
 
-## Push y pipeline CI/CD
+## Push and CI/CD pipeline
 
-La validación del pipeline forma parte de la definición de terminado. La secuencia obligatoria es:
+Pipeline validation is part of the definition of done. The mandatory sequence is:
 
 ```text
 implement
@@ -60,26 +67,26 @@ implement
 -> task done
 ```
 
-Después de cada `push` a `main`:
+After each `push` to `main`:
 
-1. Identifica el pipeline correspondiente al commit que acabas de enviar.
-2. Usa el pipeline observer disponible en el entorno para consultar su estado.
-3. Espera a que termine cuando sea necesario.
-4. Comprueba que las etapas relevantes han finalizado correctamente.
-5. Si falla, inspecciona el resultado y determina si el fallo está relacionado con el cambio.
-6. Corrige los problemas que sean responsabilidad del agente.
-7. Repite la validación local, haz un commit atómico adicional si procede y vuelve a comprobar el pipeline.
-8. No des por terminada la tarea mientras el pipeline correspondiente siga fallando, salvo que el fallo sea claramente ajeno al cambio y quede documentado.
+1. Identify the pipeline corresponding to the commit you just sent.
+2. Use the pipeline observer available in the environment to check its status.
+3. Wait for it to finish when necessary.
+4. Check that the relevant stages have finished correctly.
+5. If it fails, inspect the result and determine whether the failure is related to the change.
+6. Fix issues that are the agent's responsibility.
+7. Repeat local validation, make an additional atomic commit if applicable, and check the pipeline again.
+8. Do not consider the task done while the corresponding pipeline is still failing, unless the failure is clearly unrelated to the change and documented.
 
-La ausencia de errores locales no equivale a una validación de CI/CD completada. Si el pipeline observer no está disponible, falla o no permite determinar el estado del pipeline, indícalo explícitamente y no afirmes que la validación CI/CD se ha completado.
+The absence of local errors does not equal completed CI/CD validation. If the pipeline observer is unavailable, fails, or does not allow determining the pipeline status, state this explicitly and do not claim that CI/CD validation is complete.
 
-## Definición de terminado
+## Definition of done
 
-Un cambio solo está terminado cuando:
+A change is only done when:
 
-- cumple el alcance y los criterios de aceptación;
-- los caminos afectados han sido verificados localmente;
-- existe un commit atómico si el trabajo autorizado incluye commit;
-- el cambio enviado a `main` tiene un pipeline identificado y correctamente procesado;
-- cualquier fallo externo, limitación o validación pendiente está documentado;
-- no quedan cambios accidentales o artefactos sin explicar en el árbol de trabajo.
+- it meets the scope and acceptance criteria;
+- the affected paths have been verified locally;
+- there is an atomic commit if the authorized work includes commit;
+- the change sent to `main` has an identified and correctly processed pipeline;
+- any external failure, limitation, or pending validation is documented;
+- there are no unexplained accidental changes or artifacts left in the working tree.
