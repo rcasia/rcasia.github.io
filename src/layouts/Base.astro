@@ -173,7 +173,7 @@ const featureFlags = [{ key: 'projectsV2', label: 'Projects V2' }];
       <form class="feature-flag-panel" method="dialog">
         <h2 id="feature-flag-panel-title">Feature flags</h2>
         <p id="feature-flag-panel-description">
-          Developer-only controls. Press Alt+Shift+P on any page to reopen this panel.
+          Developer-only controls. Press Ctrl+Alt+Shift+F, or Control+Command+Shift+F on macOS, on any page to reopen this panel.
         </p>
         {
           featureFlags.map((flag) => (
@@ -254,7 +254,9 @@ const featureFlags = [{ key: 'projectsV2', label: 'Projects V2' }];
       };
 
       document.addEventListener('keydown', (event) => {
-        if (event.altKey && event.shiftKey && !event.ctrlKey && !event.metaKey && event.code === 'KeyP') {
+        const isMacShortcut = event.metaKey && event.ctrlKey && event.shiftKey && !event.altKey;
+        const isOtherPlatformShortcut = event.ctrlKey && event.altKey && event.shiftKey && !event.metaKey;
+        if (event.code === 'KeyF' && (isMacShortcut || isOtherPlatformShortcut)) {
           event.preventDefault();
           openFeatureFlagPanel();
         }
