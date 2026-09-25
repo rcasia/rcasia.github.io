@@ -1,0 +1,13 @@
+---
+import type { Project } from '../../lib/projects';
+import ProjectsCards from './ProjectsCards.astro';
+
+interface Props {
+  projects: Project[];
+}
+
+const { projects } = Astro.props;
+// Keep the experimental path visually identical until its redesign is introduced.
+---
+
+<ProjectsCards projects={projects} />

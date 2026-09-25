@@ -1,128 +1,44 @@
 ---
 import Base from '../../layouts/Base.astro';
+import ProjectsCards from '../../components/projects/ProjectsCards.astro';
+import ProjectsV2 from '../../components/projects/ProjectsV2.astro';
+import { getProjects } from '../../lib/projects';
 
-// Programmatic project list: discovered live from GitHub at build time.
-// Only repos with more than 4 stars or pushed in the last 3 months,
-// sorted by stars (desc) then recency (desc). Forks, archived repos,
-// and this site itself are excluded.
-interface Repo {
-  name: string;
-  full_name: string;
-  html_url: string;
-  description: string | null;
-  language: string | null;
-  topics?: string[];
-  stargazers_count: number;
-  pushed_at: string | null;
-  fork: boolean;
-  archived?: boolean;
-  disabled?: boolean;
-}
-
-const SOURCES = ['users/rcasia', 'orgs/ascii-ui'];
-const EXCLUDE = new Set(['rcasia/rcasia.github.io']);
-const THREE_MONTHS_MS = 90 * 24 * 60 * 60 * 1000;
-const now = Date.now();
-
-const headers: Record<string, string> = {
-  Accept: 'application/vnd.github+json',
-  'User-Agent': 'rcasia.github.io',
-};
-const token = import.meta.env.GITHUB_TOKEN as string | undefined;
-if (token) headers.Authorization = `Bearer ${token}`;
-
-async function listRepos(source: string): Promise<Repo[]> {
-  try {
-    const res = await fetch(`https://api.github.com/${source}/repos?per_page=100`, {
-      headers,
-      signal: AbortSignal.timeout(8000),
-    });
-    if (!res.ok) {
-      console.warn(`projects: GitHub API ${res.status} for ${source}, skipping`);
-      return [];
-    }
-    return (await res.json()) as Repo[];
-  } catch (err) {
-    console.warn(`projects: failed to fetch ${source}, skipping`, err);
-    return [];
-  }
-}
-
-function techFor(repo: Repo): string[] {
-  const tags: string[] = [];
-  if (repo.language) tags.push(repo.language);
-  for (const topic of repo.topics ?? []) {
-    if (!tags.some((t) => t.toLowerCase() === topic.toLowerCase())) tags.push(topic);
-  }
-  return tags;
-}
-
-const projects = (
-  await Promise.all(SOURCES.map(listRepos)).then((lists) => lists.flat())
-)
-  .filter((repo) => !repo.fork && !repo.archived && !repo.disabled && !EXCLUDE.has(repo.full_name))
-  .filter((repo) => {
-    const pushedAt = repo.pushed_at ? new Date(repo.pushed_at).getTime() : null;
-    return (
-      (repo.stargazers_count ?? 0) > 4 || (pushedAt !== null && now - pushedAt < THREE_MONTHS_MS)
-    );
-  })
-  .map((repo) => ({
-    repo,
-    tech: techFor(repo),
-    pushedAt: repo.pushed_at ? new Date(repo.pushed_at).getTime() : 0,
-  }))
-  .sort((a, b) => b.repo.stargazers_count - a.repo.stargazers_count || b.pushedAt - a.pushedAt);
+const projects = await getProjects();
 ---
 
 <Base current="projects" title="projects" description="Open-source Neovim tooling by Ricardo Casía Moka.">
+  <script is:inline>
+    try {
+      if (localStorage.getItem('projectsV2') === 'true') {
+        document.documentElement.setAttribute('data-projects-v2', '');
+      }
+    } catch {}
+  </script>
+  <style>
+    html[data-projects-v2] #projects-current {
+      display: none;
+    }
+  </style>
+
   <h1 style="margin-top: 2.5rem;">projects</h1>
   <hr style="border: none; border-top: 1px solid var(--border); margin: 1.5rem 0;" />
-  <div class="card-grid">
-    {
-      projects.map(({ repo, tech }, i) => {
-        // The most-starred repo gets a full-width featured card so it
-        // reads as more important than the rest.
-        const featured = i === 0;
-        return (
-          <a
-            class="card"
-            href={repo.html_url}
-            target="_blank"
-            rel="noopener"
-            style={featured ? 'grid-column: 1 / -1; border-color: var(--accent);' : undefined}
-          >
-            <h3
-              title={repo.name}
-              style={
-                featured
-                  ? 'white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; font-size: 1.5rem;'
-                  : 'white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0;'
-              }
-            >
-              {repo.name}
-            </h3>
-            <img
-              src={`https://img.shields.io/github/stars/${repo.full_name}`}
-              alt={`GitHub stars for ${repo.name}`}
-              loading="lazy"
-              style="display: block; align-self: flex-start;"
-            />
-            {repo.description && <p>{repo.description}</p>}
-            <div class="card-meta" style="flex-wrap: wrap;">
-              <span aria-label={`GitHub repository for ${repo.name}`}>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                  <path d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48v-1.7c-2.78.6-3.37-1.34-3.37-1.34-.45-1.16-1.11-1.47-1.11-1.47-.9-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.9 1.52 2.35 1.08 2.92.83.1-.65.35-1.09.63-1.34-2.22-.25-4.56-1.11-4.56-4.94 0-1.1.39-1.99 1.03-2.69-.1-.25-.45-1.27.1-2.64 0 0 .84-.27 2.75 1.02a9.58 9.58 0 0 1 5 0c1.91-1.3 2.75-1.02 2.75-1.02.55 1.37.2 2.39.1 2.64.64.7 1.03 1.6 1.03 2.69 0 3.84-2.34 4.68-4.57 4.93.36.31.68.92.68 1.85V21c0 .27.18.58.69.48A10 10 0 0 0 12 2Z" />
-                </svg>
-              </span>
-              {tech.map((t) => (
-                <span>{t}</span>
-              ))}
-            </div>
-          </a>
-        );
-      })
-    }
+  <div id="projects-current">
+    <ProjectsCards projects={projects} />
   </div>
-  {projects.length === 0 && <p style="color: var(--muted);">No projects to show right now.</p>}
+  <template id="projects-v2">
+    <ProjectsV2 projects={projects} />
+  </template>
+
+  <script is:inline>
+    const root = document.documentElement;
+    const current = document.getElementById('projects-current');
+    const experimental = document.getElementById('projects-v2');
+
+    if (root.hasAttribute('data-projects-v2') && current && experimental instanceof HTMLTemplateElement) {
+      current.replaceChildren(experimental.content.cloneNode(true));
+      experimental.remove();
+      root.removeAttribute('data-projects-v2');
+    }
+  </script>
 </Base>
