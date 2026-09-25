@@ -8,6 +8,45 @@ import profPic from '../assets/prof_pic.jpg';
 
 const posts = (await getCollection('blog')).sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
 const latest = posts.slice(0, 3);
+
+const work = (await getCollection('projects')).sort((a, b) => a.data.importance - b.data.importance);
+
+// Code excerpts below are trimmed verbatim quotes from each repo's README
+// (lazy.nvim setup blocks + ascii-ui counter example + its rendered output).
+// No screenshots are hotlinked: the READMEs only expose expiring
+// private-user-images URLs, so code-as-visual is the honest preview.
+const SNIPPETS: Record<string, { file: string; code: string; output?: string }> = {
+  'neotest-java': {
+    file: 'lazy.lua',
+    code: `{
+  "rcasia/neotest-java",
+  ft = "java",
+  dependencies = {
+    "mfussenegger/nvim-jdtls",
+  },
+}`,
+  },
+  'neotest-bash': {
+    file: 'lazy.lua',
+    code: `require("neotest").setup({
+  adapters = {
+    require("neotest-bash")
+  }
+})`,
+  },
+  'ascii-ui-nvim': {
+    file: 'counter.lua',
+    code: `local Paragraph = ui.components.Paragraph
+local Button = ui.components.Button
+
+return ui.createComponent("Counter", function()
+    local count, setCount = useState(0)`,
+    output: `╭──────────────╮
+│ Count: 0     │
+│ [ +1 ]       │
+╰──────────────╯`,
+  },
+};
 ---
 
 <Base current="about" title="about" description={SITE.description}>
@@ -79,6 +118,67 @@ const latest = posts.slice(0, 3);
         />
       </div>
     </div>
+
+    <section class="work" aria-labelledby="work-heading">
+      <div class="work-head">
+        <h2 id="work-heading"><a href="/projects/" style="color: inherit;">selected work</a></h2>
+        <div class="work-controls">
+          <p class="work-pos" aria-live="polite" aria-atomic="true">
+            <span id="work-current">01</span><span aria-hidden="true"> / </span><span id="work-total">03</span>
+            <span class="sr-only">projects shown</span>
+          </p>
+          <div class="work-nav" role="group" aria-label="Browse projects">
+            <button class="work-btn" id="work-prev" type="button" aria-label="Previous project">←</button>
+            <button class="work-btn" id="work-next" type="button" aria-label="Next project">→</button>
+          </div>
+        </div>
+      </div>
+      <div
+        class="work-strip"
+        id="work-strip"
+        role="region"
+        aria-roledescription="carousel"
+        aria-label="Selected open source projects"
+        tabindex="0"
+      >
+        <ol class="work-track">
+          {work.map((p, i) => {
+            const key = p.id.replace(/\.md$/, '');
+            const snap = SNIPPETS[key] ?? SNIPPETS['neotest-java'];
+            const num = String(i + 1).padStart(2, '0');
+            return (
+              <li class="work-slide">
+                <article class="card work-card" aria-labelledby={`work-title-${key}`}>
+                  <span class="work-idx" aria-hidden="true">{num}</span>
+                  <h3 class="work-name" id={`work-title-${key}`}>
+                    <a href={p.data.github} target="_blank" rel="noopener">
+                      {p.data.title} <span aria-hidden="true">↗</span>
+                    </a>
+                  </h3>
+                  <p class="work-desc">{p.data.description}</p>
+                  <div class="term">
+                    <div class="term-bar" aria-hidden="true">
+                      <span class="term-dots"><i></i><i></i><i></i></span>
+                      <span class="term-file">{snap.file}</span>
+                      <span class="term-lang">lua</span>
+                    </div>
+                    <pre class="term-code"><code>{snap.code}</code></pre>
+                    {snap.output && (
+                      <pre class="term-out"><code>{snap.output}</code></pre>
+                    )}
+                  </div>
+                  <ul class="work-tech" aria-label={`Technologies in ${p.data.title}`}>
+                    {p.data.tech.slice(0, 4).map((t) => (
+                      <li>{t}</li>
+                    ))}
+                  </ul>
+                </article>
+              </li>
+            );
+          })}
+        </ol>
+      </div>
+    </section>
 
     <h2><a href="/blog/" style="color: inherit;">latest posts</a></h2>
     {
@@ -152,5 +252,67 @@ const latest = posts.slice(0, 3);
         if (copyBtn) copyBtn.textContent = 'Copy';
       }, 2000);
     });
+  </script>
+  <script is:inline>
+    (() => {
+      const strip = document.getElementById('work-strip');
+      const prev = document.getElementById('work-prev');
+      const next = document.getElementById('work-next');
+      const current = document.getElementById('work-current');
+      const total = document.getElementById('work-total');
+      if (!strip || !prev || !next || !current) return;
+      const slides = Array.from(strip.querySelectorAll('.work-slide'));
+      if (total) total.textContent = String(slides.length).padStart(2, '0');
+      const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+      const gap = () => {
+        const track = strip.querySelector('.work-track');
+        if (!track) return 16;
+        return parseFloat(getComputedStyle(track).columnGap || getComputedStyle(track).gap) || 16;
+      };
+      const step = () => (slides[0]?.getBoundingClientRect().width ?? 320) + gap();
+      const behavior = () => (reduceMotion.matches ? 'auto' : 'smooth');
+      const update = () => {
+        const max = strip.scrollWidth - strip.clientWidth;
+        const idx = Math.min(
+          slides.length - 1,
+          Math.max(0, Math.round(strip.scrollLeft / step()))
+        );
+        current.textContent = String(idx + 1).padStart(2, '0');
+        prev.disabled = strip.scrollLeft <= 4;
+        next.disabled = strip.scrollLeft >= max - 4;
+      };
+      let ticking = false;
+      strip.addEventListener(
+        'scroll',
+        () => {
+          if (ticking) return;
+          ticking = true;
+          requestAnimationFrame(() => {
+            update();
+            ticking = false;
+          });
+        },
+        { passive: true }
+      );
+      prev.addEventListener('click', () => strip.scrollBy({ left: -step(), behavior: behavior() }));
+      next.addEventListener('click', () => strip.scrollBy({ left: step(), behavior: behavior() }));
+      strip.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight') {
+          e.preventDefault();
+          strip.scrollBy({ left: step(), behavior: behavior() });
+        } else if (e.key === 'ArrowLeft') {
+          e.preventDefault();
+          strip.scrollBy({ left: -step(), behavior: behavior() });
+        } else if (e.key === 'Home') {
+          e.preventDefault();
+          strip.scrollTo({ left: 0, behavior: behavior() });
+        } else if (e.key === 'End') {
+          e.preventDefault();
+          strip.scrollTo({ left: strip.scrollWidth, behavior: behavior() });
+        }
+      });
+      window.addEventListener('resize', update);
+      update();
+    })();
   </script>
 </Base>
