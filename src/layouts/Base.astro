@@ -11,6 +11,7 @@ interface Props {
 const { title = SITE.title, description = SITE.description, current } = Astro.props;
 const pageTitle = title === SITE.title ? title : `${title} | ${SITE.name}`;
 const canonical = new URL(Astro.url.pathname, SITE.url).toString();
+const featureFlags = [{ key: 'projectsV2', label: 'Projects V2' }];
 ---
 
 <!doctype html>
@@ -78,6 +79,63 @@ const canonical = new URL(Astro.url.pathname, SITE.url).toString();
         }
       } catch {}
     </script>
+    <style>
+      #feature-flag-panel {
+        width: min(360px, calc(100% - 2rem));
+        padding: 0;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        background: var(--bg-soft);
+        color: var(--text);
+      }
+
+      #feature-flag-panel::backdrop {
+        background: rgb(0 0 0 / 65%);
+      }
+
+      .feature-flag-panel {
+        display: grid;
+        gap: 1rem;
+        padding: 1.25rem;
+      }
+
+      .feature-flag-panel h2,
+      .feature-flag-panel p {
+        margin: 0;
+      }
+
+      .feature-flag-panel p {
+        color: var(--muted);
+        font-size: 0.9rem;
+      }
+
+      .feature-flag-panel label {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+      }
+
+      .feature-flag-panel-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 0.6rem;
+      }
+
+      .feature-flag-panel button {
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 0.45rem 0.7rem;
+        background: transparent;
+        color: var(--text);
+        cursor: pointer;
+      }
+
+      .feature-flag-panel button:hover,
+      .feature-flag-panel button:focus-visible {
+        border-color: var(--accent);
+        color: var(--accent);
+      }
+    </style>
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to content</a>
@@ -111,6 +169,27 @@ const canonical = new URL(Astro.url.pathname, SITE.url).toString();
       </div>
     </header>
 
+    <dialog id="feature-flag-panel" aria-labelledby="feature-flag-panel-title" aria-describedby="feature-flag-panel-description">
+      <form class="feature-flag-panel" method="dialog">
+        <h2 id="feature-flag-panel-title">Feature flags</h2>
+        <p id="feature-flag-panel-description">
+          Developer-only controls. Press Alt+Shift+P on any page to reopen this panel.
+        </p>
+        {
+          featureFlags.map((flag) => (
+            <label for={`feature-flag-${flag.key}`}>
+              <input id={`feature-flag-${flag.key}`} type="checkbox" data-feature-flag={flag.key} />
+              {flag.label}
+            </label>
+          ))
+        }
+        <div class="feature-flag-panel-actions">
+          <button type="submit" value="cancel">Close</button>
+          <button id="feature-flag-apply" type="button">Apply and reload</button>
+        </div>
+      </form>
+    </dialog>
+
     <main id="main" class="container">
       <slot />
     </main>
@@ -142,6 +221,63 @@ const canonical = new URL(Astro.url.pathname, SITE.url).toString();
         syncThemeToggle(next);
         try {
           localStorage.setItem('theme', next);
+        } catch {}
+      });
+    </script>
+
+    <script is:inline>
+      const featureFlagPanel = document.getElementById('feature-flag-panel');
+      const featureFlagInputs = Array.from(document.querySelectorAll('input[data-feature-flag]'));
+      const featureFlagApply = document.getElementById('feature-flag-apply');
+      let featureFlagPanelReturnFocus = null;
+
+      const isFeatureFlagEnabled = (key) => {
+        try {
+          return localStorage.getItem(key) === 'true';
+        } catch {
+          return false;
+        }
+      };
+
+      const syncFeatureFlagInputs = () => {
+        featureFlagInputs.forEach((input) => {
+          input.checked = isFeatureFlagEnabled(input.dataset.featureFlag);
+        });
+      };
+
+      const openFeatureFlagPanel = () => {
+        if (!(featureFlagPanel instanceof HTMLDialogElement) || featureFlagPanel.open) return;
+        featureFlagPanelReturnFocus = document.activeElement;
+        syncFeatureFlagInputs();
+        featureFlagPanel.showModal();
+        featureFlagInputs[0]?.focus();
+      };
+
+      document.addEventListener('keydown', (event) => {
+        if (event.altKey && event.shiftKey && !event.ctrlKey && !event.metaKey && event.key.toLowerCase() === 'p') {
+          event.preventDefault();
+          openFeatureFlagPanel();
+        }
+      });
+
+      featureFlagPanel?.addEventListener('close', () => {
+        if (featureFlagPanelReturnFocus instanceof HTMLElement) featureFlagPanelReturnFocus.focus();
+        featureFlagPanelReturnFocus = null;
+      });
+
+      featureFlagApply?.addEventListener('click', () => {
+        try {
+          featureFlagInputs.forEach((input) => {
+            const key = input.dataset.featureFlag;
+            if (!key) return;
+            if (input.checked) {
+              localStorage.setItem(key, 'true');
+            } else {
+              localStorage.removeItem(key);
+            }
+          });
+          featureFlagPanel.close();
+          location.reload();
         } catch {}
       });
     </script>

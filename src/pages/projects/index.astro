@@ -19,62 +19,6 @@ const projects = await getProjects();
     html[data-projects-v2] #projects-current {
       display: none;
     }
-
-    #projects-feature-panel {
-      width: min(360px, calc(100% - 2rem));
-      padding: 0;
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      background: var(--bg-soft);
-      color: var(--text);
-    }
-
-    #projects-feature-panel::backdrop {
-      background: rgb(0 0 0 / 65%);
-    }
-
-    .projects-feature-panel {
-      display: grid;
-      gap: 1rem;
-      padding: 1.25rem;
-    }
-
-    .projects-feature-panel h2,
-    .projects-feature-panel p {
-      margin: 0;
-    }
-
-    .projects-feature-panel p {
-      color: var(--muted);
-      font-size: 0.9rem;
-    }
-
-    .projects-feature-panel label {
-      display: flex;
-      align-items: center;
-      gap: 0.6rem;
-    }
-
-    .projects-feature-panel-actions {
-      display: flex;
-      justify-content: flex-end;
-      gap: 0.6rem;
-    }
-
-    .projects-feature-panel button {
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 0.45rem 0.7rem;
-      background: transparent;
-      color: var(--text);
-      cursor: pointer;
-    }
-
-    .projects-feature-panel button:hover,
-    .projects-feature-panel button:focus-visible {
-      border-color: var(--accent);
-      color: var(--accent);
-    }
   </style>
 
   <h1 style="margin-top: 2.5rem;">projects</h1>
@@ -86,27 +30,6 @@ const projects = await getProjects();
     <ProjectsV2 projects={projects} />
   </template>
 
-  <dialog
-    id="projects-feature-panel"
-    aria-labelledby="projects-feature-panel-title"
-    aria-describedby="projects-feature-panel-description"
-  >
-    <form class="projects-feature-panel" method="dialog">
-      <h2 id="projects-feature-panel-title">Feature flags</h2>
-      <p id="projects-feature-panel-description">
-        Developer-only controls. Press Alt+Shift+P on this page to reopen this panel.
-      </p>
-      <label for="projects-v2-checkbox">
-        <input id="projects-v2-checkbox" type="checkbox" />
-        Enable projects V2
-      </label>
-      <div class="projects-feature-panel-actions">
-        <button type="submit" value="cancel">Close</button>
-        <button id="projects-v2-apply" type="button">Apply and reload</button>
-      </div>
-    </form>
-  </dialog>
-
   <script is:inline>
     const root = document.documentElement;
     const current = document.getElementById('projects-current');
@@ -117,51 +40,5 @@ const projects = await getProjects();
       experimental.remove();
       root.removeAttribute('data-projects-v2');
     }
-
-    const projectsFeaturePanel = document.getElementById('projects-feature-panel');
-    const projectsV2Checkbox = document.getElementById('projects-v2-checkbox');
-    const projectsV2Apply = document.getElementById('projects-v2-apply');
-    const projectsV2StorageKey = 'projectsV2';
-    let projectsFeaturePanelReturnFocus = null;
-
-    const isProjectsV2Enabled = () => {
-      try {
-        return localStorage.getItem(projectsV2StorageKey) === 'true';
-      } catch {
-        return false;
-      }
-    };
-
-    const openProjectsFeaturePanel = () => {
-      if (!(projectsFeaturePanel instanceof HTMLDialogElement) || projectsFeaturePanel.open) return;
-      projectsFeaturePanelReturnFocus = document.activeElement;
-      projectsV2Checkbox.checked = isProjectsV2Enabled();
-      projectsFeaturePanel.showModal();
-      projectsV2Checkbox.focus();
-    };
-
-    document.addEventListener('keydown', (event) => {
-      if (event.altKey && event.shiftKey && !event.ctrlKey && !event.metaKey && event.key.toLowerCase() === 'p') {
-        event.preventDefault();
-        openProjectsFeaturePanel();
-      }
-    });
-
-    projectsFeaturePanel?.addEventListener('close', () => {
-      if (projectsFeaturePanelReturnFocus instanceof HTMLElement) projectsFeaturePanelReturnFocus.focus();
-      projectsFeaturePanelReturnFocus = null;
-    });
-
-    projectsV2Apply?.addEventListener('click', () => {
-      try {
-        if (projectsV2Checkbox.checked) {
-          localStorage.setItem(projectsV2StorageKey, 'true');
-        } else {
-          localStorage.removeItem(projectsV2StorageKey);
-        }
-        projectsFeaturePanel.close();
-        location.reload();
-      } catch {}
-    });
   </script>
 </Base>
