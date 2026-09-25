@@ -660,73 +660,25 @@ footer nav {
   font-size: 0.92rem;
 }
 
-.term {
+.work-visual {
   background: #020617;
   border: 1px solid var(--border);
   border-radius: 8px;
   overflow: hidden;
   margin-top: 0.25rem;
+  aspect-ratio: 16 / 9;
 }
 
-.term-bar {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  padding: 0.4rem 0.7rem;
-  border-bottom: 1px solid var(--border);
-  font-family: var(--font-mono);
-  font-size: 0.72rem;
-  color: var(--muted);
+.work-visual img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
-.term-dots {
-  display: inline-flex;
-  gap: 0.3rem;
-}
-
-.term-dots i {
-  width: 8px;
-  height: 8px;
-  border-radius: 999px;
-  background: var(--border);
-  display: inline-block;
-}
-
-.term-dots i:first-child {
-  background: var(--accent-dim);
-}
-
-.term-file {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.term-lang {
-  margin-left: auto;
-  color: var(--accent-dim);
-}
-
-.term-code,
-.term-out {
-  margin: 0;
-  padding: 0.7rem 0.8rem;
-  font-family: var(--font-mono);
-  font-size: 0.76rem;
-  line-height: 1.65;
-  color: #cbd5e1;
-  overflow-x: auto;
-  white-space: pre;
-}
-
-.term-code code,
-.term-out code {
-  font-family: inherit;
-}
-
-.term-out {
-  border-top: 1px dashed var(--border);
-  color: var(--accent);
+.work-visual-ascii img {
+  object-fit: contain;
+  background: #020617;
 }
 
 .work-tech {

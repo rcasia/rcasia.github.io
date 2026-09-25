@@ -11,40 +11,19 @@ const latest = posts.slice(0, 3);
 
 const work = (await getCollection('projects')).sort((a, b) => a.data.importance - b.data.importance);
 
-// Code excerpts below are trimmed verbatim quotes from each repo's README
-// (lazy.nvim setup blocks + ascii-ui counter example + its rendered output).
-// No screenshots are hotlinked: the READMEs only expose expiring
-// private-user-images URLs, so code-as-visual is the honest preview.
-const SNIPPETS: Record<string, { file: string; code: string; output?: string }> = {
+const PREVIEWS: Record<string, { src: string; alt: string; className?: string }> = {
   'neotest-java': {
-    file: 'lazy.lua',
-    code: `{
-  "rcasia/neotest-java",
-  ft = "java",
-  dependencies = {
-    "mfussenegger/nvim-jdtls",
-  },
-}`,
+    src: '/project-previews/neotest-java.png',
+    alt: 'Neovim showing the neotest-java test tree beside Java test code and JUnit output.',
   },
   'neotest-bash': {
-    file: 'lazy.lua',
-    code: `require("neotest").setup({
-  adapters = {
-    require("neotest-bash")
-  }
-})`,
+    src: '/project-previews/neotest-bash.png',
+    alt: 'Neovim showing a Bash test file beside bashunit results with passing tests.',
   },
   'ascii-ui-nvim': {
-    file: 'counter.lua',
-    code: `local Paragraph = ui.components.Paragraph
-local Button = ui.components.Button
-
-return ui.createComponent("Counter", function()
-    local count, setCount = useState(0)`,
-    output: `╭──────────────╮
-│ Count: 0     │
-│ [ +1 ]       │
-╰──────────────╯`,
+    src: '/project-previews/ascii-ui-map.gif',
+    alt: 'A real ASCII metro map rendered by an ascii-ui.nvim example.',
+    className: 'work-visual-ascii',
   },
 };
 ---
@@ -144,7 +123,7 @@ return ui.createComponent("Counter", function()
         <ol class="work-track">
           {work.map((p, i) => {
             const key = p.id.replace(/\.md$/, '');
-            const snap = SNIPPETS[key] ?? SNIPPETS['neotest-java'];
+            const preview = PREVIEWS[key];
             const num = String(i + 1).padStart(2, '0');
             return (
               <li class="work-slide">
@@ -156,17 +135,11 @@ return ui.createComponent("Counter", function()
                     </a>
                   </h3>
                   <p class="work-desc">{p.data.description}</p>
-                  <div class="term">
-                    <div class="term-bar" aria-hidden="true">
-                      <span class="term-dots"><i></i><i></i><i></i></span>
-                      <span class="term-file">{snap.file}</span>
-                      <span class="term-lang">lua</span>
+                  {preview && (
+                    <div class:list={['work-visual', preview.className]}>
+                      <img src={preview.src} alt={preview.alt} loading="lazy" decoding="async" />
                     </div>
-                    <pre class="term-code"><code>{snap.code}</code></pre>
-                    {snap.output && (
-                      <pre class="term-out"><code>{snap.output}</code></pre>
-                    )}
-                  </div>
+                  )}
                   <ul class="work-tech" aria-label={`Technologies in ${p.data.title}`}>
                     {p.data.tech.slice(0, 4).map((t) => (
                       <li>{t}</li>
