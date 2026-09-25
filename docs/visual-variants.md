@@ -54,10 +54,11 @@ The variants intentionally share:
 - `Base.astro` navigation, social links, theme toggle, feature panel, metadata, and footer.
 - Home page copy, profile image, selected work carousel, experiments, and latest note data.
 - Blog collection rendering, post metadata, tags, redirects, and prose content.
-- Projects fetched through `getProjects()` and rendered through `ProjectsCards.astro`.
+- Projects fetched through `getProjects()` and rendered through `ProjectsCards.astro`, with detail pages rendered from the project collection.
 - Focus rings, skip navigation, named controls, semantic headings, meaningful image alt text, and reduced-motion behavior.
 
 Only the visual tokens and layout rules change. No content is duplicated to create a variant.
+Project detail pages stay under `ricardocasia.com/**`; their GitHub buttons are the intentional boundary that leaves the site scope.
 
 ## Evaluation Notes
 
