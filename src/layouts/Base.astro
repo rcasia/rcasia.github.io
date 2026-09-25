@@ -2,6 +2,7 @@
 import '../styles/global.css';
 import { SITE } from '../site';
 import { DEPLOYMENT } from '../lib/deployment';
+import { PROJECTS_LAYOUTS, SITE_STYLES } from '../lib/visual-variants';
 
 interface Props {
   title?: string;
@@ -12,11 +13,18 @@ interface Props {
 const { title = SITE.title, description = SITE.description, current } = Astro.props;
 const pageTitle = title === SITE.title ? title : `${title} | ${SITE.name}`;
 const canonical = new URL(Astro.url.pathname, SITE.url).toString();
-const featureFlags = [{ key: 'projectsV2', label: 'Projects V2' }];
+const siteStyleValues = SITE_STYLES.map(({ value }) => value);
+const projectsLayoutValues = PROJECTS_LAYOUTS.map(({ value }) => value);
 ---
 
 <!doctype html>
-<html lang="en" data-theme="dark">
+<html
+  lang="en"
+  data-theme="dark"
+  data-site-style="current"
+  data-projects-layout="carousel"
+  class:list={current === 'projects' ? 'projects-layout-page' : undefined}
+>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -43,12 +51,25 @@ const featureFlags = [{ key: 'projectsV2', label: 'Projects V2' }];
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500&family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=Space+Grotesk:wght@500;600;700&display=swap"
       rel="stylesheet"
     />
 
     <script define:vars={{ deployment: DEPLOYMENT }}>
       window.__SITE_DEPLOYMENT__ = deployment;
+    </script>
+
+    <script is:inline define:vars={{ siteStyleValues, projectsLayoutValues }}>
+      try {
+        const root = document.documentElement;
+        const storedStyle = localStorage.getItem('siteStyle');
+        const siteStyle = siteStyleValues.includes(storedStyle) ? storedStyle : 'current';
+        const storedLayout = localStorage.getItem('projectsLayout');
+        const legacyLayout = localStorage.getItem('projectsV2') === 'true' ? 'expanded' : 'carousel';
+        const projectsLayout = projectsLayoutValues.includes(storedLayout) ? storedLayout : legacyLayout;
+        root.setAttribute('data-site-style', siteStyle);
+        root.setAttribute('data-projects-layout', projectsLayout);
+      } catch {}
     </script>
 
     {
@@ -119,7 +140,40 @@ const featureFlags = [{ key: 'projectsV2', label: 'Projects V2' }];
       .feature-flag-panel label {
         display: flex;
         align-items: center;
+        justify-content: space-between;
         gap: 0.6rem;
+      }
+
+      .feature-flag-field {
+        display: grid;
+        gap: 0.4rem;
+      }
+
+      .feature-flag-field label {
+        font-weight: 600;
+      }
+
+      .feature-flag-field select {
+        width: 100%;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 0.5rem 0.65rem;
+        background: var(--bg);
+        color: var(--text);
+      }
+
+      .feature-flag-field p {
+        margin: 0;
+      }
+
+      .feature-flag-panel select {
+        min-width: 9rem;
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        padding: 0.35rem 0.5rem;
+        background: var(--bg);
+        color: var(--text);
+        font: inherit;
       }
 
       .feature-flag-panel-actions {
@@ -148,7 +202,7 @@ const featureFlags = [{ key: 'projectsV2', label: 'Projects V2' }];
     <a class="skip-link" href="#main">Skip to content</a>
     <header class="navbar">
       <div class="navbar-inner">
-        <div style="display:flex;align-items:center;gap:1rem;">
+        <div class="brand-group">
           <a class="brand" href="/">Ricardo Casía Moka</a>
           <div class="social-row" aria-label="Social links">
             <a href="/#contact-panel" aria-label="Contact information">
@@ -182,14 +236,20 @@ const featureFlags = [{ key: 'projectsV2', label: 'Projects V2' }];
         <p id="feature-flag-panel-description">
           Developer-only controls. Press Ctrl+Alt+Shift+F, or Control+Command+Shift+F on macOS, on any page to reopen this panel.
         </p>
-        {
-          featureFlags.map((flag) => (
-            <label for={`feature-flag-${flag.key}`}>
-              <input id={`feature-flag-${flag.key}`} type="checkbox" data-feature-flag={flag.key} />
-              {flag.label}
-            </label>
-          ))
-        }
+        <div class="feature-flag-field">
+          <label for="feature-flag-siteStyle">Global site style</label>
+          <select id="feature-flag-siteStyle" data-feature-flag="siteStyle" aria-describedby="feature-flag-siteStyle-description">
+            {SITE_STYLES.map((style) => <option value={style.value}>{style.label}</option>)}
+          </select>
+          <p id="feature-flag-siteStyle-description">The visual language shared by home, blog, projects, and error pages.</p>
+        </div>
+        <div class="feature-flag-field">
+          <label for="feature-flag-projectsLayout">Projects layout</label>
+          <select id="feature-flag-projectsLayout" data-feature-flag="projectsLayout" aria-describedby="feature-flag-projectsLayout-description">
+            {PROJECTS_LAYOUTS.map((layout) => <option value={layout.value}>{layout.label}</option>)}
+          </select>
+          <p id="feature-flag-projectsLayout-description">A Projects-only composition that can be tested with every site style.</p>
+        </div>
         <div class="feature-flag-panel-actions">
           <button type="submit" value="cancel">Close</button>
           <button id="feature-flag-apply" type="button">Apply and reload</button>
@@ -235,21 +295,30 @@ const featureFlags = [{ key: 'projectsV2', label: 'Projects V2' }];
 
     <script is:inline>
       const featureFlagPanel = document.getElementById('feature-flag-panel');
-      const featureFlagInputs = Array.from(document.querySelectorAll('input[data-feature-flag]'));
+      const featureFlagInputs = Array.from(document.querySelectorAll('select[data-feature-flag]'));
       const featureFlagApply = document.getElementById('feature-flag-apply');
       let featureFlagPanelReturnFocus = null;
 
-      const isFeatureFlagEnabled = (key) => {
+      const readFeatureFlag = (key) => {
         try {
-          return localStorage.getItem(key) === 'true';
+          return localStorage.getItem(key);
         } catch {
-          return false;
+          return null;
         }
       };
 
+      const isFeatureFlagEnabled = (key) => readFeatureFlag(key) === 'true';
+
       const syncFeatureFlagInputs = () => {
         featureFlagInputs.forEach((input) => {
-          input.checked = isFeatureFlagEnabled(input.dataset.featureFlag);
+          const key = input.dataset.featureFlag;
+          if (!key) return;
+          const storedValue = readFeatureFlag(key);
+          const stored = key === 'projectsLayout' && !storedValue
+            ? (isFeatureFlagEnabled('projectsV2') ? 'expanded' : 'carousel')
+            : storedValue;
+          const optionValues = Array.from(input.options).map((option) => option.value);
+          input.value = stored && optionValues.includes(stored) ? stored : optionValues[0] ?? '';
         });
       };
 
@@ -280,12 +349,9 @@ const featureFlags = [{ key: 'projectsV2', label: 'Projects V2' }];
           featureFlagInputs.forEach((input) => {
             const key = input.dataset.featureFlag;
             if (!key) return;
-            if (input.checked) {
-              localStorage.setItem(key, 'true');
-            } else {
-              localStorage.removeItem(key);
-            }
+            localStorage.setItem(key, input.value);
           });
+          localStorage.removeItem('projectsV2');
           featureFlagPanel.close();
           location.reload();
         } catch {}

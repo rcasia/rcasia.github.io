@@ -39,7 +39,7 @@ const PREVIEWS: Record<string, { src: string; alt: string; className?: string }>
     <p class="subtitle">Senior Software Engineer at Thoughtworks</p>
 
     <div class="about-grid">
-      <div>
+      <div class="hero-copy">
         <p>
           I build developer tools that shorten the loop between writing code and trusting it.
         </p>
@@ -83,9 +83,9 @@ const PREVIEWS: Record<string, { src: string; alt: string; className?: string }>
       </div>
     </div>
 
-    <section class="work" aria-labelledby="work-heading">
+    <section class="work section-block" aria-labelledby="work-heading">
       <div class="work-head">
-        <h2 id="work-heading"><a href="/projects/" style="color: inherit;">selected work</a></h2>
+        <h2 id="work-heading" class="section-heading"><a href="/projects/">selected work</a></h2>
         <div class="work-controls">
           <p class="work-pos" aria-live="polite" aria-atomic="true">
             <span id="work-current">01</span><span aria-hidden="true"> / </span><span id="work-total">03</span>
@@ -97,7 +97,7 @@ const PREVIEWS: Record<string, { src: string; alt: string; className?: string }>
           </div>
         </div>
       </div>
-      <p>Each one shortens that loop in a different place.</p>
+      <p class="section-dek">Each one shortens that loop in a different place.</p>
       <div
         class="work-strip"
         id="work-strip"
@@ -139,8 +139,8 @@ const PREVIEWS: Record<string, { src: string; alt: string; className?: string }>
       </div>
     </section>
 
-    <section aria-labelledby="experiments-heading">
-      <h2 id="experiments-heading">Now experimenting</h2>
+    <section class="section-block" aria-labelledby="experiments-heading">
+      <h2 id="experiments-heading" class="section-heading">Now experimenting</h2>
       <p>
         Deterministic guardrails around non-deterministic agents: pre-commits and checks stay fixed
         while agents write the code; skills only where a flow needs one. Testing whether TCR
@@ -149,40 +149,40 @@ const PREVIEWS: Record<string, { src: string; alt: string; className?: string }>
       </p>
       <p>
         <a href="https://github.com/rcasia/agentic-tcr-poc" target="_blank" rel="noopener">agentic-tcr-poc</a>
-        <span style="color: var(--muted)">(early)</span>
+         <span class="muted">(early)</span>
       </p>
     </section>
 
-    <h2><a href="/blog/" style="color: inherit;">latest note</a></h2>
-    {
-      latest.length === 0 ? (
-        <p style="color: var(--muted)">No posts yet.</p>
-      ) : (
-        <ul class="post-list">
-          {latest.map((post) => {
-            const href = post.data.redirect ?? `/blog/${post.slug}/`;
-            const external = Boolean(post.data.redirect);
-            return (
-              <li class="post-item">
-                <div style="display:flex;gap:1rem;align-items:baseline;flex-wrap:wrap;">
-                  <time style="color: var(--muted); font-size: 0.9rem; min-width: 90px;">
-                    {formatDate(post.data.date)}
-                  </time>
-                  <a href={href} target={external ? '_blank' : undefined} rel={external ? 'noopener' : undefined}>
-                    {post.data.title} {external && <span aria-hidden="true">↗</span>}
-                  </a>
-                </div>
-                {post.data.external_source && (
-                  <div class="post-meta">
-                    <span>Cross-posted on {post.data.external_source}</span>
+    <section class="section-block latest-notes" aria-labelledby="latest-heading">
+      <h2 id="latest-heading" class="section-heading"><a href="/blog/">latest note</a></h2>
+      {
+        latest.length === 0 ? (
+          <p class="muted">No posts yet.</p>
+        ) : (
+          <ul class="post-list">
+            {latest.map((post) => {
+              const href = post.data.redirect ?? `/blog/${post.slug}/`;
+              const external = Boolean(post.data.redirect);
+              return (
+                <li class="post-item">
+                  <div class="post-home-row">
+                    <time class="post-date">{formatDate(post.data.date)}</time>
+                    <a href={href} target={external ? '_blank' : undefined} rel={external ? 'noopener' : undefined}>
+                      {post.data.title} {external && <span aria-hidden="true">↗</span>}
+                    </a>
                   </div>
-                )}
-              </li>
-            );
-          })}
-        </ul>
-      )
-    }
+                  {post.data.external_source && (
+                    <div class="post-meta">
+                      <span>Cross-posted on {post.data.external_source}</span>
+                    </div>
+                  )}
+                </li>
+              );
+            })}
+          </ul>
+        )
+      }
+    </section>
   </article>
   <script is:inline>
     const toggle = document.getElementById('contact-toggle');
