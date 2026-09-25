@@ -1,6 +1,6 @@
 ---
 title: 'neotest-bash'
-description: 'Neovim test adapter for Bash scripts'
+description: 'Test Bash scripts from Neovim via bashunit — discovery, execution, and results in the editor. Infers the runner and passes through coverage flags.'
 importance: 2
 category: 'open-source'
 github: 'https://github.com/rcasia/neotest-bash'

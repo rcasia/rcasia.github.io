@@ -1,13 +1,13 @@
 ---
 title: 'ascii-ui.nvim'
-description: 'ASCII-based UI components for Neovim'
+description: 'Neovim plugin UIs as components, not buffer juggling — state, diffing, and input via a fiber reconciler. Hooks, layout primitives, live reload, zero dependencies.'
 importance: 3
 category: 'open-source'
 github: 'https://github.com/ascii-ui/ascii-ui.nvim'
 tech: ['Lua', 'Neovim']
 ---
 
-A Neovim plugin that provides ASCII-based UI components for creating beautiful and functional interfaces within Neovim. This plugin offers a collection of reusable UI elements built with ASCII characters, perfect for building custom Neovim plugins and interfaces.
+A declarative UI framework for Neovim plugins: describe the interface as functional components and let a fiber-based reconciler handle diffing, state updates, and re-renders.
 
 ## Features
 
@@ -24,7 +24,7 @@ Install using your favorite Neovim package manager:
 ```lua
 -- Using lazy.nvim
 {
-  "rcasia/ascii-ui.nvim",
+  "ascii-ui/ascii-ui.nvim",
   config = function()
     require("ascii-ui").setup({
       -- Configuration options

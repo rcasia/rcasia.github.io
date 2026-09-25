@@ -167,7 +167,7 @@ const featureFlags = [{ key: 'projectsV2', label: 'Projects V2' }];
         </div>
         <nav aria-label="Primary">
           <ul class="nav-links">
-            <li><a href="/" aria-current={current === 'about' ? 'page' : undefined}>about</a></li>
+            <li><a href="/" aria-current={current === 'about' ? 'page' : undefined}>home</a></li>
             <li><a href="/blog/" aria-current={current === 'blog' ? 'page' : undefined}>blog</a></li>
             <li><a href="/projects/" aria-current={current === 'projects' ? 'page' : undefined}>projects</a></li>
             <li><button class="theme-toggle" id="theme-toggle" aria-label="Switch to light theme" aria-pressed="true">☾</button></li>
@@ -203,12 +203,12 @@ const featureFlags = [{ key: 'projectsV2', label: 'Projects V2' }];
 
     <footer>
       <nav aria-label="Footer">
-        <a href="/">About</a>
+        <a href="/">Home</a>
         <a href="/blog/">Blog</a>
         <a href="/projects/">Projects</a>
         <a href={SITE.github} target="_blank" rel="noopener">GitHub</a>
       </nav>
-      <div>© Copyright {new Date().getFullYear()} Ricardo Casía Moka.</div>
+      <div>© {new Date().getFullYear()} Ricardo Casía Moka.</div>
       <div class="build-meta">build {DEPLOYMENT.version.replace('-', ' · ')}</div>
     </footer>
 

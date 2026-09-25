@@ -41,36 +41,20 @@ const PREVIEWS: Record<string, { src: string; alt: string; className?: string }>
     <div class="about-grid">
       <div>
         <p>
-          I'm Ricardo Casía Moka, a Senior Software Engineer at Thoughtworks. I architect scalable systems,
-          lead technical initiatives, and mentor development teams for enterprise clients. I'm passionate
-          about clean code, test-driven development, and building software that stands the test of time.
+          I'm a Senior Software Engineer at Thoughtworks. I maintain developer tooling that shortens
+          the loop between writing code and trusting it — test adapters and UI infrastructure for Neovim.
         </p>
         <p>
-          I maintain several open source projects focused on developer tooling. These include
-          <a href="https://github.com/rcasia/neotest-java" target="_blank" rel="noopener">neotest-java</a> and
-          <a href="https://github.com/rcasia/neotest-bash" target="_blank" rel="noopener">neotest-bash</a>, test adapters for Java and Bash workflows
-          in Neovim, and <a href="https://github.com/ascii-ui/ascii-ui.nvim" target="_blank" rel="noopener">ascii-ui.nvim</a>, a library of ASCII-based
-          UI components for Neovim plugins.
+          For example, neotest-java compiles through the LSP instead of owning build logic, so JUnit 5
+          tests stay fast across Maven and Gradle multi-module projects.
         </p>
         <p>
-          Through this blog, I share technical insights, engineering practices, and tool configurations
-          to contribute to the developer community.
+          Currently experimenting with deterministic guardrails for agentic coding. Early work, notes below.
         </p>
-        <p><strong>Focus areas</strong></p>
-        <ul>
-          <li>Scalable systems</li>
-          <li>Technical leadership</li>
-          <li>Mentoring development teams</li>
-          <li>Clean code and test-driven development</li>
-          <li>Neovim tooling</li>
-          <li>Harness engineering</li>
-          <li>AI delivery</li>
-        </ul>
         <div class="cta-row">
-          <button class="btn btn-primary" id="contact-toggle" aria-expanded="false" aria-controls="contact-panel">Get in touch</button>
-          <a class="btn" href="/projects/">View projects</a>
-          <a class="btn" href="/blog/">Read blog</a>
+          <a class="btn btn-primary" href="/projects/">View selected work</a>
           <a class="btn" href={SITE.github} target="_blank" rel="noopener">GitHub</a>
+          <button class="btn" id="contact-toggle" aria-expanded="false" aria-controls="contact-panel">Get in touch</button>
         </div>
         <div id="contact-panel" class="contact-panel" hidden>
           <p class="contact-title"><strong>Contact</strong></p>
@@ -117,6 +101,7 @@ const PREVIEWS: Record<string, { src: string; alt: string; className?: string }>
           </div>
         </div>
       </div>
+      <p>Tooling I maintain, and why each piece exists.</p>
       <div
         class="work-strip"
         id="work-strip"
@@ -158,7 +143,21 @@ const PREVIEWS: Record<string, { src: string; alt: string; className?: string }>
       </div>
     </section>
 
-    <h2><a href="/blog/" style="color: inherit;">latest posts</a></h2>
+    <section aria-labelledby="experiments-heading">
+      <h2 id="experiments-heading">Now experimenting</h2>
+      <p>
+        Deterministic guardrails around non-deterministic agents: pre-commits and checks stay fixed
+        while agents write the code; skills only where a flow needs one. Testing whether TCR
+        (test &amp;&amp; commit || revert) makes agents more reliable — RFC plus early POC, measuring
+        token cost and failure modes.
+      </p>
+      <p>
+        <a href="https://github.com/rcasia/agentic-tcr-poc" target="_blank" rel="noopener">agentic-tcr-poc</a>
+        <span style="color: var(--muted)">(early)</span>
+      </p>
+    </section>
+
+    <h2><a href="/blog/" style="color: inherit;">latest note</a></h2>
     {
       latest.length === 0 ? (
         <p style="color: var(--muted)">No posts yet.</p>
