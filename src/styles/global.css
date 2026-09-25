@@ -470,6 +470,13 @@ footer nav {
   margin-bottom: 0.75rem;
 }
 
+.build-meta {
+  margin-top: 0.35rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  opacity: 0.75;
+}
+
 /* Prose */
 .prose {
   max-width: 68ch;

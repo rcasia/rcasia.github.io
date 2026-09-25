@@ -1,6 +1,7 @@
 ---
 import '../styles/global.css';
 import { SITE } from '../site';
+import { DEPLOYMENT } from '../lib/deployment';
 
 interface Props {
   title?: string;
@@ -22,6 +23,8 @@ const featureFlags = [{ key: 'projectsV2', label: 'Projects V2' }];
     <title>{pageTitle}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
+    <meta name="deployment-version" content={DEPLOYMENT.version} />
+    <meta name="deployment-commit" content={DEPLOYMENT.commit ?? ''} />
 
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content={SITE.name} />
@@ -43,6 +46,10 @@ const featureFlags = [{ key: 'projectsV2', label: 'Projects V2' }];
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap"
       rel="stylesheet"
     />
+
+    <script define:vars={{ deployment: DEPLOYMENT }}>
+      window.__SITE_DEPLOYMENT__ = deployment;
+    </script>
 
     {
       SITE.gaId && (
@@ -202,6 +209,7 @@ const featureFlags = [{ key: 'projectsV2', label: 'Projects V2' }];
         <a href={SITE.github} target="_blank" rel="noopener">GitHub</a>
       </nav>
       <div>© Copyright {new Date().getFullYear()} Ricardo Casía Moka.</div>
+      <div class="build-meta">build {DEPLOYMENT.version.replace('-', ' · ')}</div>
     </footer>
 
     <script is:inline>
