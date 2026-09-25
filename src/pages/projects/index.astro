@@ -23,9 +23,6 @@ const projects = await getProjects();
 
   <h1 style="margin-top: 2.5rem;">projects</h1>
   <hr style="border: none; border-top: 1px solid var(--border); margin: 1.5rem 0;" />
-  <div style="display: flex; justify-content: flex-end; margin: 1rem 0;">
-    <button class="btn" id="open-feature-flags" type="button">Feature flags</button>
-  </div>
   <div id="projects-current">
     <ProjectsCards projects={projects} />
   </div>
@@ -43,10 +40,5 @@ const projects = await getProjects();
       experimental.remove();
       root.removeAttribute('data-projects-v2');
     }
-  </script>
-  <script is:inline>
-    document.getElementById('open-feature-flags')?.addEventListener('click', () => {
-      document.dispatchEvent(new Event('feature-flag-panel:open'));
-    });
   </script>
 </Base>

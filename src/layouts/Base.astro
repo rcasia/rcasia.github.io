@@ -270,8 +270,6 @@ const featureFlags = [{ key: 'projectsV2', label: 'Projects V2' }];
         }
       });
 
-      document.addEventListener('feature-flag-panel:open', openFeatureFlagPanel);
-
       featureFlagPanel?.addEventListener('close', () => {
         if (featureFlagPanelReturnFocus instanceof HTMLElement) featureFlagPanelReturnFocus.focus();
         featureFlagPanelReturnFocus = null;
