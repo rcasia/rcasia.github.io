@@ -79,6 +79,7 @@ After each `push` to `main`:
 6. Fix issues that are the agent's responsibility.
 7. Repeat local validation, make an additional atomic commit if applicable, and check the pipeline again.
 8. Do not consider the task done while the corresponding pipeline is still failing, unless the failure is clearly unrelated to the change and documented.
+9. The task is done only when the pipeline for the pushed commit is green on `origin/main`. A green run on any other branch, or local checks alone, does not satisfy this requirement.
 
 The absence of local errors does not equal completed CI/CD validation. If the pipeline observer is unavailable, fails, or does not allow determining the pipeline status, state this explicitly and do not claim that CI/CD validation is complete.
 
@@ -89,6 +90,6 @@ A change is only done when:
 - it meets the scope and acceptance criteria;
 - the affected paths have been verified locally;
 - there is an atomic commit if the authorized work includes commit;
-- the change sent to `main` has an identified and correctly processed pipeline;
+- the pipeline for the pushed commit is green on `origin/main`;
 - any external failure, limitation, or pending validation is documented;
 - there are no unexplained accidental changes or artifacts left in the working tree.
