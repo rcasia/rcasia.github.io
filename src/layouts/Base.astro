@@ -254,7 +254,7 @@ const featureFlags = [{ key: 'projectsV2', label: 'Projects V2' }];
       };
 
       document.addEventListener('keydown', (event) => {
-        if (event.altKey && event.shiftKey && !event.ctrlKey && !event.metaKey && event.key.toLowerCase() === 'p') {
+        if (event.altKey && event.shiftKey && !event.ctrlKey && !event.metaKey && event.code === 'KeyP') {
           event.preventDefault();
           openFeatureFlagPanel();
         }
