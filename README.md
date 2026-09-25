@@ -39,3 +39,7 @@ Output in `dist/`. Deployed to GitHub Pages via `.github/workflows/deploy.yml` o
 - Fixed: broken `prof_pic-480.webp` 404, placeholder `blog, blogg, blogging` copy, template `display_tags`, missing OG/sitemap, unlabeled icon buttons, filename-only image alt.
 - Redirect-only Substack post links externally with `↗` + `Cross-posted on Substack` label instead of a dead detail page.
 - URLs preserved: `/`, `/blog/`, `/projects/`, `/projects/:slug/`.
+
+## Visual variants
+
+Global style and Projects layout experiments are available through the developer-only feature panel. See [`docs/visual-variants.md`](docs/visual-variants.md) for activation instructions, the style matrix, and the shared component boundaries.

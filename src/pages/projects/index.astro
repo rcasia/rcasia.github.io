@@ -8,37 +8,32 @@ const projects = await getProjects();
 ---
 
 <Base current="projects" title="projects" description="Open-source Neovim tooling by Ricardo Casía Moka.">
-  <script is:inline>
-    try {
-      if (localStorage.getItem('projectsV2') === 'true') {
-        document.documentElement.setAttribute('data-projects-v2', '');
-      }
-    } catch {}
-  </script>
   <style>
-    html[data-projects-v2] #projects-current {
-      display: none;
+    html[data-projects-layout='v2']:not([data-projects-ready]) #projects-current {
+      visibility: hidden;
     }
   </style>
 
-  <h1 style="margin-top: 2.5rem;">projects</h1>
-  <hr style="border: none; border-top: 1px solid var(--border); margin: 1.5rem 0;" />
-  <div id="projects-current">
-    <ProjectsCards projects={projects} />
+  <div class="projects-page">
+    <h1 class="section-heading">projects</h1>
+    <hr class="page-rule" />
+    <div id="projects-current">
+      <ProjectsCards projects={projects} />
+    </div>
+    <template id="projects-v2">
+      <ProjectsV2 projects={projects} />
+    </template>
   </div>
-  <template id="projects-v2">
-    <ProjectsV2 projects={projects} />
-  </template>
 
   <script is:inline>
     const root = document.documentElement;
     const current = document.getElementById('projects-current');
     const experimental = document.getElementById('projects-v2');
 
-    if (root.hasAttribute('data-projects-v2') && current && experimental instanceof HTMLTemplateElement) {
+    if (root.getAttribute('data-projects-layout') === 'v2' && current && experimental instanceof HTMLTemplateElement) {
       current.replaceChildren(experimental.content.cloneNode(true));
       experimental.remove();
-      root.removeAttribute('data-projects-v2');
+      root.setAttribute('data-projects-ready', '');
     }
   </script>
 </Base>

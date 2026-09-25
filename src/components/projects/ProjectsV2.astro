@@ -7,7 +7,7 @@ interface Props {
 }
 
 const { projects } = Astro.props;
-// Keep the experimental path visually identical until its redesign is introduced.
+// Keep data and markup shared; the layout flag supplies the experimental composition.
 ---
 
 <ProjectsCards projects={projects} />
