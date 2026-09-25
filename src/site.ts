@@ -1,7 +1,7 @@
 export const SITE = {
   name: 'Ricardo Casía Moka',
   title: 'Ricardo Casía Moka',
-  description: 'Senior Software Engineer — Notes on testing, tooling, and systems.',
+  description: 'Senior Software Engineer: notes on testing, tooling, and systems.',
   url: 'https://ricardocasia.com',
   email: 'ricardocasia.dev@gmail.com',
   github: 'https://github.com/rcasia',

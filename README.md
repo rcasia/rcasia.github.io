@@ -1,4 +1,4 @@
-# ricardocasia.com — Astro
+# ricardocasia.com (Astro)
 
 Personal site for Ricardo Casía Moka. Migrated from Jekyll al-folio to Astro.
 

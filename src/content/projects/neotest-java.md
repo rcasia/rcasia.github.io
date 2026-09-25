@@ -1,6 +1,6 @@
 ---
 title: 'neotest-java'
-description: 'Run JUnit 5 tests from Neovim — discovery, execution, and DAP debugging. Compiles through the LSP instead of owning build logic, so Maven and Gradle multi-module projects stay fast and compatible.'
+description: 'Run JUnit 5 tests from Neovim: discovery, execution, and DAP debugging. Compiles through the LSP instead of owning build logic, so Maven and Gradle multi-module projects stay fast and compatible.'
 importance: 1
 category: 'open-source'
 github: 'https://github.com/rcasia/neotest-java'

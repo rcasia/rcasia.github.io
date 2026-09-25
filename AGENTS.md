@@ -18,6 +18,8 @@ These rules are mandatory for any agent working in this repository.
 - If you find anything in Spanish, translate it to English.
 - This applies to UI copy, pages, blog posts, projects, metadata, docs, comments, and commit messages.
 - Preserve proper names and their diacritics (e.g. `Ricardo Casía Moka`); do not "translate" or strip-accents them.
+- Never use the em-dash (`—`) in any content: pages, blog posts, projects, metadata, docs, comments, or commit messages. It reads as AI-generated filler. Restructure the sentence with a period, a colon, or a plain comma instead.
+- The hyphen (`-`) is for compound words and the en-dash (`–`) for ranges only; neither is a substitute for the em-dash in prose.
 
 ## Before implementing
 

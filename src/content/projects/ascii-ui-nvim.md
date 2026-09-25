@@ -1,6 +1,6 @@
 ---
 title: 'ascii-ui.nvim'
-description: 'Neovim plugin UIs as components, not buffer juggling — state, diffing, and input via a fiber reconciler. Hooks, layout primitives, live reload, zero dependencies.'
+description: 'Neovim plugin UIs as components, not buffer juggling: state, diffing, and input via a fiber reconciler. Hooks, layout primitives, live reload, zero dependencies.'
 importance: 3
 category: 'open-source'
 github: 'https://github.com/ascii-ui/ascii-ui.nvim'
