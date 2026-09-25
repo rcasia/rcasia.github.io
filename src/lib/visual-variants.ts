@@ -28,13 +28,23 @@ export const SITE_STYLES = [
 
 export const PROJECTS_LAYOUTS = [
   {
-    value: 'current',
-    label: 'Current cards',
-    description: 'The existing featured card followed by a three-column grid.',
+    value: 'carousel',
+    label: 'Carousel (current)',
+    description: 'The existing Projects presentation.',
   },
   {
-    value: 'v2',
-    label: 'Featured grid',
-    description: 'A larger lead project with a tighter supporting grid.',
+    value: 'expanded',
+    label: 'Expanded horizontal',
+    description: 'A wide multi-column gallery that uses more of the viewport.',
+  },
+  {
+    value: 'editorial',
+    label: 'Editorial asymmetric',
+    description: 'An offset collection with varied widths and visual rhythm.',
+  },
+  {
+    value: 'showcase',
+    label: 'Full-width showcase',
+    description: 'A fast-scanning sequence of large project bands.',
   },
 ] as const;

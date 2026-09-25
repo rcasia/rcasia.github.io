@@ -376,6 +376,233 @@ a.card:hover::before {
   font-size: 0.85rem;
 }
 
+/* Projects layout experiments. One data set is rearranged through the layout flag. */
+html.projects-layout-page body {
+  overflow-x: clip;
+}
+
+html.projects-layout-page {
+  overflow-x: clip;
+}
+
+.projects-gallery > .project-card--featured {
+  grid-column: 1 / -1;
+  border-color: var(--accent);
+}
+
+.project-card-index {
+  display: none;
+  font-family: var(--font-mono);
+  color: var(--accent-dim);
+  letter-spacing: 0.14em;
+  font-size: 0.75rem;
+}
+
+html[data-projects-layout='expanded'] .projects-gallery {
+  position: relative;
+  left: 50%;
+  width: min(1180px, calc(100vw - 2rem));
+  max-width: none;
+  transform: translateX(-50%);
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 230px), 1fr));
+  gap: clamp(0.9rem, 2vw, 1.5rem);
+}
+
+html[data-projects-layout='expanded'] .projects-gallery > .card {
+  min-height: 300px;
+  border-radius: 4px;
+  padding: clamp(1.2rem, 2.5vw, 2rem);
+}
+
+html[data-projects-layout='expanded'] .projects-gallery > .project-card--featured {
+  grid-column: auto;
+  border-color: var(--border);
+}
+
+html[data-projects-layout='expanded'] .project-card-index,
+html[data-projects-layout='editorial'] .project-card-index,
+html[data-projects-layout='showcase'] .project-card-index {
+  display: block;
+}
+
+html[data-projects-layout='expanded'] .project-card-index {
+  font-size: clamp(1.8rem, 5vw, 3rem);
+  line-height: 1;
+  color: var(--accent);
+}
+
+html[data-projects-layout='expanded'] .projects-gallery > .card:nth-child(3n + 2) {
+  transform: translateY(1.5rem);
+}
+
+html[data-projects-layout='expanded'] .projects-gallery > .card:nth-child(3n) {
+  transform: translateY(-0.75rem);
+}
+
+html[data-projects-layout='editorial'] .projects-gallery {
+  position: relative;
+  left: 50%;
+  width: min(1060px, calc(100vw - 2rem));
+  max-width: none;
+  transform: translateX(-50%);
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: clamp(0.75rem, 2vw, 1.5rem);
+  row-gap: 2rem;
+  align-items: start;
+}
+
+html[data-projects-layout='editorial'] .projects-gallery > .card {
+  min-height: 240px;
+  border-radius: 2px;
+  box-shadow: 0 1.5rem 3rem rgb(0 0 0 / 14%);
+}
+
+html[data-projects-layout='editorial'] .projects-gallery > .project-card--featured {
+  grid-column: 1 / span 9;
+  grid-row: 1;
+  border-color: var(--accent);
+}
+
+html[data-projects-layout='editorial'] .projects-gallery > .card:nth-child(2) {
+  grid-column: 4 / span 5;
+  grid-row: 2;
+  margin-top: -2rem;
+}
+
+html[data-projects-layout='editorial'] .projects-gallery > .card:nth-child(3) {
+  grid-column: 7 / -1;
+  grid-row: 3;
+  margin-top: -4rem;
+}
+
+html[data-projects-layout='editorial'] .projects-gallery > .card:nth-child(4) {
+  grid-column: 1 / span 6;
+  grid-row: auto;
+  margin-top: 0;
+}
+
+html[data-projects-layout='editorial'] .projects-gallery > .card:nth-child(n + 5) {
+  grid-column: span 4;
+  grid-row: auto;
+  margin-top: 0;
+}
+
+html[data-projects-layout='editorial'] .project-card-index {
+  display: block;
+  font-size: 1rem;
+}
+
+html[data-projects-layout='editorial'] .projects-gallery > .card:nth-child(2) .project-card-index {
+  color: var(--text);
+}
+
+html[data-projects-layout='showcase'] .projects-gallery {
+  position: relative;
+  left: 50%;
+  width: min(1120px, calc(100vw - 2rem));
+  max-width: none;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(0.75rem, 2vw, 1.5rem);
+}
+
+html[data-projects-layout='showcase'] .projects-gallery > .card {
+  display: grid;
+  grid-template-columns: minmax(3rem, 0.2fr) minmax(0, 1fr) minmax(9rem, 0.3fr);
+  grid-template-areas:
+    'index title stars'
+    'index description meta';
+  column-gap: clamp(1rem, 4vw, 3.5rem);
+  row-gap: 1rem;
+  min-height: 180px;
+  padding: clamp(1.15rem, 3vw, 2.25rem);
+  border-radius: 2px;
+}
+
+html[data-projects-layout='showcase'] .projects-gallery > .card:nth-child(even) {
+  align-self: flex-end;
+  width: 92%;
+}
+
+html[data-projects-layout='showcase'] .project-card-index {
+  grid-area: index;
+  font-size: clamp(1.4rem, 3vw, 2.25rem);
+  line-height: 1;
+}
+
+html[data-projects-layout='showcase'] .project-card-title {
+  grid-area: title;
+  font-size: clamp(1.35rem, 3vw, 2.3rem) !important;
+  line-height: 1.1;
+}
+
+html[data-projects-layout='showcase'] .project-card-stars {
+  grid-area: stars;
+  justify-self: end;
+}
+
+html[data-projects-layout='showcase'] .project-card-description {
+  grid-area: description;
+  max-width: 52ch;
+}
+
+html[data-projects-layout='showcase'] .project-card-meta {
+  grid-area: meta;
+  align-self: end;
+  margin-top: 0;
+}
+
+@media (max-width: 720px) {
+  html[data-projects-layout='expanded'] .projects-gallery,
+  html[data-projects-layout='editorial'] .projects-gallery,
+  html[data-projects-layout='showcase'] .projects-gallery {
+    left: auto;
+    width: 100%;
+    transform: none;
+  }
+
+  html[data-projects-layout='expanded'] .projects-gallery,
+  html[data-projects-layout='editorial'] .projects-gallery {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+
+  html[data-projects-layout='expanded'] .projects-gallery > .card,
+  html[data-projects-layout='editorial'] .projects-gallery > .card,
+  html[data-projects-layout='showcase'] .projects-gallery > .card,
+  html[data-projects-layout='showcase'] .projects-gallery > .card:nth-child(even) {
+    grid-column: 1 / -1 !important;
+    grid-row: auto !important;
+    width: 100% !important;
+    min-height: 0;
+    margin: 0 !important;
+    transform: none !important;
+  }
+
+  html[data-projects-layout='expanded'] .projects-gallery > .card {
+    min-height: 230px;
+  }
+
+  html[data-projects-layout='editorial'] .projects-gallery > .card {
+    min-height: 220px;
+  }
+
+  html[data-projects-layout='showcase'] .projects-gallery > .card {
+    grid-template-columns: 1fr auto;
+    grid-template-areas:
+      'index stars'
+      'title title'
+      'description description'
+      'meta meta';
+    gap: 0.75rem;
+  }
+
+  html[data-projects-layout='showcase'] .project-card-meta {
+    align-self: auto;
+  }
+}
+
 /* Post list */
 .page-title {
   font-size: clamp(2.2rem, 6vw, 3.5rem);

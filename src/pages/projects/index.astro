@@ -1,39 +1,15 @@
 ---
 import Base from '../../layouts/Base.astro';
 import ProjectsCards from '../../components/projects/ProjectsCards.astro';
-import ProjectsV2 from '../../components/projects/ProjectsV2.astro';
 import { getProjects } from '../../lib/projects';
 
 const projects = await getProjects();
 ---
 
 <Base current="projects" title="projects" description="Open-source Neovim tooling by Ricardo Casía Moka.">
-  <style>
-    html[data-projects-layout='v2']:not([data-projects-ready]) #projects-current {
-      visibility: hidden;
-    }
-  </style>
-
   <div class="projects-page">
     <h1 class="section-heading">projects</h1>
     <hr class="page-rule" />
-    <div id="projects-current">
-      <ProjectsCards projects={projects} />
-    </div>
-    <template id="projects-v2">
-      <ProjectsV2 projects={projects} />
-    </template>
+    <ProjectsCards projects={projects} />
   </div>
-
-  <script is:inline>
-    const root = document.documentElement;
-    const current = document.getElementById('projects-current');
-    const experimental = document.getElementById('projects-v2');
-
-    if (root.getAttribute('data-projects-layout') === 'v2' && current && experimental instanceof HTMLTemplateElement) {
-      current.replaceChildren(experimental.content.cloneNode(true));
-      experimental.remove();
-      root.setAttribute('data-projects-ready', '');
-    }
-  </script>
 </Base>
