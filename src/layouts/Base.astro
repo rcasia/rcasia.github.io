@@ -2,7 +2,7 @@
 import '../styles/global.css';
 import { SITE } from '../site';
 import { DEPLOYMENT } from '../lib/deployment';
-import { PROJECTS_LAYOUTS, SITE_STYLES } from '../lib/visual-variants';
+import { DEFAULT_PROJECTS_LAYOUT, DEFAULT_SITE_STYLE, PROJECTS_LAYOUTS, SITE_STYLES } from '../lib/visual-variants';
 
 interface Props {
   title?: string;
@@ -21,8 +21,8 @@ const projectsLayoutValues = PROJECTS_LAYOUTS.map(({ value }) => value);
 <html
   lang="en"
   data-theme="dark"
-  data-site-style="current"
-  data-projects-layout="carousel"
+  data-site-style={DEFAULT_SITE_STYLE}
+  data-projects-layout={DEFAULT_PROJECTS_LAYOUT}
   class:list={current === 'projects' ? 'projects-layout-page' : undefined}
 >
   <head>
@@ -59,13 +59,13 @@ const projectsLayoutValues = PROJECTS_LAYOUTS.map(({ value }) => value);
       window.__SITE_DEPLOYMENT__ = deployment;
     </script>
 
-    <script is:inline define:vars={{ siteStyleValues, projectsLayoutValues }}>
+    <script is:inline define:vars={{ siteStyleValues, projectsLayoutValues, defaultSiteStyle: DEFAULT_SITE_STYLE, defaultProjectsLayout: DEFAULT_PROJECTS_LAYOUT }}>
       try {
         const root = document.documentElement;
         const storedStyle = localStorage.getItem('siteStyle');
-        const siteStyle = siteStyleValues.includes(storedStyle) ? storedStyle : 'current';
+        const siteStyle = siteStyleValues.includes(storedStyle) ? storedStyle : defaultSiteStyle;
         const storedLayout = localStorage.getItem('projectsLayout');
-        const legacyLayout = localStorage.getItem('projectsV2') === 'true' ? 'expanded' : 'carousel';
+        const legacyLayout = localStorage.getItem('projectsV2') === 'true' ? 'expanded' : defaultProjectsLayout;
         const projectsLayout = projectsLayoutValues.includes(storedLayout) ? storedLayout : legacyLayout;
         root.setAttribute('data-site-style', siteStyle);
         root.setAttribute('data-projects-layout', projectsLayout);
@@ -293,7 +293,7 @@ const projectsLayoutValues = PROJECTS_LAYOUTS.map(({ value }) => value);
       });
     </script>
 
-    <script is:inline>
+    <script is:inline define:vars={{ defaultSiteStyle: DEFAULT_SITE_STYLE, defaultProjectsLayout: DEFAULT_PROJECTS_LAYOUT }}>
       const featureFlagPanel = document.getElementById('feature-flag-panel');
       const featureFlagInputs = Array.from(document.querySelectorAll('select[data-feature-flag]'));
       const featureFlagApply = document.getElementById('feature-flag-apply');
@@ -313,12 +313,13 @@ const projectsLayoutValues = PROJECTS_LAYOUTS.map(({ value }) => value);
         featureFlagInputs.forEach((input) => {
           const key = input.dataset.featureFlag;
           if (!key) return;
+          const fallback = key === 'siteStyle' ? defaultSiteStyle : key === 'projectsLayout' ? defaultProjectsLayout : '';
           const storedValue = readFeatureFlag(key);
           const stored = key === 'projectsLayout' && !storedValue
-            ? (isFeatureFlagEnabled('projectsV2') ? 'expanded' : 'carousel')
+            ? (isFeatureFlagEnabled('projectsV2') ? 'expanded' : defaultProjectsLayout)
             : storedValue;
           const optionValues = Array.from(input.options).map((option) => option.value);
-          input.value = stored && optionValues.includes(stored) ? stored : optionValues[0] ?? '';
+          input.value = stored && optionValues.includes(stored) ? stored : fallback;
         });
       };
 

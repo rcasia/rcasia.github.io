@@ -5,7 +5,7 @@ The site has two independent visual experiments:
 - `siteStyle` changes the global visual language across home, blog, projects, blog posts, and the 404 page.
 - `projectsLayout` changes only the composition of the Projects card grid.
 
-Both use the same content collections, project data, navigation, page shell, and components. The default is always `current`.
+Both use the same content collections, project data, navigation, page shell, and components. The defaults are `technical` for `siteStyle` and `showcase` for `projectsLayout`.
 
 ## Activation
 
@@ -15,7 +15,7 @@ Both use the same content collections, project data, navigation, page shell, and
 4. Select a global site style and a Projects layout.
 5. Select **Apply and reload**.
 
-The selected values persist in `localStorage` under `siteStyle` and `projectsLayout`. Clearing those keys restores the current fallback:
+The selected values persist in `localStorage` under `siteStyle` and `projectsLayout`. Clearing those keys restores the technical and showcase fallback:
 
 ```js
 localStorage.removeItem('siteStyle');

@@ -26,6 +26,9 @@ export const SITE_STYLES = [
   },
 ] as const;
 
+export const DEFAULT_SITE_STYLE = 'technical';
+export const DEFAULT_PROJECTS_LAYOUT = 'showcase';
+
 export const PROJECTS_LAYOUTS = [
   {
     value: 'carousel',
