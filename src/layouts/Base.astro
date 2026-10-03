@@ -63,6 +63,18 @@ const projectsLayoutValues = PROJECTS_LAYOUTS.map(({ value }) => value);
       try {
         const root = document.documentElement;
         try {
+          const deployedVersion = window.__SITE_DEPLOYMENT__ && window.__SITE_DEPLOYMENT__.version;
+          if (deployedVersion && sessionStorage.getItem('siteDeploymentVersion') !== deployedVersion) {
+            sessionStorage.removeItem('siteStyle');
+            sessionStorage.removeItem('projectsLayout');
+            sessionStorage.removeItem('projectsV2');
+            sessionStorage.removeItem('bioRefresh');
+            sessionStorage.removeItem('blogApplause');
+            sessionStorage.removeItem('readingProgress');
+            sessionStorage.setItem('siteDeploymentVersion', deployedVersion);
+          }
+        } catch {}
+        try {
           localStorage.removeItem('siteStyle');
           localStorage.removeItem('projectsLayout');
           localStorage.removeItem('projectsV2');

@@ -15,7 +15,7 @@ Both use the same content collections, project data, navigation, page shell, and
 4. Select a global site style and a Projects layout.
 5. Select **Apply and reload**.
 
-The selected values live in `sessionStorage` under `siteStyle` and `projectsLayout`. Reloading the tab keeps them, while closing the tab resets to the technical and showcase fallback. Use **Reset to defaults** in the panel, or clear the session keys manually:
+The selected values live in `sessionStorage` under `siteStyle` and `projectsLayout`. Reloading the tab keeps them, while closing the tab resets to the technical and showcase fallback. A new deployment also resets every flag automatically: the site stores the deployment version in `sessionStorage` under `siteDeploymentVersion` and clears all flag keys when it changes. Use **Reset to defaults** in the panel, or clear the session keys manually:
 
 ```js
 sessionStorage.removeItem('siteStyle');
