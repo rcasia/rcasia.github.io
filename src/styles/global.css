@@ -716,12 +716,16 @@ footer nav {
   height: 3px;
   background: color-mix(in srgb, var(--border) 70%, transparent);
   pointer-events: none;
+  display: none;
 }
 
-/* Blog reading progress experiment. Hidden unless the flag is on, so visitors see no change by default. */
-html:not([data-reading-progress='on']) .reading-progress,
-html:not([data-reading-progress='on']) [data-reading-progress] {
-  display: none;
+/* Blog reading progress experiment. Positive matching only, so the bar stays
+   hidden before the flag script runs and visitors see no change by default. */
+html[data-reading-progress='top'] .reading-progress,
+html[data-reading-progress='percent'] .reading-progress,
+html[data-reading-progress='vbar'] .reading-progress,
+html[data-reading-progress='ring'] .reading-progress {
+  display: block;
 }
 
 .reading-progress-bar {
@@ -1230,6 +1234,67 @@ html:not([data-blog-applause='on']) [data-blog-applause] {
   opacity: 1;
   visibility: visible;
   pointer-events: auto;
+}
+
+/* Blog reading progress rail variants. Hidden unless their mode is on.
+   The rail itself only appears with the applause flag on wide screens. */
+.rail-progress-percent,
+.rail-progress-vbar,
+.rail-progress-ring {
+  display: none;
+}
+
+html[data-reading-progress='percent'] [data-rail-progress-percent] {
+  display: block;
+}
+
+html[data-reading-progress='vbar'] [data-rail-progress-vbar] {
+  display: block;
+}
+
+html[data-reading-progress='ring'] [data-rail-progress-ring] {
+  display: block;
+}
+
+.rail-progress-percent {
+  margin: 0;
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+}
+
+.rail-progress-vbar {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -0.65rem;
+  width: 3px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--border) 70%, transparent);
+  pointer-events: none;
+}
+
+.rail-progress-vbar > span {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 999px;
+  background: var(--accent);
+  transform: scaleY(0);
+  transform-origin: bottom center;
+}
+
+.rail-ring-wrap {
+  position: relative;
+  display: inline-flex;
+}
+
+.rail-progress-ring {
+  position: absolute;
+  inset: -7px;
+  width: calc(100% + 14px);
+  height: calc(100% + 14px);
+  pointer-events: none;
 }
 
 .blog-applause {

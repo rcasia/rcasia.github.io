@@ -96,8 +96,11 @@ const projectsLayoutValues = PROJECTS_LAYOUTS.map(({ value }) => value);
         const blogApplause = sessionStorage.getItem('blogApplause');
         root.setAttribute('data-blog-applause', blogApplause === 'on' ? 'on' : 'off');
         // Blog reading progress experiment. Disabled by default, no visible UI for visitors.
-        const readingProgress = sessionStorage.getItem('readingProgress');
-        root.setAttribute('data-reading-progress', readingProgress === 'on' ? 'on' : 'off');
+        // Modes: off, top, percent, vbar, ring. Unknown values fall back to off.
+        const readingProgressOptions = ['top', 'percent', 'vbar', 'ring'];
+        const storedReadingProgress = sessionStorage.getItem('readingProgress');
+        const readingProgress = readingProgressOptions.includes(storedReadingProgress) ? storedReadingProgress : 'off';
+        root.setAttribute('data-reading-progress', readingProgress);
       } catch {}
     </script>
 
@@ -470,9 +473,12 @@ const projectsLayoutValues = PROJECTS_LAYOUTS.map(({ value }) => value);
                 <label for="feature-flag-readingProgress">Blog reading progress</label>
                 <select id="feature-flag-readingProgress" data-feature-flag="readingProgress" aria-describedby="feature-flag-readingProgress-description">
                   <option value="off">Off</option>
-                  <option value="on">On</option>
+                  <option value="top">Top bar</option>
+                  <option value="percent">Percent in left rail</option>
+                  <option value="vbar">Vertical bar in left rail</option>
+                  <option value="ring">Ring around applause button</option>
                 </select>
-                <p id="feature-flag-readingProgress-description">Blog. Top progress bar on posts. Default: Off.</p>
+                <p id="feature-flag-readingProgress-description">Blog. Top bar, or a readout beside the left applause icon. Rail readouts need Blog applause set to On and a wide screen. Default: Off.</p>
                 <button type="button" class="feature-flag-mini" data-reset-flag="readingProgress">Reset to default</button>
               </div>
             </div>

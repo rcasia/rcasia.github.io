@@ -88,8 +88,16 @@ const slug = post.id.replace(/\.md$/, '');
   </article>
 
   <aside class="applause-rail" data-blog-applause data-applause-rail role="group" aria-label="Applaud this post">
-    <BlogApplauseButton variant="rail" />
+    <span class="rail-ring-wrap" data-rail-ring-wrap>
+      <BlogApplauseButton variant="rail" />
+      <svg class="rail-progress-ring" data-rail-progress-ring viewBox="0 0 62 62" aria-hidden="true" focusable="false">
+        <circle cx="31" cy="31" r="27" fill="none" stroke="var(--border)" stroke-width="3" />
+        <circle data-rail-progress-ring-fill cx="31" cy="31" r="27" fill="none" stroke="var(--accent)" stroke-width="3" stroke-linecap="round" transform="rotate(-90 31 31)" />
+      </svg>
+    </span>
     <p class="applause-count"><span data-applause-count>0</span></p>
+    <p class="rail-progress-percent" data-rail-progress-percent aria-hidden="true">0%</p>
+    <span class="rail-progress-vbar" data-rail-progress-vbar aria-hidden="true"><span data-rail-progress-vbar-fill></span></span>
   </aside>
 
   <section class="blog-applause" data-blog-applause data-applause-footer aria-labelledby="blog-applause-title">
@@ -274,6 +282,10 @@ const slug = post.id.replace(/\.md$/, '');
     const article = document.querySelector('.blog-post');
     const progress = document.querySelector('.reading-progress[data-reading-progress]');
     const progressBar = document.querySelector('[data-reading-progress-bar]');
+    const railPercent = document.querySelector('[data-rail-progress-percent]');
+    const railVbarFill = document.querySelector('[data-rail-progress-vbar-fill]');
+    const railRingFill = document.querySelector('[data-rail-progress-ring-fill]');
+    const RAIL_RING_CIRCUMFERENCE = 2 * Math.PI * 27;
     const toc = document.querySelector('[data-blog-toc]');
     const tocLinks = toc ? Array.from(toc.querySelectorAll('[data-toc-link]')) : [];
     const contentHeadings = tocLinks
@@ -281,9 +293,11 @@ const slug = post.id.replace(/\.md$/, '');
       .filter(Boolean);
 
     const isReadingProgressEnabled = () => {
-      if (document.documentElement.getAttribute('data-reading-progress') === 'on') return true;
+      const mode = document.documentElement.getAttribute('data-reading-progress');
+      if (mode && mode !== 'off') return true;
       try {
-        return sessionStorage.getItem('readingProgress') === 'on';
+        const stored = sessionStorage.getItem('readingProgress');
+        return stored !== null && stored !== 'off' && stored !== '';
       } catch {
         return false;
       }
@@ -302,6 +316,12 @@ const slug = post.id.replace(/\.md$/, '');
       progressBar.style.transform = `scaleX(${percent / 100})`;
       progress.setAttribute('aria-valuenow', String(rounded));
       progress.setAttribute('aria-valuetext', `${rounded}% read`);
+      if (railPercent) railPercent.textContent = `${rounded}%`;
+      if (railVbarFill) railVbarFill.style.transform = `scaleY(${percent / 100})`;
+      if (railRingFill) {
+        railRingFill.style.strokeDasharray = String(RAIL_RING_CIRCUMFERENCE);
+        railRingFill.style.strokeDashoffset = String(RAIL_RING_CIRCUMFERENCE * (1 - percent / 100));
+      }
     };
 
     const updateActive = () => {

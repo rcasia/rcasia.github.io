@@ -48,10 +48,12 @@ The blog has a separate applause experiment:
 
 The blog has a separate reading experiment:
 
-- `readingProgress` shows a thin top progress bar on blog post pages (`off` by default, `on` to show).
-- It lives in the same developer panel, stores `off` or `on` in `sessionStorage` for the current tab, and sets `data-reading-progress` on the document.
-- The bar is hidden by CSS and skipped by script unless the flag is `on`, so visitors see no change by default. The table of contents highlighting stays always on.
-- To promote it, keep the progress markup, styles, and script and remove the flag hooks. To drop it, remove the progress block, its styles, and its script.
+- `readingProgress` shows reading progress on blog post pages (`off` by default; `top`, `percent`, `vbar`, or `ring` to show).
+- It lives in the same developer panel, stores the mode in `sessionStorage` for the current tab, and sets `data-reading-progress` on the document.
+- `top` shows the thin top progress bar. `percent`, `vbar`, and `ring` add a readout beside the left applause icon: a percent label, a vertical fill bar, or a ring around the button. The top bar stays visible in every mode until a winner is picked.
+- Rail readouts live in the applause rail, so they need `blogApplause` set to `on` and a wide screen. Rail visuals are decorative; the top bar keeps the accessible progress role.
+- Everything is hidden by CSS and skipped by script unless a mode is set, so visitors see no change by default. The table of contents highlighting stays always on.
+- To promote a mode, keep its markup, styles, and script and remove the flag hooks. To drop the experiment, remove the progress blocks, their styles, and their script.
 
 ## Global Styles
 
