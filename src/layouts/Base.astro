@@ -152,10 +152,10 @@ const projectsLayoutValues = PROJECTS_LAYOUTS.map(({ value }) => value);
 
       .feature-flag-panel {
         display: grid;
-        gap: 1rem;
-        padding: 1.25rem;
-        max-height: min(80vh, 640px);
-        overflow: auto;
+        gap: 0.7rem;
+        padding: 1rem;
+        max-height: min(86vh, 720px);
+        overflow: hidden;
       }
 
       .feature-flag-panel h2,
@@ -188,19 +188,64 @@ const projectsLayoutValues = PROJECTS_LAYOUTS.map(({ value }) => value);
         gap: 0.6rem;
       }
 
-      .feature-flag-group {
+      .feature-flag-accordion {
         display: grid;
-        gap: 0.75rem;
-        margin: 0;
-        padding: 0.75rem;
-        border: 1px solid var(--border);
-        border-radius: 10px;
+        gap: 0.4rem;
       }
 
-      .feature-flag-group legend {
-        padding: 0 0.4rem;
-        font-size: 0.85rem;
+      .feature-flag-item {
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        overflow: hidden;
+      }
+
+      .feature-flag-trigger {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.6rem;
+        padding: 0.5rem 0.65rem;
         font-weight: 600;
+      }
+
+      .feature-flag-trigger-meta {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        min-width: 0;
+      }
+
+      .feature-flag-trigger-name {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .feature-flag-trigger-side {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        flex: none;
+      }
+
+      .feature-flag-chevron {
+        color: var(--muted);
+        font-size: 0.85rem;
+      }
+
+      .feature-flag-trigger[aria-expanded='true'] .feature-flag-chevron {
+        color: var(--accent);
+      }
+
+      .feature-flag-detail {
+        display: grid;
+        gap: 0.4rem;
+        padding: 0 0.65rem 0.65rem;
+      }
+
+      .feature-flag-detail[hidden] {
+        display: none;
       }
 
       .feature-flag-field {
@@ -210,13 +255,6 @@ const projectsLayoutValues = PROJECTS_LAYOUTS.map(({ value }) => value);
 
       .feature-flag-field label {
         font-weight: 600;
-      }
-
-      .feature-flag-row {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 0.6rem;
       }
 
       .feature-flag-badge {
@@ -259,10 +297,6 @@ const projectsLayoutValues = PROJECTS_LAYOUTS.map(({ value }) => value);
       .feature-flag-mini {
         justify-self: start;
         font-size: 0.8rem;
-      }
-
-      .feature-flag-hint {
-        font-size: 0.85rem;
       }
 
       .feature-flag-panel-actions {
@@ -332,81 +366,123 @@ const projectsLayoutValues = PROJECTS_LAYOUTS.map(({ value }) => value);
           <p id="feature-flag-status" class="feature-flag-summary" role="status" aria-live="polite">All defaults</p>
         </div>
         <p id="feature-flag-panel-description">
-          Developer-only controls for this tab only. Flags use session storage, so reloading keeps them but closing the tab resets to defaults. Changing a value previews it right away. Use Apply and reload for a full refresh. Press Ctrl+Alt+Shift+F, or Control+Command+Shift+F on macOS, on any page to reopen this panel.
+          Developer-only controls for this tab. Select a feature to tweak it. Changes preview instantly. Shortcut: Ctrl+Alt+Shift+F (macOS: Control+Command+Shift+F).
         </p>
-        <fieldset class="feature-flag-group">
-          <legend>Global appearance</legend>
-          <div class="feature-flag-field">
-            <div class="feature-flag-row">
-              <label for="feature-flag-siteStyle">Global site style</label>
-              <span class="feature-flag-badge" data-badge-for="siteStyle" data-state="default">Default</span>
+        <div class="feature-flag-accordion">
+          <div class="feature-flag-item">
+            <button type="button" class="feature-flag-trigger" id="feature-flag-trigger-siteStyle" data-accordion-for="siteStyle" aria-expanded="true" aria-controls="feature-flag-detail-siteStyle">
+              <span class="feature-flag-trigger-meta">
+                <span class="feature-flag-trigger-name">Global site style</span>
+              </span>
+              <span class="feature-flag-trigger-side">
+                <span class="feature-flag-badge" data-badge-for="siteStyle" data-state="default">Default</span>
+                <span class="feature-flag-chevron" aria-hidden="true">▾</span>
+              </span>
+            </button>
+            <div class="feature-flag-detail" id="feature-flag-detail-siteStyle" data-accordion-panel="siteStyle" role="region" aria-labelledby="feature-flag-trigger-siteStyle">
+              <div class="feature-flag-field">
+                <label for="feature-flag-siteStyle">Global site style</label>
+                <select id="feature-flag-siteStyle" data-feature-flag="siteStyle" aria-describedby="feature-flag-siteStyle-description">
+                  {SITE_STYLES.map((style) => <option value={style.value}>{style.label}</option>)}
+                </select>
+                <p id="feature-flag-siteStyle-description">Global appearance. Shared visual language. Default: Technical.</p>
+                <button type="button" class="feature-flag-mini" data-reset-flag="siteStyle">Reset to default</button>
+              </div>
             </div>
-            <select id="feature-flag-siteStyle" data-feature-flag="siteStyle" aria-describedby="feature-flag-siteStyle-description">
-              {SITE_STYLES.map((style) => <option value={style.value}>{style.label}</option>)}
-            </select>
-            <p id="feature-flag-siteStyle-description">The visual language shared by home, blog, projects, and error pages. Default: Technical. Previews instantly.</p>
-            <button type="button" class="feature-flag-mini" data-reset-flag="siteStyle">Reset to default</button>
           </div>
-          <div class="feature-flag-field">
-            <div class="feature-flag-row">
-              <label for="feature-flag-projectsLayout">Projects layout</label>
-              <span class="feature-flag-badge" data-badge-for="projectsLayout" data-state="default">Default</span>
+          <div class="feature-flag-item">
+            <button type="button" class="feature-flag-trigger" id="feature-flag-trigger-projectsLayout" data-accordion-for="projectsLayout" aria-expanded="false" aria-controls="feature-flag-detail-projectsLayout">
+              <span class="feature-flag-trigger-meta">
+                <span class="feature-flag-trigger-name">Projects layout</span>
+              </span>
+              <span class="feature-flag-trigger-side">
+                <span class="feature-flag-badge" data-badge-for="projectsLayout" data-state="default">Default</span>
+                <span class="feature-flag-chevron" aria-hidden="true">▾</span>
+              </span>
+            </button>
+            <div class="feature-flag-detail" id="feature-flag-detail-projectsLayout" data-accordion-panel="projectsLayout" role="region" aria-labelledby="feature-flag-trigger-projectsLayout" hidden>
+              <div class="feature-flag-field">
+                <label for="feature-flag-projectsLayout">Projects layout</label>
+                <select id="feature-flag-projectsLayout" data-feature-flag="projectsLayout" aria-describedby="feature-flag-projectsLayout-description">
+                  {PROJECTS_LAYOUTS.map((layout) => <option value={layout.value}>{layout.label}</option>)}
+                </select>
+                <p id="feature-flag-projectsLayout-description">Global appearance. Projects-only composition. Default: Showcase.</p>
+                <button type="button" class="feature-flag-mini" data-reset-flag="projectsLayout">Reset to default</button>
+              </div>
             </div>
-            <select id="feature-flag-projectsLayout" data-feature-flag="projectsLayout" aria-describedby="feature-flag-projectsLayout-description">
-              {PROJECTS_LAYOUTS.map((layout) => <option value={layout.value}>{layout.label}</option>)}
-            </select>
-            <p id="feature-flag-projectsLayout-description">A Projects-only composition that can be tested with every site style. Default: Full-width showcase. Previews instantly.</p>
-            <button type="button" class="feature-flag-mini" data-reset-flag="projectsLayout">Reset to default</button>
           </div>
-        </fieldset>
-        <fieldset class="feature-flag-group">
-          <legend>Home content</legend>
-          <div class="feature-flag-field">
-            <div class="feature-flag-row">
-              <label for="feature-flag-bioRefresh">Home bio refresh</label>
-              <span class="feature-flag-badge" data-badge-for="bioRefresh" data-state="default">Default</span>
+          <div class="feature-flag-item">
+            <button type="button" class="feature-flag-trigger" id="feature-flag-trigger-bioRefresh" data-accordion-for="bioRefresh" aria-expanded="false" aria-controls="feature-flag-detail-bioRefresh">
+              <span class="feature-flag-trigger-meta">
+                <span class="feature-flag-trigger-name">Home bio refresh</span>
+              </span>
+              <span class="feature-flag-trigger-side">
+                <span class="feature-flag-badge" data-badge-for="bioRefresh" data-state="default">Default</span>
+                <span class="feature-flag-chevron" aria-hidden="true">▾</span>
+              </span>
+            </button>
+            <div class="feature-flag-detail" id="feature-flag-detail-bioRefresh" data-accordion-panel="bioRefresh" role="region" aria-labelledby="feature-flag-trigger-bioRefresh" hidden>
+              <div class="feature-flag-field">
+                <label for="feature-flag-bioRefresh">Home bio refresh</label>
+                <select id="feature-flag-bioRefresh" data-feature-flag="bioRefresh" aria-describedby="feature-flag-bioRefresh-description">
+                  <option value="off">Off</option>
+                  <option value="on">On</option>
+                </select>
+                <p id="feature-flag-bioRefresh-description">Home content. LinkedIn-informed hero bio. Default: Off.</p>
+                <button type="button" class="feature-flag-mini" data-reset-flag="bioRefresh">Reset to default</button>
+              </div>
             </div>
-            <select id="feature-flag-bioRefresh" data-feature-flag="bioRefresh" aria-describedby="feature-flag-bioRefresh-description">
-              <option value="off">Off</option>
-              <option value="on">On</option>
-            </select>
-            <p id="feature-flag-bioRefresh-description">Shows the LinkedIn-informed home hero bio. Default: Off. Previews instantly on the home page.</p>
-            <button type="button" class="feature-flag-mini" data-reset-flag="bioRefresh">Reset to default</button>
           </div>
-        </fieldset>
-        <fieldset class="feature-flag-group">
-          <legend>Blog</legend>
-          <div class="feature-flag-field">
-            <div class="feature-flag-row">
-              <label for="feature-flag-blogApplause">Blog applause</label>
-              <span class="feature-flag-badge" data-badge-for="blogApplause" data-state="default">Default</span>
+          <div class="feature-flag-item">
+            <button type="button" class="feature-flag-trigger" id="feature-flag-trigger-blogApplause" data-accordion-for="blogApplause" aria-expanded="false" aria-controls="feature-flag-detail-blogApplause">
+              <span class="feature-flag-trigger-meta">
+                <span class="feature-flag-trigger-name">Blog applause</span>
+              </span>
+              <span class="feature-flag-trigger-side">
+                <span class="feature-flag-badge" data-badge-for="blogApplause" data-state="default">Default</span>
+                <span class="feature-flag-chevron" aria-hidden="true">▾</span>
+              </span>
+            </button>
+            <div class="feature-flag-detail" id="feature-flag-detail-blogApplause" data-accordion-panel="blogApplause" role="region" aria-labelledby="feature-flag-trigger-blogApplause" hidden>
+              <div class="feature-flag-field">
+                <label for="feature-flag-blogApplause">Blog applause</label>
+                <select id="feature-flag-blogApplause" data-feature-flag="blogApplause" aria-describedby="feature-flag-blogApplause-description">
+                  <option value="off">Off</option>
+                  <option value="on">On</option>
+                </select>
+                <p id="feature-flag-blogApplause-description">Blog. Local applause controls on posts. Default: Off.</p>
+                <button type="button" class="feature-flag-mini" data-reset-flag="blogApplause">Reset to default</button>
+              </div>
             </div>
-            <select id="feature-flag-blogApplause" data-feature-flag="blogApplause" aria-describedby="feature-flag-blogApplause-description">
-              <option value="off">Off</option>
-              <option value="on">On</option>
-            </select>
-            <p id="feature-flag-blogApplause-description">Shows the local applause controls on blog posts. Default: Off. Previews instantly on posts.</p>
-            <button type="button" class="feature-flag-mini" data-reset-flag="blogApplause">Reset to default</button>
           </div>
-          <div class="feature-flag-field">
-            <div class="feature-flag-row">
-              <label for="feature-flag-readingProgress">Blog reading progress</label>
-              <span class="feature-flag-badge" data-badge-for="readingProgress" data-state="default">Default</span>
+          <div class="feature-flag-item">
+            <button type="button" class="feature-flag-trigger" id="feature-flag-trigger-readingProgress" data-accordion-for="readingProgress" aria-expanded="false" aria-controls="feature-flag-detail-readingProgress">
+              <span class="feature-flag-trigger-meta">
+                <span class="feature-flag-trigger-name">Blog reading progress</span>
+              </span>
+              <span class="feature-flag-trigger-side">
+                <span class="feature-flag-badge" data-badge-for="readingProgress" data-state="default">Default</span>
+                <span class="feature-flag-chevron" aria-hidden="true">▾</span>
+              </span>
+            </button>
+            <div class="feature-flag-detail" id="feature-flag-detail-readingProgress" data-accordion-panel="readingProgress" role="region" aria-labelledby="feature-flag-trigger-readingProgress" hidden>
+              <div class="feature-flag-field">
+                <label for="feature-flag-readingProgress">Blog reading progress</label>
+                <select id="feature-flag-readingProgress" data-feature-flag="readingProgress" aria-describedby="feature-flag-readingProgress-description">
+                  <option value="off">Off</option>
+                  <option value="on">On</option>
+                </select>
+                <p id="feature-flag-readingProgress-description">Blog. Top progress bar on posts. Default: Off.</p>
+                <button type="button" class="feature-flag-mini" data-reset-flag="readingProgress">Reset to default</button>
+              </div>
             </div>
-            <select id="feature-flag-readingProgress" data-feature-flag="readingProgress" aria-describedby="feature-flag-readingProgress-description">
-              <option value="off">Off</option>
-              <option value="on">On</option>
-            </select>
-            <p id="feature-flag-readingProgress-description">Shows a top progress bar on blog posts. Default: Off. Previews instantly on posts.</p>
-            <button type="button" class="feature-flag-mini" data-reset-flag="readingProgress">Reset to default</button>
           </div>
-        </fieldset>
+        </div>
         <div class="feature-flag-panel-actions">
           <button id="feature-flag-reset" type="button">Reset to defaults</button>
           <button type="submit" value="cancel">Close</button>
           <button id="feature-flag-apply" type="button">Apply and reload</button>
         </div>
-        <p class="feature-flag-hint">Tip: changing a value saves it for this tab and previews it right away. No reload is needed to compare.</p>
       </form>
     </dialog>
 
@@ -454,7 +530,29 @@ const projectsLayoutValues = PROJECTS_LAYOUTS.map(({ value }) => value);
       const featureFlagStatus = document.getElementById('feature-flag-status');
       const featureFlagBadges = Array.from(document.querySelectorAll('[data-badge-for]'));
       const featureFlagSingleResets = Array.from(document.querySelectorAll('[data-reset-flag]'));
+      const featureFlagTriggers = Array.from(document.querySelectorAll('[data-accordion-for]'));
+      const featureFlagDetails = Array.from(document.querySelectorAll('[data-accordion-panel]'));
       let featureFlagPanelReturnFocus = null;
+
+      const setOpenFlag = (key) => {
+        featureFlagTriggers.forEach((trigger) => {
+          const isOpen = trigger.getAttribute('data-accordion-for') === key;
+          trigger.setAttribute('aria-expanded', String(isOpen));
+        });
+        featureFlagDetails.forEach((detail) => {
+          const isOpen = detail.getAttribute('data-accordion-panel') === key;
+          if (isOpen) detail.removeAttribute('hidden');
+          else detail.setAttribute('hidden', '');
+        });
+      };
+
+      const getFirstModifiedFlag = () => {
+        const modified = featureFlagInputs.find((input) => {
+          const key = input.dataset.featureFlag;
+          return key && input.value !== getFlagDefault(key);
+        });
+        return modified?.dataset.featureFlag || featureFlagTriggers[0]?.getAttribute('data-accordion-for') || 'siteStyle';
+      };
 
       const readFeatureFlag = (key) => {
         try {
@@ -552,8 +650,10 @@ const projectsLayoutValues = PROJECTS_LAYOUTS.map(({ value }) => value);
         if (!(featureFlagPanel instanceof HTMLDialogElement) || featureFlagPanel.open) return;
         featureFlagPanelReturnFocus = document.activeElement;
         syncFeatureFlagInputs();
+        const initial = getFirstModifiedFlag();
+        setOpenFlag(initial);
         featureFlagPanel.showModal();
-        featureFlagInputs[0]?.focus();
+        featureFlagTriggers.find((trigger) => trigger.getAttribute('data-accordion-for') === initial)?.focus();
       };
 
       document.addEventListener('keydown', (event) => {
@@ -568,6 +668,23 @@ const projectsLayoutValues = PROJECTS_LAYOUTS.map(({ value }) => value);
       featureFlagPanel?.addEventListener('close', () => {
         if (featureFlagPanelReturnFocus instanceof HTMLElement) featureFlagPanelReturnFocus.focus();
         featureFlagPanelReturnFocus = null;
+      });
+
+      featureFlagTriggers.forEach((trigger, index) => {
+        trigger.addEventListener('click', () => {
+          const key = trigger.getAttribute('data-accordion-for');
+          if (key) setOpenFlag(key);
+        });
+        trigger.addEventListener('keydown', (event) => {
+          if (event.key !== 'ArrowDown' && event.key !== 'ArrowUp' && event.key !== 'Home' && event.key !== 'End') return;
+          event.preventDefault();
+          let next = index;
+          if (event.key === 'ArrowDown') next = (index + 1) % featureFlagTriggers.length;
+          if (event.key === 'ArrowUp') next = (index - 1 + featureFlagTriggers.length) % featureFlagTriggers.length;
+          if (event.key === 'Home') next = 0;
+          if (event.key === 'End') next = featureFlagTriggers.length - 1;
+          featureFlagTriggers[next]?.focus();
+        });
       });
 
       featureFlagInputs.forEach((input) => {
