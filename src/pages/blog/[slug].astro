@@ -272,7 +272,7 @@ const slug = post.id.replace(/\.md$/, '');
 
   <script is:inline>
     const article = document.querySelector('.blog-post');
-    const progress = document.querySelector('[data-reading-progress]');
+    const progress = document.querySelector('.reading-progress[data-reading-progress]');
     const progressBar = document.querySelector('[data-reading-progress-bar]');
     const toc = document.querySelector('[data-blog-toc]');
     const tocLinks = toc ? Array.from(toc.querySelectorAll('[data-toc-link]')) : [];
@@ -280,7 +280,17 @@ const slug = post.id.replace(/\.md$/, '');
       .map((link) => document.getElementById(link.getAttribute('href')?.slice(1) ?? ''))
       .filter(Boolean);
 
+    const isReadingProgressEnabled = () => {
+      if (document.documentElement.getAttribute('data-reading-progress') === 'on') return true;
+      try {
+        return sessionStorage.getItem('readingProgress') === 'on';
+      } catch {
+        return false;
+      }
+    };
+
     const updateProgress = () => {
+      if (!isReadingProgressEnabled()) return;
       if (!article || !progress || !progressBar) return;
       const articleBounds = article.getBoundingClientRect();
       const articleStart = articleBounds.top + window.scrollY;

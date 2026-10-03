@@ -718,6 +718,12 @@ footer nav {
   pointer-events: none;
 }
 
+/* Blog reading progress experiment. Hidden unless the flag is on, so visitors see no change by default. */
+html:not([data-reading-progress='on']) .reading-progress,
+html:not([data-reading-progress='on']) [data-reading-progress] {
+  display: none;
+}
+
 .reading-progress-bar {
   display: block;
   width: 100%;
