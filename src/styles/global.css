@@ -953,15 +953,6 @@ footer nav {
   margin-top: 0.5rem;
 }
 
-/* Domain experience experiment. Swaps the home hero copy when the flag is on. Remove with the experiment block to promote or drop it. */
-html:not([data-domain-experience='on']) [data-hero-experiment] {
-  display: none;
-}
-
-html[data-domain-experience='on'] [data-hero-stable] {
-  display: none;
-}
-
 html[data-site-style='current'] .section-block {
   margin-top: 0;
 }

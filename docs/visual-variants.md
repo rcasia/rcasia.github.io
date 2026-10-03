@@ -24,18 +24,9 @@ sessionStorage.removeItem('projectsV2');
 location.reload();
 ```
 
-<The site also clears any legacy `localStorage` copies of those keys on load, so older persisted experiments do not leak into new sessions.
+The site also clears any legacy `localStorage` copies of those keys on load, so older persisted experiments do not leak into new sessions.
 
 The older `projectsV2=true` flag is still recognized once per session so existing local experiments are not lost. New selections use `projectsLayout`.
-
-## Domain Experience Flag
-
-The home page has a separate content experiment:
-
-- `domainExperience` swaps the home hero copy to include a commerce and logistics line (`off` by default, `on` to show).
-- It lives in the same developer panel, stores `off` or `on` in `sessionStorage` for the current tab, and sets `data-domain-experience` on the document.
-- The stable hero stays visible unless the flag is `on`, so visitors never see panel copy, metadata, or navigation for it.
-- To promote it, keep the experiment copy and remove the flag hooks. To drop it, remove the experiment block and its styles.
 
 ## Global Styles
 
