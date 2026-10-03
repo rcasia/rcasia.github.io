@@ -24,6 +24,15 @@ localStorage.removeItem('projectsV2');
 location.reload();
 ```
 
+## Domain Experience Flag
+
+The home page has a separate content experiment:
+
+- `domainExperience` controls the commerce and logistics brief (`off` by default, `on` to show).
+- It lives in the same developer panel, stores `off` or `on` in `localStorage`, and sets `data-domain-experience` on the document.
+- The section is rendered with `hidden` and stays hidden unless the flag is `on`, so visitors never see panel copy, metadata, or navigation for it.
+- To promote it, remove `hidden`, the `data-domain-section` hook, and the flag field. To drop it, remove the section and its styles.
+
 The older `projectsV2=true` flag is still recognized once so existing local experiments are not lost. New selections use `projectsLayout`.
 
 ## Global Styles

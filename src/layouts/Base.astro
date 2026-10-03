@@ -69,6 +69,9 @@ const projectsLayoutValues = PROJECTS_LAYOUTS.map(({ value }) => value);
         const projectsLayout = projectsLayoutValues.includes(storedLayout) ? storedLayout : legacyLayout;
         root.setAttribute('data-site-style', siteStyle);
         root.setAttribute('data-projects-layout', projectsLayout);
+        // Domain experience experiment. Disabled by default, no visible UI for visitors.
+        const domainExperience = localStorage.getItem('domainExperience');
+        root.setAttribute('data-domain-experience', domainExperience === 'on' ? 'on' : 'off');
       } catch {}
     </script>
 
@@ -250,6 +253,14 @@ const projectsLayoutValues = PROJECTS_LAYOUTS.map(({ value }) => value);
           </select>
           <p id="feature-flag-projectsLayout-description">A Projects-only composition that can be tested with every site style.</p>
         </div>
+        <div class="feature-flag-field">
+          <label for="feature-flag-domainExperience">Domain experience</label>
+          <select id="feature-flag-domainExperience" data-feature-flag="domainExperience" aria-describedby="feature-flag-domainExperience-description">
+            <option value="off">Off</option>
+            <option value="on">On</option>
+          </select>
+          <p id="feature-flag-domainExperience-description">Shows the home page commerce and logistics brief. Off by default.</p>
+        </div>
         <div class="feature-flag-panel-actions">
           <button type="submit" value="cancel">Close</button>
           <button id="feature-flag-apply" type="button">Apply and reload</button>
@@ -313,7 +324,7 @@ const projectsLayoutValues = PROJECTS_LAYOUTS.map(({ value }) => value);
         featureFlagInputs.forEach((input) => {
           const key = input.dataset.featureFlag;
           if (!key) return;
-          const fallback = key === 'siteStyle' ? defaultSiteStyle : key === 'projectsLayout' ? defaultProjectsLayout : '';
+          const fallback = key === 'siteStyle' ? defaultSiteStyle : key === 'projectsLayout' ? defaultProjectsLayout : key === 'domainExperience' ? 'off' : '';
           const storedValue = readFeatureFlag(key);
           const stored = key === 'projectsLayout' && !storedValue
             ? (isFeatureFlagEnabled('projectsV2') ? 'expanded' : defaultProjectsLayout)
@@ -357,6 +368,16 @@ const projectsLayoutValues = PROJECTS_LAYOUTS.map(({ value }) => value);
           location.reload();
         } catch {}
       });
+    </script>
+    <script is:inline>
+      try {
+        if (localStorage.getItem('domainExperience') === 'on') {
+          document.documentElement.setAttribute('data-domain-experience', 'on');
+          document.querySelectorAll('[data-domain-section][hidden]').forEach((el) => {
+            el.removeAttribute('hidden');
+          });
+        }
+      } catch {}
     </script>
   </body>
 </html>

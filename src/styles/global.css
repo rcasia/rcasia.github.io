@@ -953,6 +953,31 @@ footer nav {
   margin-top: 0.5rem;
 }
 
+/* Domain experience experiment. Hidden unless the flag is on. Remove with the section to promote or drop it. */
+html:not([data-domain-experience='on']) [data-domain-section] {
+  display: none;
+}
+
+.domain-list {
+  margin: 1rem 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 0.6rem;
+}
+
+.domain-list li {
+  padding-left: 1.1rem;
+  position: relative;
+}
+
+.domain-list li::before {
+  content: '·';
+  position: absolute;
+  left: 0.25rem;
+  color: var(--accent-dim);
+}
+
 html[data-site-style='current'] .section-block {
   margin-top: 0;
 }
