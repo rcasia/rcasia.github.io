@@ -1,0 +1,54 @@
+---
+import Base from '../layouts/Base.astro';
+import { SITE } from '../site';
+---
+
+<Base title="contact" description="Contact Ricardo Casía Moka by email, GitHub, LinkedIn, or X.">
+  <div class="contact-page">
+    <h1 class="page-title">Contact</h1>
+    <p class="page-subtitle">The fastest way to reach me is by email.</p>
+
+    <div class="contact-panel">
+      <p class="contact-title"><strong>Contact</strong></p>
+      <ul class="contact-list">
+        <li>
+          <span>Email: <code id="contact-email">{SITE.email}</code></span>
+          <button class="btn btn-small" id="copy-email" type="button">Copy</button>
+        </li>
+        <li>
+          GitHub: <a href={SITE.github} target="_blank" rel="noopener">{SITE.github.replace('https://', '')}</a>
+        </li>
+        <li>
+          LinkedIn: <a href={SITE.linkedin} target="_blank" rel="noopener">{SITE.linkedin.replace('https://', '')}</a>
+        </li>
+        <li>
+          X: <a href={SITE.x} target="_blank" rel="noopener">{SITE.x.replace('https://', '')}</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <script is:inline>
+    const copyBtn = document.getElementById('copy-email');
+    copyBtn?.addEventListener('click', async () => {
+      const email = document.getElementById('contact-email')?.textContent?.trim();
+      if (!email) return;
+      try {
+        await navigator.clipboard.writeText(email);
+        copyBtn.textContent = 'Copied!';
+      } catch {
+        const range = document.createRange();
+        const node = document.getElementById('contact-email');
+        if (node) {
+          range.selectNodeContents(node);
+          const sel = window.getSelection();
+          sel?.removeAllRanges();
+          sel?.addRange(range);
+        }
+        copyBtn.textContent = 'Select & copy';
+      }
+      setTimeout(() => {
+        if (copyBtn) copyBtn.textContent = 'Copy';
+      }, 2000);
+    });
+  </script>
+</Base>

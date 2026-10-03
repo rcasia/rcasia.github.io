@@ -50,25 +50,7 @@ const PREVIEWS: Record<string, { src: string; alt: string; className?: string }>
         <div class="cta-row">
           <a class="btn btn-primary" href="/projects/">View selected work</a>
           <a class="btn" href={SITE.github} target="_blank" rel="noopener">GitHub</a>
-          <button class="btn" id="contact-toggle" aria-expanded="false" aria-controls="contact-panel">Get in touch</button>
-        </div>
-        <div id="contact-panel" class="contact-panel" hidden>
-          <p class="contact-title"><strong>Contact</strong></p>
-          <ul class="contact-list">
-            <li>
-              <span>Email: <code id="contact-email">{SITE.email}</code></span>
-              <button class="btn btn-small" id="copy-email" type="button">Copy</button>
-            </li>
-            <li>
-              GitHub: <a href={SITE.github} target="_blank" rel="noopener">{SITE.github.replace('https://', '')}</a>
-            </li>
-            <li>
-              LinkedIn: <a href={SITE.linkedin} target="_blank" rel="noopener">{SITE.linkedin.replace('https://', '')}</a>
-            </li>
-            <li>
-              X: <a href={SITE.x} target="_blank" rel="noopener">{SITE.x.replace('https://', '')}</a>
-            </li>
-          </ul>
+          <a class="btn" href="/contact/">Get in touch</a>
         </div>
       </div>
       <div class="profile-wrap">
@@ -165,46 +147,4 @@ const PREVIEWS: Record<string, { src: string; alt: string; className?: string }>
       }
     </section>
   </article>
-  <script is:inline>
-    const toggle = document.getElementById('contact-toggle');
-    const panel = document.getElementById('contact-panel');
-    const copyBtn = document.getElementById('copy-email');
-    const showPanel = () => {
-      panel?.removeAttribute('hidden');
-      toggle?.setAttribute('aria-expanded', 'true');
-    };
-    toggle?.addEventListener('click', () => {
-      const isHidden = panel?.hasAttribute('hidden');
-      if (isHidden) {
-        showPanel();
-      } else {
-        panel?.setAttribute('hidden', '');
-        toggle?.setAttribute('aria-expanded', 'false');
-      }
-    });
-    if (window.location.hash === '#contact-panel') {
-      showPanel();
-    }
-    copyBtn?.addEventListener('click', async () => {
-      const email = document.getElementById('contact-email')?.textContent?.trim();
-      if (!email) return;
-      try {
-        await navigator.clipboard.writeText(email);
-        copyBtn.textContent = 'Copied!';
-      } catch {
-        const range = document.createRange();
-        const node = document.getElementById('contact-email');
-        if (node) {
-          range.selectNodeContents(node);
-          const sel = window.getSelection();
-          sel?.removeAllRanges();
-          sel?.addRange(range);
-        }
-        copyBtn.textContent = 'Select & copy';
-      }
-      setTimeout(() => {
-        if (copyBtn) copyBtn.textContent = 'Copy';
-      }, 2000);
-    });
-  </script>
 </Base>
