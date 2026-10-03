@@ -67,6 +67,7 @@ const projectsLayoutValues = PROJECTS_LAYOUTS.map(({ value }) => value);
           localStorage.removeItem('projectsLayout');
           localStorage.removeItem('projectsV2');
           localStorage.removeItem('domainExperience');
+          localStorage.removeItem('ambientMotion');
         } catch {}
         const storedStyle = sessionStorage.getItem('siteStyle');
         const siteStyle = siteStyleValues.includes(storedStyle) ? storedStyle : defaultSiteStyle;
@@ -78,6 +79,10 @@ const projectsLayoutValues = PROJECTS_LAYOUTS.map(({ value }) => value);
         // Domain experience experiment. Disabled by default, no visible UI for visitors.
         const domainExperience = sessionStorage.getItem('domainExperience');
         root.setAttribute('data-domain-experience', domainExperience === 'on' ? 'on' : 'off');
+        // Ambient background motion experiment. Disabled by default, no visible UI for visitors.
+        const ambientMotion = sessionStorage.getItem('ambientMotion');
+        const ambientValues = ['off', 'aurora', 'grid-pulse', 'starfield'];
+        root.setAttribute('data-ambient-motion', ambientValues.includes(ambientMotion) ? ambientMotion : 'off');
       } catch {}
     </script>
 
@@ -210,6 +215,13 @@ const projectsLayoutValues = PROJECTS_LAYOUTS.map(({ value }) => value);
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to content</a>
+    <div class="ambient" aria-hidden="true">
+      <span class="ambient-aurora-a"></span>
+      <span class="ambient-aurora-b"></span>
+      <span class="ambient-sweep"></span>
+      <span class="ambient-stars ambient-stars-a"></span>
+      <span class="ambient-stars ambient-stars-b"></span>
+    </div>
     <header class="navbar">
       <div class="navbar-inner">
         <div class="brand-group">
@@ -267,6 +279,16 @@ const projectsLayoutValues = PROJECTS_LAYOUTS.map(({ value }) => value);
             <option value="on">On</option>
           </select>
           <p id="feature-flag-domainExperience-description">Shows the commerce and logistics line in the home hero. Off by default.</p>
+        </div>
+        <div class="feature-flag-field">
+          <label for="feature-flag-ambientMotion">Ambient motion</label>
+          <select id="feature-flag-ambientMotion" data-feature-flag="ambientMotion" aria-describedby="feature-flag-ambientMotion-description">
+            <option value="off">Off</option>
+            <option value="aurora">Aurora drift</option>
+            <option value="grid-pulse">Grid pulse</option>
+            <option value="starfield">Starfield</option>
+          </select>
+          <p id="feature-flag-ambientMotion-description">Experimental background animation. Off by default.</p>
         </div>
         <div class="feature-flag-panel-actions">
           <button id="feature-flag-reset" type="button">Reset to defaults</button>
@@ -333,7 +355,7 @@ const projectsLayoutValues = PROJECTS_LAYOUTS.map(({ value }) => value);
         featureFlagInputs.forEach((input) => {
           const key = input.dataset.featureFlag;
           if (!key) return;
-          const fallback = key === 'siteStyle' ? defaultSiteStyle : key === 'projectsLayout' ? defaultProjectsLayout : key === 'domainExperience' ? 'off' : '';
+          const fallback = key === 'siteStyle' ? defaultSiteStyle : key === 'projectsLayout' ? defaultProjectsLayout : key === 'domainExperience' ? 'off' : key === 'ambientMotion' ? 'off' : '';
           const storedValue = readFeatureFlag(key);
           const stored = key === 'projectsLayout' && !storedValue
             ? (isFeatureFlagEnabled('projectsV2') ? 'expanded' : defaultProjectsLayout)
@@ -378,6 +400,7 @@ const projectsLayoutValues = PROJECTS_LAYOUTS.map(({ value }) => value);
             localStorage.removeItem('projectsLayout');
             localStorage.removeItem('projectsV2');
             localStorage.removeItem('domainExperience');
+            localStorage.removeItem('ambientMotion');
           } catch {}
           featureFlagPanel.close();
           location.reload();
@@ -390,11 +413,13 @@ const projectsLayoutValues = PROJECTS_LAYOUTS.map(({ value }) => value);
           sessionStorage.removeItem('projectsLayout');
           sessionStorage.removeItem('projectsV2');
           sessionStorage.removeItem('domainExperience');
+          sessionStorage.removeItem('ambientMotion');
           try {
             localStorage.removeItem('siteStyle');
             localStorage.removeItem('projectsLayout');
             localStorage.removeItem('projectsV2');
             localStorage.removeItem('domainExperience');
+            localStorage.removeItem('ambientMotion');
           } catch {}
           featureFlagPanel.close();
           location.reload();
