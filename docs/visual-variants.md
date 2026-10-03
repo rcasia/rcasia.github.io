@@ -15,16 +15,18 @@ Both use the same content collections, project data, navigation, page shell, and
 4. Select a global site style and a Projects layout.
 5. Select **Apply and reload**.
 
-The selected values persist in `localStorage` under `siteStyle` and `projectsLayout`. Clearing those keys restores the technical and showcase fallback:
+The selected values live in `sessionStorage` under `siteStyle` and `projectsLayout`. Reloading the tab keeps them, while closing the tab resets to the technical and showcase fallback. Use **Reset to defaults** in the panel, or clear the session keys manually:
 
 ```js
-localStorage.removeItem('siteStyle');
-localStorage.removeItem('projectsLayout');
-localStorage.removeItem('projectsV2');
+sessionStorage.removeItem('siteStyle');
+sessionStorage.removeItem('projectsLayout');
+sessionStorage.removeItem('projectsV2');
 location.reload();
 ```
 
-The older `projectsV2=true` flag is still recognized once so existing local experiments are not lost. New selections use `projectsLayout`.
+The site also clears any legacy `localStorage` copies of those keys on load, so older persisted experiments do not leak into new sessions.
+
+The older `projectsV2=true` flag is still recognized once per session so existing local experiments are not lost. New selections use `projectsLayout`.
 
 ## Global Styles
 

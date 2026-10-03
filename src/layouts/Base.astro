@@ -62,10 +62,15 @@ const projectsLayoutValues = PROJECTS_LAYOUTS.map(({ value }) => value);
     <script is:inline define:vars={{ siteStyleValues, projectsLayoutValues, defaultSiteStyle: DEFAULT_SITE_STYLE, defaultProjectsLayout: DEFAULT_PROJECTS_LAYOUT }}>
       try {
         const root = document.documentElement;
-        const storedStyle = localStorage.getItem('siteStyle');
+        try {
+          localStorage.removeItem('siteStyle');
+          localStorage.removeItem('projectsLayout');
+          localStorage.removeItem('projectsV2');
+        } catch {}
+        const storedStyle = sessionStorage.getItem('siteStyle');
         const siteStyle = siteStyleValues.includes(storedStyle) ? storedStyle : defaultSiteStyle;
-        const storedLayout = localStorage.getItem('projectsLayout');
-        const legacyLayout = localStorage.getItem('projectsV2') === 'true' ? 'expanded' : defaultProjectsLayout;
+        const storedLayout = sessionStorage.getItem('projectsLayout');
+        const legacyLayout = sessionStorage.getItem('projectsV2') === 'true' ? 'expanded' : defaultProjectsLayout;
         const projectsLayout = projectsLayoutValues.includes(storedLayout) ? storedLayout : legacyLayout;
         root.setAttribute('data-site-style', siteStyle);
         root.setAttribute('data-projects-layout', projectsLayout);
@@ -178,6 +183,7 @@ const projectsLayoutValues = PROJECTS_LAYOUTS.map(({ value }) => value);
 
       .feature-flag-panel-actions {
         display: flex;
+        flex-wrap: wrap;
         justify-content: flex-end;
         gap: 0.6rem;
       }
@@ -234,7 +240,7 @@ const projectsLayoutValues = PROJECTS_LAYOUTS.map(({ value }) => value);
       <form class="feature-flag-panel" method="dialog">
         <h2 id="feature-flag-panel-title">Feature flags</h2>
         <p id="feature-flag-panel-description">
-          Developer-only controls. Press Ctrl+Alt+Shift+F, or Control+Command+Shift+F on macOS, on any page to reopen this panel.
+          Developer-only controls for this tab only. Flags use session storage, so reloading keeps them but closing the tab resets to defaults. Press Ctrl+Alt+Shift+F, or Control+Command+Shift+F on macOS, on any page to reopen this panel.
         </p>
         <div class="feature-flag-field">
           <label for="feature-flag-siteStyle">Global site style</label>
@@ -251,6 +257,7 @@ const projectsLayoutValues = PROJECTS_LAYOUTS.map(({ value }) => value);
           <p id="feature-flag-projectsLayout-description">A Projects-only composition that can be tested with every site style.</p>
         </div>
         <div class="feature-flag-panel-actions">
+          <button id="feature-flag-reset" type="button">Reset to defaults</button>
           <button type="submit" value="cancel">Close</button>
           <button id="feature-flag-apply" type="button">Apply and reload</button>
         </div>
@@ -297,11 +304,12 @@ const projectsLayoutValues = PROJECTS_LAYOUTS.map(({ value }) => value);
       const featureFlagPanel = document.getElementById('feature-flag-panel');
       const featureFlagInputs = Array.from(document.querySelectorAll('select[data-feature-flag]'));
       const featureFlagApply = document.getElementById('feature-flag-apply');
+      const featureFlagReset = document.getElementById('feature-flag-reset');
       let featureFlagPanelReturnFocus = null;
 
       const readFeatureFlag = (key) => {
         try {
-          return localStorage.getItem(key);
+          return sessionStorage.getItem(key);
         } catch {
           return null;
         }
@@ -350,9 +358,29 @@ const projectsLayoutValues = PROJECTS_LAYOUTS.map(({ value }) => value);
           featureFlagInputs.forEach((input) => {
             const key = input.dataset.featureFlag;
             if (!key) return;
-            localStorage.setItem(key, input.value);
+            sessionStorage.setItem(key, input.value);
           });
-          localStorage.removeItem('projectsV2');
+          sessionStorage.removeItem('projectsV2');
+          try {
+            localStorage.removeItem('siteStyle');
+            localStorage.removeItem('projectsLayout');
+            localStorage.removeItem('projectsV2');
+          } catch {}
+          featureFlagPanel.close();
+          location.reload();
+        } catch {}
+      });
+
+      featureFlagReset?.addEventListener('click', () => {
+        try {
+          sessionStorage.removeItem('siteStyle');
+          sessionStorage.removeItem('projectsLayout');
+          sessionStorage.removeItem('projectsV2');
+          try {
+            localStorage.removeItem('siteStyle');
+            localStorage.removeItem('projectsLayout');
+            localStorage.removeItem('projectsV2');
+          } catch {}
           featureFlagPanel.close();
           location.reload();
         } catch {}
