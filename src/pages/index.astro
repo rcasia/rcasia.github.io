@@ -83,6 +83,20 @@ const PREVIEWS: Record<string, { src: string; alt: string; className?: string }>
       </div>
     </div>
 
+    <section class="section-block" aria-labelledby="experiments-heading">
+      <h2 id="experiments-heading" class="section-heading">Now experimenting</h2>
+      <p>
+        Deterministic guardrails around non-deterministic agents: pre-commits and checks stay fixed
+        while agents write the code; skills only where a flow needs one. Testing whether TCR
+        (test &amp;&amp; commit || revert) makes agents more reliable. RFC plus early POC, measuring
+        token cost and failure modes.
+      </p>
+      <p>
+        <a href="https://github.com/rcasia/agentic-tcr-poc" target="_blank" rel="noopener">agentic-tcr-poc</a>
+         <span class="muted">(early)</span>
+      </p>
+    </section>
+
     <section class="work section-block" aria-labelledby="work-heading">
       <div class="work-head">
         <h2 id="work-heading" class="section-heading"><a href="/projects/">selected work</a></h2>
@@ -118,20 +132,6 @@ const PREVIEWS: Record<string, { src: string; alt: string; className?: string }>
           );
         })}
       </ol>
-    </section>
-
-    <section class="section-block" aria-labelledby="experiments-heading">
-      <h2 id="experiments-heading" class="section-heading">Now experimenting</h2>
-      <p>
-        Deterministic guardrails around non-deterministic agents: pre-commits and checks stay fixed
-        while agents write the code; skills only where a flow needs one. Testing whether TCR
-        (test &amp;&amp; commit || revert) makes agents more reliable. RFC plus early POC, measuring
-        token cost and failure modes.
-      </p>
-      <p>
-        <a href="https://github.com/rcasia/agentic-tcr-poc" target="_blank" rel="noopener">agentic-tcr-poc</a>
-         <span class="muted">(early)</span>
-      </p>
     </section>
 
     <section class="section-block latest-notes" aria-labelledby="latest-heading">
