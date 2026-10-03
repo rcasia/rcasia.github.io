@@ -263,6 +263,101 @@ button.btn {
   margin-left: 0.5rem;
 }
 
+/* Home CTA experiment. Hidden unless the flag is on. Remove with the experiment block to promote or drop it. */
+html:not([data-home-cta='on']) [data-cta-experiment] {
+  display: none;
+}
+
+html[data-home-cta='on'] [data-cta-stable] {
+  display: none;
+}
+
+html[data-home-cta='on'] .cta-experiment {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.65rem;
+  margin: 1.5rem 0 2.5rem;
+}
+
+html[data-home-cta='on'] .cta-main {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  width: 100%;
+}
+
+html[data-home-cta='on'] .cta-primary,
+html[data-home-cta='on'] .cta-secondary {
+  min-height: 2.75rem;
+  padding: 0.7rem 1.15rem;
+  justify-content: center;
+}
+
+html[data-home-cta='on'] .cta-primary {
+  font-weight: 700;
+  box-shadow: 0 8px 22px rgb(0 0 0 / 18%);
+}
+
+html[data-home-cta='on'] .cta-primary:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.06);
+}
+
+html[data-home-cta='on'] .cta-primary:active {
+  transform: translateY(0);
+}
+
+html[data-home-cta='on'] .cta-arrow {
+  display: inline-block;
+  transition: transform 0.18s ease;
+}
+
+html[data-home-cta='on'] .cta-primary:hover .cta-arrow {
+  transform: translateX(3px);
+}
+
+html[data-home-cta='on'] .cta-secondary {
+  font-weight: 600;
+}
+
+html[data-home-cta='on'] .cta-tertiary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  width: fit-content;
+  padding: 0.35rem 0.1rem;
+  border-radius: 6px;
+  color: var(--muted);
+  font-size: 0.92rem;
+  line-height: 1.4;
+}
+
+html[data-home-cta='on'] .cta-tertiary:hover {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+html[data-home-cta='on'] .cta-tertiary svg {
+  flex: none;
+}
+
+@media (max-width: 640px) {
+  html[data-home-cta='on'] .cta-main .btn {
+    flex: 1 1 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html[data-home-cta='on'] .cta-primary:hover {
+    transform: none;
+  }
+
+  html[data-home-cta='on'] .cta-arrow {
+    transition: none;
+  }
+}
+
 .contact-panel {
   background: var(--card);
   border: 1px solid var(--border);

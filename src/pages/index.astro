@@ -63,11 +63,25 @@ const PREVIEWS: Record<string, { src: string; alt: string; className?: string }>
             a thoughtful, analytical focus on maintainable, high-quality code.
           </p>
         </div>
-        <div class="cta-row">
+        <div class="cta-row" data-cta-stable>
           <a class="btn btn-primary" href="/projects/">View selected work</a>
           <a class="btn" href={SITE.github} target="_blank" rel="noopener">GitHub</a>
           <a class="btn" href="/contact/">Get in touch</a>
         </div>
+        <nav class="cta-experiment" data-cta-experiment hidden aria-label="Primary actions">
+          <div class="cta-main">
+            <a class="btn btn-primary cta-primary" href="/projects/">
+              View selected work <span aria-hidden="true" class="cta-arrow">→</span>
+            </a>
+            <a class="btn cta-secondary" href="/contact/">Get in touch</a>
+          </div>
+          <a class="cta-tertiary" href={SITE.github} target="_blank" rel="noopener">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48v-1.7c-2.78.6-3.37-1.34-3.37-1.34-.45-1.16-1.11-1.47-1.11-1.47-.9-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.9 1.52 2.35 1.08 2.92.83.1-.65.35-1.09.63-1.34-2.22-.25-4.56-1.11-4.56-4.94 0-1.1.39-1.99 1.03-2.69-.1-.25-.45-1.27.1-2.64 0 0 .84-.27 2.75 1.02a9.58 9.58 0 0 1 5 0c1.91-1.3 2.75-1.02 2.75-1.02.55 1.37.2 2.39.1 2.64.64.7 1.03 1.6 1.03 2.69 0 3.84-2.34 4.68-4.57 4.93.36.31.68.92.68 1.85V21c0 .27.18.58.69.48A10 10 0 0 0 12 2Z"/></svg>
+            <span>GitHub</span>
+            <span aria-hidden="true">↗</span>
+            <span class="sr-only">(opens in a new tab)</span>
+          </a>
+        </nav>
       </div>
       <div class="profile-wrap">
         <Image

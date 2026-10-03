@@ -24,6 +24,7 @@ sessionStorage.removeItem('projectsV2');
 sessionStorage.removeItem('bioRefresh');
 sessionStorage.removeItem('blogApplause');
 sessionStorage.removeItem('readingProgress');
+sessionStorage.removeItem('homeCta');
 location.reload();
 ```
 
@@ -54,6 +55,13 @@ The blog has a separate reading experiment:
 - Rail readouts live in the applause rail, so they need `blogApplause` set to `on` and a wide screen. Rail visuals are decorative; the top bar keeps the accessible progress role.
 - Everything is hidden by CSS and skipped by script unless a mode is set, so visitors see no change by default. The table of contents highlighting stays always on.
 - To promote a mode, keep its markup, styles, and script and remove the flag hooks. To drop the experiment, remove the progress blocks, their styles, and their script.
+
+The home page has a separate call to action experiment:
+
+- `homeCta` refreshes the hero actions for View selected work, Get in touch, and GitHub (`off` by default, `on` to show).
+- It lives in the same developer panel, stores `off` or `on` in `sessionStorage` for the current tab, and sets `data-home-cta` on the document.
+- The stable row stays visible unless the flag is `on`, so visitors see no change by default. The experiment keeps the same labels and destinations, but gives View selected work primary emphasis, keeps Get in touch secondary, and moves GitHub to a quiet external link with an icon and new tab indication.
+- To promote it, keep the experiment markup and remove the flag hooks. To drop it, remove the experiment block and its styles.
 
 ## Global Styles
 

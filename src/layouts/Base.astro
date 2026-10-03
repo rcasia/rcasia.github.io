@@ -71,6 +71,7 @@ const projectsLayoutValues = PROJECTS_LAYOUTS.map(({ value }) => value);
             sessionStorage.removeItem('bioRefresh');
             sessionStorage.removeItem('blogApplause');
             sessionStorage.removeItem('readingProgress');
+            sessionStorage.removeItem('homeCta');
             sessionStorage.setItem('siteDeploymentVersion', deployedVersion);
           }
         } catch {}
@@ -81,6 +82,7 @@ const projectsLayoutValues = PROJECTS_LAYOUTS.map(({ value }) => value);
           localStorage.removeItem('bioRefresh');
           localStorage.removeItem('blogApplause');
           localStorage.removeItem('readingProgress');
+          localStorage.removeItem('homeCta');
         } catch {}
         const storedStyle = sessionStorage.getItem('siteStyle');
         const siteStyle = siteStyleValues.includes(storedStyle) ? storedStyle : defaultSiteStyle;
@@ -101,6 +103,9 @@ const projectsLayoutValues = PROJECTS_LAYOUTS.map(({ value }) => value);
         const storedReadingProgress = sessionStorage.getItem('readingProgress');
         const readingProgress = readingProgressOptions.includes(storedReadingProgress) ? storedReadingProgress : 'off';
         root.setAttribute('data-reading-progress', readingProgress);
+        // Home CTA experiment. Disabled by default, no visible UI for visitors.
+        const homeCta = sessionStorage.getItem('homeCta');
+        root.setAttribute('data-home-cta', homeCta === 'on' ? 'on' : 'off');
       } catch {}
     </script>
 
@@ -483,6 +488,28 @@ const projectsLayoutValues = PROJECTS_LAYOUTS.map(({ value }) => value);
               </div>
             </div>
           </div>
+          <div class="feature-flag-item">
+            <button type="button" class="feature-flag-trigger" id="feature-flag-trigger-homeCta" data-accordion-for="homeCta" aria-expanded="false" aria-controls="feature-flag-detail-homeCta">
+              <span class="feature-flag-trigger-meta">
+                <span class="feature-flag-trigger-name">Home CTAs</span>
+              </span>
+              <span class="feature-flag-trigger-side">
+                <span class="feature-flag-badge" data-badge-for="homeCta" data-state="default">Default</span>
+                <span class="feature-flag-chevron" aria-hidden="true">▾</span>
+              </span>
+            </button>
+            <div class="feature-flag-detail" id="feature-flag-detail-homeCta" data-accordion-panel="homeCta" role="region" aria-labelledby="feature-flag-trigger-homeCta" hidden>
+              <div class="feature-flag-field">
+                <label for="feature-flag-homeCta">Home CTAs</label>
+                <select id="feature-flag-homeCta" data-feature-flag="homeCta" aria-describedby="feature-flag-homeCta-description">
+                  <option value="off">Off</option>
+                  <option value="on">On</option>
+                </select>
+                <p id="feature-flag-homeCta-description">Home. Clearer hierarchy for View selected work, Get in touch, and GitHub. Default: Off.</p>
+                <button type="button" class="feature-flag-mini" data-reset-flag="homeCta">Reset to default</button>
+              </div>
+            </div>
+          </div>
         </div>
         <div class="feature-flag-panel-actions">
           <button id="feature-flag-reset" type="button">Reset to defaults</button>
@@ -573,7 +600,7 @@ const projectsLayoutValues = PROJECTS_LAYOUTS.map(({ value }) => value);
       const getFlagDefault = (key) => {
         if (key === 'siteStyle') return defaultSiteStyle;
         if (key === 'projectsLayout') return defaultProjectsLayout;
-        if (key === 'bioRefresh' || key === 'blogApplause' || key === 'readingProgress') return 'off';
+        if (key === 'bioRefresh' || key === 'blogApplause' || key === 'readingProgress' || key === 'homeCta') return 'off';
         return '';
       };
 
@@ -583,6 +610,7 @@ const projectsLayoutValues = PROJECTS_LAYOUTS.map(({ value }) => value);
         if (key === 'bioRefresh') return 'data-bio-refresh';
         if (key === 'blogApplause') return 'data-blog-applause';
         if (key === 'readingProgress') return 'data-reading-progress';
+        if (key === 'homeCta') return 'data-home-cta';
         return null;
       };
 
@@ -593,6 +621,18 @@ const projectsLayoutValues = PROJECTS_LAYOUTS.map(({ value }) => value);
           else el.removeAttribute('hidden');
         });
         document.querySelectorAll('[data-hero-experiment]').forEach((el) => {
+          if (isOn) el.removeAttribute('hidden');
+          else el.setAttribute('hidden', '');
+        });
+      };
+
+      const syncHomeCta = (value) => {
+        const isOn = value === 'on';
+        document.querySelectorAll('[data-cta-stable]').forEach((el) => {
+          if (isOn) el.setAttribute('hidden', '');
+          else el.removeAttribute('hidden');
+        });
+        document.querySelectorAll('[data-cta-experiment]').forEach((el) => {
           if (isOn) el.removeAttribute('hidden');
           else el.setAttribute('hidden', '');
         });
@@ -609,6 +649,7 @@ const projectsLayoutValues = PROJECTS_LAYOUTS.map(({ value }) => value);
         const attribute = getFlagAttribute(key);
         if (attribute) document.documentElement.setAttribute(attribute, value);
         if (key === 'bioRefresh') syncBioHero(value);
+        if (key === 'homeCta') syncHomeCta(value);
         if (key === 'readingProgress' || key === 'blogApplause') {
           try {
             window.dispatchEvent(new Event('resize'));
@@ -732,6 +773,7 @@ const projectsLayoutValues = PROJECTS_LAYOUTS.map(({ value }) => value);
             localStorage.removeItem('bioRefresh');
             localStorage.removeItem('blogApplause');
             localStorage.removeItem('readingProgress');
+            localStorage.removeItem('homeCta');
           } catch {}
           featureFlagPanel.close();
           location.reload();
@@ -746,6 +788,7 @@ const projectsLayoutValues = PROJECTS_LAYOUTS.map(({ value }) => value);
           sessionStorage.removeItem('bioRefresh');
           sessionStorage.removeItem('blogApplause');
           sessionStorage.removeItem('readingProgress');
+          sessionStorage.removeItem('homeCta');
           try {
             localStorage.removeItem('siteStyle');
             localStorage.removeItem('projectsLayout');
@@ -753,6 +796,7 @@ const projectsLayoutValues = PROJECTS_LAYOUTS.map(({ value }) => value);
             localStorage.removeItem('bioRefresh');
             localStorage.removeItem('blogApplause');
             localStorage.removeItem('readingProgress');
+            localStorage.removeItem('homeCta');
           } catch {}
           featureFlagPanel.close();
           location.reload();
@@ -772,6 +816,15 @@ const projectsLayoutValues = PROJECTS_LAYOUTS.map(({ value }) => value);
         }
         if (sessionStorage.getItem('blogApplause') === 'on') {
           document.documentElement.setAttribute('data-blog-applause', 'on');
+        }
+        if (sessionStorage.getItem('homeCta') === 'on') {
+          document.documentElement.setAttribute('data-home-cta', 'on');
+          document.querySelectorAll('[data-cta-stable]').forEach((el) => {
+            el.setAttribute('hidden', '');
+          });
+          document.querySelectorAll('[data-cta-experiment][hidden]').forEach((el) => {
+            el.removeAttribute('hidden');
+          });
         }
       } catch {}
     </script>
