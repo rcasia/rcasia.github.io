@@ -953,6 +953,15 @@ footer nav {
   margin-top: 0.5rem;
 }
 
+/* Home bio refresh experiment. Swaps the hero copy when the flag is on. Remove with the experiment block to promote or drop it. */
+html:not([data-bio-refresh='on']) [data-hero-experiment] {
+  display: none;
+}
+
+html[data-bio-refresh='on'] [data-hero-stable] {
+  display: none;
+}
+
 html[data-site-style='current'] .section-block {
   margin-top: 0;
 }
