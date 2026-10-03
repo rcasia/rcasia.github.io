@@ -1,6 +1,7 @@
 ---
 import Base from '../../layouts/Base.astro';
 import { getCollection, render } from 'astro:content';
+import { formatDate, getReadTime } from '../../dates';
 
 export async function getStaticPaths() {
   const posts = await getCollection('blog');
@@ -8,20 +9,136 @@ export async function getStaticPaths() {
   return posts
     .filter((post) => !post.data.redirect)
     .map((post) => ({
-      params: { slug: post.slug },
+      params: { slug: post.id.replace(/\.md$/, '') },
       props: { post },
     }));
 }
 
 const { post } = Astro.props;
-const { Content } = await render(post);
+const { Content, headings } = await render(post);
+const tocHeadings = headings.filter(({ depth }) => depth === 2 || depth === 3);
+const readTime = getReadTime(post.body);
+const publishedDate = post.data.date.toISOString().slice(0, 10);
 ---
 
 <Base title={post.data.title} description={post.data.description} current="blog">
-  <article class="prose blog-post">
-    <p><a href="/blog/">← blog</a></p>
-    <h1>{post.data.title}</h1>
-    <p style="color: var(--muted);">{post.data.description}</p>
-    <Content />
+  <div
+    class="reading-progress"
+    data-reading-progress
+    role="progressbar"
+    aria-label="Reading progress"
+    aria-valuemin="0"
+    aria-valuemax="100"
+    aria-valuenow="0"
+    aria-valuetext="0% read"
+  >
+    <span class="reading-progress-bar" data-reading-progress-bar></span>
+  </div>
+
+  <article class="blog-post">
+    <header class="blog-post-header">
+      <p class="blog-post-back"><a href="/blog/">← blog</a></p>
+      <p class="blog-post-eyebrow">Reading note</p>
+      <h1>{post.data.title}</h1>
+      <p class="blog-post-description">{post.data.description}</p>
+      <div class="blog-post-meta" aria-label="Post metadata">
+        <time datetime={publishedDate}>{formatDate(post.data.date)}</time>
+        <span aria-hidden="true">·</span>
+        <span>{readTime} min read</span>
+      </div>
+      {(post.data.tags.length > 0 || post.data.categories.length > 0) && (
+        <ul class="blog-post-tags" aria-label="Post topics">
+          {post.data.tags.map((tag) => <li><span class="tag">#{tag}</span></li>)}
+          {post.data.categories.map((category) => <li><span class="tag">◎ {category}</span></li>)}
+        </ul>
+      )}
+    </header>
+
+    <div class="blog-post-grid">
+      {tocHeadings.length > 0 && (
+        <nav class="blog-toc" data-blog-toc aria-labelledby="blog-toc-title">
+          <h2 id="blog-toc-title">On this page</h2>
+          <ol>
+            {tocHeadings.map((heading, index) => (
+              <li class:list={{ 'blog-toc-subitem': heading.depth === 3 }}>
+                <a
+                  href={`#${heading.slug}`}
+                  data-toc-link={heading.slug}
+                  aria-current={index === 0 ? 'location' : undefined}
+                >
+                  {heading.text}
+                </a>
+              </li>
+            ))}
+          </ol>
+        </nav>
+      )}
+
+      <div class="prose blog-post-content">
+        <Content />
+      </div>
+    </div>
   </article>
+
+  <script is:inline>
+    const article = document.querySelector('.blog-post');
+    const progress = document.querySelector('[data-reading-progress]');
+    const progressBar = document.querySelector('[data-reading-progress-bar]');
+    const toc = document.querySelector('[data-blog-toc]');
+    const tocLinks = toc ? Array.from(toc.querySelectorAll('[data-toc-link]')) : [];
+    const contentHeadings = tocLinks
+      .map((link) => document.getElementById(link.getAttribute('href')?.slice(1) ?? ''))
+      .filter(Boolean);
+
+    const updateProgress = () => {
+      if (!article || !progress || !progressBar) return;
+      const articleBounds = article.getBoundingClientRect();
+      const articleStart = articleBounds.top + window.scrollY;
+      const articleEnd = articleBounds.bottom + window.scrollY - window.innerHeight;
+      const range = Math.max(1, articleEnd - articleStart);
+      const percent = Math.min(100, Math.max(0, ((window.scrollY - articleStart) / range) * 100));
+      const rounded = Math.round(percent);
+
+      progressBar.style.transform = `scaleX(${percent / 100})`;
+      progress.setAttribute('aria-valuenow', String(rounded));
+      progress.setAttribute('aria-valuetext', `${rounded}% read`);
+    };
+
+    const updateActive = () => {
+      if (tocLinks.length === 0 || contentHeadings.length === 0) return;
+      const readingLine = window.scrollY + 160;
+      let activeHeading = contentHeadings[0];
+
+      contentHeadings.forEach((heading) => {
+        if (heading.getBoundingClientRect().top + window.scrollY <= readingLine) {
+          activeHeading = heading;
+        }
+      });
+
+      tocLinks.forEach((link) => {
+        const isActive = link.getAttribute('href') === `#${activeHeading.id}`;
+        if (isActive) {
+          link.setAttribute('aria-current', 'location');
+        } else {
+          link.removeAttribute('aria-current');
+        }
+      });
+    };
+
+    let frame = 0;
+    const scheduleUpdate = () => {
+      if (frame) return;
+      frame = window.requestAnimationFrame(() => {
+        frame = 0;
+        updateProgress();
+        updateActive();
+      });
+    };
+
+    window.addEventListener('scroll', scheduleUpdate, { passive: true });
+    window.addEventListener('resize', scheduleUpdate);
+    window.addEventListener('hashchange', scheduleUpdate);
+    updateProgress();
+    updateActive();
+  </script>
 </Base>

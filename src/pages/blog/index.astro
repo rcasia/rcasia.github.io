@@ -1,7 +1,7 @@
 ---
 import Base from '../../layouts/Base.astro';
 import { getCollection } from 'astro:content';
-import { formatDate } from '../../dates';
+import { formatDate, getReadTime } from '../../dates';
 
 const posts = (await getCollection('blog')).sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
 ---
@@ -14,10 +14,9 @@ const posts = (await getCollection('blog')).sort((a, b) => b.data.date.getTime()
     <ul class="post-list">
     {
       posts.map((post) => {
-        const href = post.data.redirect ?? `/blog/${post.slug}/`;
+        const href = post.data.redirect ?? `/blog/${post.id.replace(/\.md$/, '')}/`;
         const external = Boolean(post.data.redirect);
-        const words = post.body ? post.body.split(/\s+/).length : 120;
-        const readTime = Math.max(1, Math.round(words / 180));
+        const readTime = getReadTime(post.body);
         return (
           <li class="post-item">
             <h2>
