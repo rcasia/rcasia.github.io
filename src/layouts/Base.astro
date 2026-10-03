@@ -7,7 +7,7 @@ import { DEFAULT_PROJECTS_LAYOUT, DEFAULT_SITE_STYLE, PROJECTS_LAYOUTS, SITE_STY
 interface Props {
   title?: string;
   description?: string;
-  current?: 'about' | 'blog' | 'projects';
+  current?: 'about' | 'blog' | 'projects' | 'contact';
 }
 
 const { title = SITE.title, description = SITE.description, current } = Astro.props;
@@ -238,6 +238,7 @@ const projectsLayoutValues = PROJECTS_LAYOUTS.map(({ value }) => value);
             <li><a href="/" aria-current={current === 'about' ? 'page' : undefined}>home</a></li>
             <li><a href="/blog/" aria-current={current === 'blog' ? 'page' : undefined}>blog</a></li>
             <li><a href="/projects/" aria-current={current === 'projects' ? 'page' : undefined}>projects</a></li>
+            <li><a href="/contact/" aria-current={current === 'contact' ? 'page' : undefined}>contact</a></li>
             <li><button class="theme-toggle" id="theme-toggle" aria-label="Switch to light theme" aria-pressed="true">☾</button></li>
           </ul>
         </nav>
