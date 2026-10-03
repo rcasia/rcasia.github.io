@@ -140,7 +140,7 @@ const PREVIEWS: Record<string, { src: string; alt: string; className?: string }>
         ) : (
           <ul class="post-list">
             {latest.map((post) => {
-              const href = post.data.redirect ?? `/blog/${post.slug}/`;
+              const href = post.data.redirect ?? `/blog/${post.id.replace(/\.md$/, '')}/`;
               const external = Boolean(post.data.redirect);
               return (
                 <li class="post-item">
