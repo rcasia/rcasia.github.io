@@ -266,7 +266,7 @@ const projectsLayoutValues = PROJECTS_LAYOUTS.map(({ value }) => value);
             <option value="off">Off</option>
             <option value="on">On</option>
           </select>
-          <p id="feature-flag-domainExperience-description">Shows the home page commerce and logistics brief. Off by default.</p>
+          <p id="feature-flag-domainExperience-description">Shows the commerce and logistics line in the home hero. Off by default.</p>
         </div>
         <div class="feature-flag-panel-actions">
           <button id="feature-flag-reset" type="button">Reset to defaults</button>
@@ -405,7 +405,10 @@ const projectsLayoutValues = PROJECTS_LAYOUTS.map(({ value }) => value);
       try {
         if (sessionStorage.getItem('domainExperience') === 'on') {
           document.documentElement.setAttribute('data-domain-experience', 'on');
-          document.querySelectorAll('[data-domain-section][hidden]').forEach((el) => {
+          document.querySelectorAll('[data-hero-stable]').forEach((el) => {
+            el.setAttribute('hidden', '');
+          });
+          document.querySelectorAll('[data-hero-experiment][hidden]').forEach((el) => {
             el.removeAttribute('hidden');
           });
         }

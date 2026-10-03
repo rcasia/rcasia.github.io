@@ -40,13 +40,28 @@ const PREVIEWS: Record<string, { src: string; alt: string; className?: string }>
 
     <div class="about-grid">
       <div class="hero-copy">
-        <p>
-          I build developer tools that shorten the loop between writing code and trusting it.
-        </p>
-        <p>
-          I maintain Neovim tooling for testing, debugging, and UI infrastructure, and I'm currently
-          exploring deterministic guardrails for agentic coding.
-        </p>
+        <div data-hero-stable>
+          <p>
+            I build developer tools that shorten the loop between writing code and trusting it.
+          </p>
+          <p>
+            I maintain Neovim tooling for testing, debugging, and UI infrastructure, and I'm currently
+            exploring deterministic guardrails for agentic coding.
+          </p>
+        </div>
+        <div data-hero-experiment hidden>
+          <p>
+            I build developer tools that shorten the loop between writing code and trusting it.
+          </p>
+          <p>
+            My main domains are commerce and logistics: backend services and integrations
+            behind ordering, inventory, and fulfillment. I am open to other domains.
+          </p>
+          <p>
+            I maintain Neovim tooling for testing, debugging, and UI infrastructure, and I'm currently
+            exploring deterministic guardrails for agentic coding.
+          </p>
+        </div>
         <div class="cta-row">
           <a class="btn btn-primary" href="/projects/">View selected work</a>
           <a class="btn" href={SITE.github} target="_blank" rel="noopener">GitHub</a>
@@ -118,26 +133,6 @@ const PREVIEWS: Record<string, { src: string; alt: string; className?: string }>
           );
         })}
       </ol>
-    </section>
-
-    <section class="section-block" data-domain-section hidden aria-labelledby="domain-heading">
-      <h2 id="domain-heading" class="section-heading">Domain focus</h2>
-      <p class="section-dek">Commerce and logistics.</p>
-      <p>
-        Most of my client work sits in commerce and logistics: backend services behind
-        catalog, ordering, inventory, and fulfillment flows, and the integrations that
-        keep them consistent.
-      </p>
-      <ul class="domain-list">
-        <li>Service contracts: REST with OpenAPI at the boundary, gRPC between internal services.</li>
-        <li>Data and consistency: MongoDB backed services with clear ownership, idempotent writes, and attention to failure modes.</li>
-        <li>Reliable operation: retries, background jobs, and observability for flows that must finish even when dependencies degrade.</li>
-      </ul>
-      <p class="muted">
-        Background: Senior Consultant Developer at Thoughtworks (2025 to present);
-        Senior Software Engineer and Software Engineer at Paradigma Digital (2022 to 2025);
-        earlier software engineering in aeronautical services and full stack consulting (2021 to 2022).
-      </p>
     </section>
 
     <section class="section-block" aria-labelledby="experiments-heading">

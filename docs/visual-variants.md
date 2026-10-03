@@ -32,10 +32,10 @@ The older `projectsV2=true` flag is still recognized once per session so existin
 
 The home page has a separate content experiment:
 
-- `domainExperience` controls the commerce and logistics brief (`off` by default, `on` to show).
+- `domainExperience` swaps the home hero copy to include a commerce and logistics line (`off` by default, `on` to show).
 - It lives in the same developer panel, stores `off` or `on` in `sessionStorage` for the current tab, and sets `data-domain-experience` on the document.
-- The section is rendered with `hidden` and stays hidden unless the flag is `on`, so visitors never see panel copy, metadata, or navigation for it.
-- To promote it, remove `hidden`, the `data-domain-section` hook, and the flag field. To drop it, remove the section and its styles.
+- The stable hero stays visible unless the flag is `on`, so visitors never see panel copy, metadata, or navigation for it.
+- To promote it, keep the experiment copy and remove the flag hooks. To drop it, remove the experiment block and its styles.
 
 ## Global Styles
 
