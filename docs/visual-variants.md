@@ -39,10 +39,11 @@ The home page has a separate content experiment:
 
 The blog has a separate applause experiment:
 
-- `blogApplause` shows a local applause button on blog posts (`off` by default, `on` to show).
+- `blogApplause` shows local applause controls on blog posts (`off` by default, `on` to show).
 - It lives in the same developer panel, stores `off` or `on` in `sessionStorage` for the current tab, and sets `data-blog-applause` on the document.
-- Counts are stored per post in `localStorage`, repeat presses are allowed with a short cooldown, and the button kindly ignores non trusted events and honeypot fills.
-- Visitors never see the button unless the flag is `on`. To promote it, keep the applause block and remove the flag hooks. To drop it, remove the applause block and its styles.
+- The control is a shared icon button with four placements: a compact row under the post header, a sticky side rail on wide screens, the end of article section, and a sticky bottom dock on narrow screens. Rail and dock appear only while reading and hide near the footer. All placements share one per post `localStorage` count.
+- Repeat presses are allowed with a short cooldown, holding the button repeats, and the button kindly ignores non trusted events and honeypot fills.
+- Visitors never see the controls unless the flag is `on`. To promote it, keep the applause blocks and remove the flag hooks. To drop it, remove the applause blocks and their styles.
 
 ## Global Styles
 

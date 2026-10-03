@@ -1141,6 +1141,91 @@ html:not([data-blog-applause='on']) [data-blog-applause] {
   display: none;
 }
 
+.applause-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-width: 3rem;
+  min-height: 3rem;
+  padding: 0.5rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--bg-soft);
+  color: var(--text);
+  cursor: pointer;
+  font: inherit;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.applause-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.applause-btn:active {
+  transform: scale(0.94);
+}
+
+.applause-btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.applause-btn svg {
+  display: block;
+  flex-shrink: 0;
+}
+
+.applause-btn-text {
+  font-size: 0.95rem;
+  font-weight: 600;
+  padding-right: 0.5rem;
+}
+
+.applause-count {
+  margin: 0;
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+}
+
+.applause-inline {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  margin-top: 1rem;
+}
+
+.applause-inline .applause-btn {
+  min-width: 2.75rem;
+  min-height: 2.75rem;
+}
+
+.applause-rail {
+  position: fixed;
+  left: clamp(1rem, 4vw, 3rem);
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 40;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.2s ease, visibility 0.2s ease;
+}
+
+.applause-rail.is-visible {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
 .blog-applause {
   max-width: 68ch;
   margin-top: 3rem;
@@ -1160,13 +1245,6 @@ html:not([data-blog-applause='on']) [data-blog-applause] {
   margin-top: 1rem;
 }
 
-.blog-applause-count {
-  margin: 0;
-  color: var(--muted);
-  font-family: var(--font-mono);
-  font-size: 0.9rem;
-}
-
 .blog-applause-status {
   min-height: 1.5em;
   margin: 0.6rem 0 0;
@@ -1179,6 +1257,55 @@ html:not([data-blog-applause='on']) [data-blog-applause] {
   height: 1px;
   opacity: 0;
   pointer-events: none;
+}
+
+.applause-dock {
+  position: fixed;
+  right: 1rem;
+  bottom: calc(1rem + env(safe-area-inset-bottom));
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.45rem 0.8rem 0.45rem 0.45rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--bg-soft) 92%, transparent);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 10px 30px rgb(0 0 0 / 18%);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.2s ease, visibility 0.2s ease;
+}
+
+.applause-dock.is-visible {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+@media (max-width: 1199px) {
+  .applause-rail {
+    display: none;
+  }
+}
+
+@media (min-width: 1200px) {
+  .applause-dock {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .applause-btn:active {
+    transform: none;
+  }
+
+  .applause-rail,
+  .applause-dock {
+    transition: none;
+  }
 }
 
 html[data-site-style='current'] .section-block {

@@ -1,5 +1,6 @@
 ---
 import Base from '../../layouts/Base.astro';
+import BlogApplauseButton from '../../components/blog/BlogApplauseButton.astro';
 import { getCollection, render } from 'astro:content';
 import { formatDate, getReadTime } from '../../dates';
 
@@ -36,6 +37,7 @@ const slug = post.id.replace(/\.md$/, '');
     <span class="reading-progress-bar" data-reading-progress-bar></span>
   </div>
 
+  <div data-applause-root data-slug={slug}>
   <article class="blog-post">
     <header class="blog-post-header">
       <p class="blog-post-back"><a href="/blog/">← blog</a></p>
@@ -46,6 +48,10 @@ const slug = post.id.replace(/\.md$/, '');
         <time datetime={publishedDate}>{formatDate(post.data.date)}</time>
         <span aria-hidden="true">·</span>
         <span>{readTime} min read</span>
+      </div>
+      <div class="applause-inline" data-blog-applause>
+        <BlogApplauseButton variant="inline" />
+        <p class="applause-count"><span data-applause-count>0</span> <span>applause</span></p>
       </div>
       {(post.data.tags.length > 0 || post.data.categories.length > 0) && (
         <ul class="blog-post-tags" aria-label="Post topics">
@@ -81,33 +87,53 @@ const slug = post.id.replace(/\.md$/, '');
     </div>
   </article>
 
-  <section class="blog-applause" data-blog-applause data-slug={slug} aria-labelledby="blog-applause-title">
+  <aside class="applause-rail" data-blog-applause data-applause-rail role="group" aria-label="Applaud this post">
+    <BlogApplauseButton variant="rail" />
+    <p class="applause-count"><span data-applause-count>0</span></p>
+  </aside>
+
+  <section class="blog-applause" data-blog-applause data-applause-footer aria-labelledby="blog-applause-title">
     <h2 id="blog-applause-title">Enjoyed this note?</h2>
-    <p class="muted">Applaud to save a local cheer. You can applaud more than once.</p>
+    <p class="muted">Applaud to save a local cheer. Tap again for more, or hold the button.</p>
     <div class="blog-applause-row">
-      <button type="button" class="btn btn-primary" data-applause-button>Applaud</button>
-      <p class="blog-applause-count" aria-live="polite"><span data-applause-count>0</span> <span data-applause-unit>applause</span></p>
+      <BlogApplauseButton variant="footer" />
+      <p class="applause-count"><span data-applause-count>0</span> <span>applause</span></p>
     </div>
     <p class="blog-applause-status muted" data-applause-status role="status"></p>
     <input type="text" name="company" value="" autocomplete="off" tabindex="-1" aria-hidden="true" data-applause-trap class="blog-applause-trap" />
   </section>
+  </div>
+
+  <div class="applause-dock" data-blog-applause data-applause-dock role="group" aria-label="Applaud this post">
+    <BlogApplauseButton variant="dock" />
+    <p class="applause-count"><span data-applause-count>0</span></p>
+  </div>
 
   <script is:inline>
     (() => {
-      const container = document.querySelector('[data-blog-applause]');
-      if (!container) return;
-      const slug = container.getAttribute('data-slug') || 'post';
-      const button = container.querySelector('[data-applause-button]');
-      const countEl = container.querySelector('[data-applause-count]');
-      const statusEl = container.querySelector('[data-applause-status]');
-      const trap = container.querySelector('[data-applause-trap]');
-      if (!(button instanceof HTMLButtonElement) || !countEl || !statusEl) return;
+      const root = document.querySelector('[data-applause-root]');
+      if (!root) return;
+      const slug = root.getAttribute('data-slug') || 'post';
+      const buttons = Array.from(document.querySelectorAll('[data-applause-button]'));
+      if (buttons.length === 0) return;
+      const counts = Array.from(document.querySelectorAll('[data-applause-count]'));
+      const statusEl = document.querySelector('[data-applause-status]');
+      const trap = document.querySelector('[data-applause-trap]');
+      const rail = document.querySelector('[data-applause-rail]');
+      const dock = document.querySelector('[data-applause-dock]');
+      const footer = document.querySelector('[data-applause-footer]');
+      const header = root.querySelector('.blog-post-header');
 
       const storageKey = `blog-applause:${slug}`;
-      const cooldownMs = 1200;
+      const cooldownMs = 600;
+      const holdDelayMs = 450;
+      const holdRepeatMs = 320;
       let count = 0;
       let lastPress = 0;
-      let cooldownTimer = 0;
+      let reducedMotion = false;
+      try {
+        reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      } catch {}
 
       const readCount = () => {
         try {
@@ -120,7 +146,14 @@ const slug = post.id.replace(/\.md$/, '');
       };
 
       const render = () => {
-        countEl.textContent = String(count);
+        counts.forEach((el) => {
+          el.textContent = String(count);
+        });
+        buttons.forEach((button) => {
+          if (button instanceof HTMLButtonElement) {
+            button.setAttribute('aria-label', `Applaud this post, ${count} applause so far`);
+          }
+        });
       };
 
       const save = () => {
@@ -129,28 +162,111 @@ const slug = post.id.replace(/\.md$/, '');
         } catch {}
       };
 
-      count = readCount();
-      render();
+      const pop = (button) => {
+        if (reducedMotion) return;
+        const icon = button.querySelector('[data-applause-icon]');
+        if (!icon || typeof icon.animate !== 'function') return;
+        try {
+          if (typeof icon.getAnimations === 'function') {
+            icon.getAnimations().forEach((animation) => animation.cancel());
+          }
+          icon.animate(
+            [{ transform: 'scale(1)' }, { transform: 'scale(1.25)' }, { transform: 'scale(1)' }],
+            { duration: 180, easing: 'cubic-bezier(.34,1.56,.64,1)' }
+          );
+        } catch {}
+      };
 
-      button.addEventListener('click', (event) => {
-        if (event.isTrusted === false) return;
-        if (trap instanceof HTMLInputElement && trap.value !== '') return;
+      const tryApplaud = (event, button, quiet) => {
+        if (event && event.isTrusted === false) return false;
+        if (trap instanceof HTMLInputElement && trap.value !== '') return false;
         const now = Date.now();
         if (now - lastPress < cooldownMs) {
-          statusEl.textContent = 'A short pause keeps applause fair. Try again in a moment.';
-          return;
+          if (!quiet && statusEl) statusEl.textContent = 'A short pause keeps applause fair. Try again in a moment.';
+          return false;
         }
         lastPress = now;
         count += 1;
         save();
         render();
-        statusEl.textContent = count === 1 ? 'Thanks for the applause.' : 'Thanks, counted again.';
-        button.disabled = true;
-        window.clearTimeout(cooldownTimer);
-        cooldownTimer = window.setTimeout(() => {
-          button.disabled = false;
-        }, cooldownMs);
+        pop(button);
+        if (statusEl) statusEl.textContent = count === 1 ? 'Thanks for the applause.' : 'Thanks, counted again.';
+        return true;
+      };
+
+      buttons.forEach((button) => {
+        if (!(button instanceof HTMLButtonElement)) return;
+        button.addEventListener('click', (event) => {
+          tryApplaud(event, button, false);
+        });
+        let holdTimer = 0;
+        let repeatTimer = 0;
+        const clearHold = () => {
+          window.clearTimeout(holdTimer);
+          window.clearInterval(repeatTimer);
+        };
+        button.addEventListener('pointerdown', (event) => {
+          if (event.isTrusted === false) return;
+          window.clearTimeout(holdTimer);
+          window.clearInterval(repeatTimer);
+          holdTimer = window.setTimeout(() => {
+            repeatTimer = window.setInterval(() => {
+              tryApplaud(null, button, true);
+            }, holdRepeatMs);
+          }, holdDelayMs);
+        });
+        ['pointerup', 'pointerleave', 'pointercancel'].forEach((name) => {
+          button.addEventListener(name, clearHold);
+        });
       });
+
+      window.addEventListener('storage', (event) => {
+        if (event.key !== storageKey) return;
+        const parsed = Number.parseInt(event.newValue ?? '0', 10);
+        if (Number.isFinite(parsed) && parsed >= 0) {
+          count = parsed;
+          render();
+        }
+      });
+
+      count = readCount();
+      render();
+
+      let pastHeader = false;
+      let footerVisible = false;
+      const updateVisibility = () => {
+        const show = pastHeader && !footerVisible;
+        if (rail instanceof HTMLElement) rail.classList.toggle('is-visible', show);
+        if (dock instanceof HTMLElement) dock.classList.toggle('is-visible', show);
+      };
+
+      const updatePastHeader = () => {
+        if (!(header instanceof HTMLElement)) {
+          pastHeader = true;
+        } else {
+          pastHeader = window.scrollY + window.innerHeight * 0.3 > header.getBoundingClientRect().bottom + window.scrollY;
+        }
+        updateVisibility();
+      };
+
+      let scrollFrame = 0;
+      window.addEventListener('scroll', () => {
+        if (scrollFrame) return;
+        scrollFrame = window.requestAnimationFrame(() => {
+          scrollFrame = 0;
+          updatePastHeader();
+        });
+      }, { passive: true });
+      window.addEventListener('resize', updatePastHeader);
+
+      if (footer instanceof Element && typeof IntersectionObserver === 'function') {
+        const footerObserver = new IntersectionObserver((entries) => {
+          footerVisible = entries.some((entry) => entry.isIntersecting);
+          updateVisibility();
+        }, { threshold: 0.15 });
+        footerObserver.observe(footer);
+      }
+      updatePastHeader();
     })();
   </script>
 
