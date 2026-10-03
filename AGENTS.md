@@ -71,10 +71,10 @@ implement
 
 After each `push` to `main`:
 
-1. Identify the pipeline corresponding to the commit you just sent.
-2. Use the pipeline observer available in the environment to check its status.
-3. Wait for it to finish when necessary.
-4. Check that the relevant stages have finished correctly.
+1. Identify the pipeline corresponding to the commit you just sent. For this repository this is the `Deploy Astro site` GitHub Actions workflow (`.github/workflows/deploy.yml`), which builds the site and deploys `dist/` to GitHub Pages.
+2. Use the pipeline observer available in the environment to check its status. Prefer `gh run list --branch main --limit 5` to find the run for your commit, then `gh run watch <run-id> --exit-status` to wait for it.
+3. Wait for it to finish when necessary. Do not report the task as pushed or done while the run is still queued or in progress.
+4. Check that the relevant stages have finished correctly, including the `build-and-deploy` job with its `Build` and `Deploy` steps.
 5. If it fails, inspect the result and determine whether the failure is related to the change.
 6. Fix issues that are the agent's responsibility.
 7. Repeat local validation, make an additional atomic commit if applicable, and check the pipeline again.
