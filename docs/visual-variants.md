@@ -22,6 +22,7 @@ sessionStorage.removeItem('siteStyle');
 sessionStorage.removeItem('projectsLayout');
 sessionStorage.removeItem('projectsV2');
 sessionStorage.removeItem('bioRefresh');
+sessionStorage.removeItem('blogApplause');
 location.reload();
 ```
 
@@ -35,6 +36,13 @@ The home page has a separate content experiment:
 - It lives in the same developer panel, stores `off` or `on` in `sessionStorage` for the current tab, and sets `data-bio-refresh` on the document.
 - The stable hero stays visible unless the flag is `on`, so visitors never see panel copy, metadata, or navigation for it.
 - To promote it, keep the experiment copy and remove the flag hooks. To drop it, remove the experiment block and its styles.
+
+The blog has a separate applause experiment:
+
+- `blogApplause` shows a local applause button on blog posts (`off` by default, `on` to show).
+- It lives in the same developer panel, stores `off` or `on` in `sessionStorage` for the current tab, and sets `data-blog-applause` on the document.
+- Counts are stored per post in `localStorage`, repeat presses are allowed with a short cooldown, and the button kindly ignores non trusted events and honeypot fills.
+- Visitors never see the button unless the flag is `on`. To promote it, keep the applause block and remove the flag hooks. To drop it, remove the applause block and its styles.
 
 ## Global Styles
 

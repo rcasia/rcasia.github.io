@@ -1136,6 +1136,51 @@ html[data-bio-refresh='on'] [data-hero-stable] {
   display: none;
 }
 
+/* Blog applause experiment. Hidden unless the flag is on. Remove with the experiment block to promote or drop it. */
+html:not([data-blog-applause='on']) [data-blog-applause] {
+  display: none;
+}
+
+.blog-applause {
+  max-width: 68ch;
+  margin-top: 3rem;
+  border-top: 1px solid var(--border);
+  padding-top: 1.5rem;
+}
+
+.blog-applause h2 {
+  margin: 0 0 0.35rem;
+  font-size: 1.25rem;
+}
+
+.blog-applause-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.blog-applause-count {
+  margin: 0;
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+}
+
+.blog-applause-status {
+  min-height: 1.5em;
+  margin: 0.6rem 0 0;
+  font-size: 0.9rem;
+}
+
+.blog-applause-trap {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
 html[data-site-style='current'] .section-block {
   margin-top: 0;
 }

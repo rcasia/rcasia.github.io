@@ -19,6 +19,7 @@ const { Content, headings } = await render(post);
 const tocHeadings = headings.filter(({ depth }) => depth === 2 || depth === 3);
 const readTime = getReadTime(post.body);
 const publishedDate = post.data.date.toISOString().slice(0, 10);
+const slug = post.id.replace(/\.md$/, '');
 ---
 
 <Base title={post.data.title} description={post.data.description} current="blog">
@@ -79,6 +80,79 @@ const publishedDate = post.data.date.toISOString().slice(0, 10);
       </div>
     </div>
   </article>
+
+  <section class="blog-applause" data-blog-applause data-slug={slug} aria-labelledby="blog-applause-title">
+    <h2 id="blog-applause-title">Enjoyed this note?</h2>
+    <p class="muted">Applaud to save a local cheer. You can applaud more than once.</p>
+    <div class="blog-applause-row">
+      <button type="button" class="btn btn-primary" data-applause-button>Applaud</button>
+      <p class="blog-applause-count" aria-live="polite"><span data-applause-count>0</span> <span data-applause-unit>applause</span></p>
+    </div>
+    <p class="blog-applause-status muted" data-applause-status role="status"></p>
+    <input type="text" name="company" value="" autocomplete="off" tabindex="-1" aria-hidden="true" data-applause-trap class="blog-applause-trap" />
+  </section>
+
+  <script is:inline>
+    (() => {
+      const container = document.querySelector('[data-blog-applause]');
+      if (!container) return;
+      const slug = container.getAttribute('data-slug') || 'post';
+      const button = container.querySelector('[data-applause-button]');
+      const countEl = container.querySelector('[data-applause-count]');
+      const statusEl = container.querySelector('[data-applause-status]');
+      const trap = container.querySelector('[data-applause-trap]');
+      if (!(button instanceof HTMLButtonElement) || !countEl || !statusEl) return;
+
+      const storageKey = `blog-applause:${slug}`;
+      const cooldownMs = 1200;
+      let count = 0;
+      let lastPress = 0;
+      let cooldownTimer = 0;
+
+      const readCount = () => {
+        try {
+          const raw = localStorage.getItem(storageKey);
+          const parsed = raw === null ? 0 : Number.parseInt(raw, 10);
+          return Number.isFinite(parsed) && parsed >= 0 ? parsed : 0;
+        } catch {
+          return count;
+        }
+      };
+
+      const render = () => {
+        countEl.textContent = String(count);
+      };
+
+      const save = () => {
+        try {
+          localStorage.setItem(storageKey, String(count));
+        } catch {}
+      };
+
+      count = readCount();
+      render();
+
+      button.addEventListener('click', (event) => {
+        if (event.isTrusted === false) return;
+        if (trap instanceof HTMLInputElement && trap.value !== '') return;
+        const now = Date.now();
+        if (now - lastPress < cooldownMs) {
+          statusEl.textContent = 'A short pause keeps applause fair. Try again in a moment.';
+          return;
+        }
+        lastPress = now;
+        count += 1;
+        save();
+        render();
+        statusEl.textContent = count === 1 ? 'Thanks for the applause.' : 'Thanks, counted again.';
+        button.disabled = true;
+        window.clearTimeout(cooldownTimer);
+        cooldownTimer = window.setTimeout(() => {
+          button.disabled = false;
+        }, cooldownMs);
+      });
+    })();
+  </script>
 
   <script is:inline>
     const article = document.querySelector('.blog-post');

@@ -67,6 +67,7 @@ const projectsLayoutValues = PROJECTS_LAYOUTS.map(({ value }) => value);
           localStorage.removeItem('projectsLayout');
           localStorage.removeItem('projectsV2');
           localStorage.removeItem('bioRefresh');
+          localStorage.removeItem('blogApplause');
         } catch {}
         const storedStyle = sessionStorage.getItem('siteStyle');
         const siteStyle = siteStyleValues.includes(storedStyle) ? storedStyle : defaultSiteStyle;
@@ -78,6 +79,9 @@ const projectsLayoutValues = PROJECTS_LAYOUTS.map(({ value }) => value);
         // Home bio refresh experiment. Disabled by default, no visible UI for visitors.
         const bioRefresh = sessionStorage.getItem('bioRefresh');
         root.setAttribute('data-bio-refresh', bioRefresh === 'on' ? 'on' : 'off');
+        // Blog applause experiment. Disabled by default, no visible UI for visitors.
+        const blogApplause = sessionStorage.getItem('blogApplause');
+        root.setAttribute('data-blog-applause', blogApplause === 'on' ? 'on' : 'off');
       } catch {}
     </script>
 
@@ -273,6 +277,14 @@ const projectsLayoutValues = PROJECTS_LAYOUTS.map(({ value }) => value);
           </select>
           <p id="feature-flag-bioRefresh-description">Shows the LinkedIn-informed home hero bio. Off by default.</p>
         </div>
+        <div class="feature-flag-field">
+          <label for="feature-flag-blogApplause">Blog applause</label>
+          <select id="feature-flag-blogApplause" data-feature-flag="blogApplause" aria-describedby="feature-flag-blogApplause-description">
+            <option value="off">Off</option>
+            <option value="on">On</option>
+          </select>
+          <p id="feature-flag-blogApplause-description">Shows the local applause button on blog posts. Off by default.</p>
+        </div>
         <div class="feature-flag-panel-actions">
           <button id="feature-flag-reset" type="button">Reset to defaults</button>
           <button type="submit" value="cancel">Close</button>
@@ -338,7 +350,7 @@ const projectsLayoutValues = PROJECTS_LAYOUTS.map(({ value }) => value);
         featureFlagInputs.forEach((input) => {
           const key = input.dataset.featureFlag;
           if (!key) return;
-          const fallback = key === 'siteStyle' ? defaultSiteStyle : key === 'projectsLayout' ? defaultProjectsLayout : key === 'bioRefresh' ? 'off' : '';
+          const fallback = key === 'siteStyle' ? defaultSiteStyle : key === 'projectsLayout' ? defaultProjectsLayout : key === 'bioRefresh' ? 'off' : key === 'blogApplause' ? 'off' : '';
           const storedValue = readFeatureFlag(key);
           const stored = key === 'projectsLayout' && !storedValue
             ? (isFeatureFlagEnabled('projectsV2') ? 'expanded' : defaultProjectsLayout)
@@ -383,6 +395,7 @@ const projectsLayoutValues = PROJECTS_LAYOUTS.map(({ value }) => value);
             localStorage.removeItem('projectsLayout');
             localStorage.removeItem('projectsV2');
             localStorage.removeItem('bioRefresh');
+            localStorage.removeItem('blogApplause');
           } catch {}
           featureFlagPanel.close();
           location.reload();
@@ -395,11 +408,13 @@ const projectsLayoutValues = PROJECTS_LAYOUTS.map(({ value }) => value);
           sessionStorage.removeItem('projectsLayout');
           sessionStorage.removeItem('projectsV2');
           sessionStorage.removeItem('bioRefresh');
+          sessionStorage.removeItem('blogApplause');
           try {
             localStorage.removeItem('siteStyle');
             localStorage.removeItem('projectsLayout');
             localStorage.removeItem('projectsV2');
             localStorage.removeItem('bioRefresh');
+            localStorage.removeItem('blogApplause');
           } catch {}
           featureFlagPanel.close();
           location.reload();
@@ -416,6 +431,9 @@ const projectsLayoutValues = PROJECTS_LAYOUTS.map(({ value }) => value);
           document.querySelectorAll('[data-hero-experiment][hidden]').forEach((el) => {
             el.removeAttribute('hidden');
           });
+        }
+        if (sessionStorage.getItem('blogApplause') === 'on') {
+          document.documentElement.setAttribute('data-blog-applause', 'on');
         }
       } catch {}
     </script>
