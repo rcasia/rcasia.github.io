@@ -10,7 +10,7 @@ These rules are mandatory for any agent working in this repository.
 - If there are local changes you did not create, do not revert or overwrite them. Stop if they interfere with the work and ask for clarification.
 - Keep `main` always deployable.
 - Do not use destructive commands such as `git reset --hard` or `git checkout --`.
-- Do not push to `main` until you have run the relevant local checks and confirmed the change works.
+- Prefer pushing to `main` after local checks. We practice CI/CD, so do not leave finished work unpushed: run the relevant local checks, confirm the change works, then commit and push so the pipeline validates it.
 
 ## Language and content
 
@@ -25,7 +25,8 @@ These rules are mandatory for any agent working in this repository.
 
 - First inspect the stack, the architecture, the conventions, and the affected code.
 - Define the scope and the acceptance criteria before editing.
-- If context is missing, there are several reasonable interpretations, or the change may affect production, stop and ask for clarification. Do not assume.
+- If context is missing or there are several reasonable interpretations that a flag cannot safely cover, stop and ask for clarification. Do not assume.
+- If the change may affect production, do not hold it locally by default: put it behind a feature flag (disabled by default, invisible to visitors) and proceed through CI/CD.
 - Do not modify pages, modules, or settings outside the requested scope.
 - Do not add external dependencies without an explicit and justified need.
 
@@ -56,6 +57,8 @@ These rules are mandatory for any agent working in this repository.
 - Do not include secrets, generated artifacts, or unrelated changes.
 
 ## Push and CI/CD pipeline
+
+We work with CI/CD: default to pushing finished work to `main` so the pipeline validates and deploys it. Use feature flags (disabled by default) to keep risky changes safe, not long lived local branches.
 
 Pipeline validation is part of the definition of done. The mandatory sequence is:
 
