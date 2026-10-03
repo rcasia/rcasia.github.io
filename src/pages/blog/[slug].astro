@@ -1,7 +1,9 @@
 ---
 import Base from '../../layouts/Base.astro';
 import BlogApplauseButton from '../../components/blog/BlogApplauseButton.astro';
+import BlogShare from '../../components/blog/BlogShare.astro';
 import { getCollection, render } from 'astro:content';
+import { SITE } from '../../site';
 import { formatDate, getReadTime } from '../../dates';
 
 export async function getStaticPaths() {
@@ -21,6 +23,9 @@ const tocHeadings = headings.filter(({ depth }) => depth === 2 || depth === 3);
 const readTime = getReadTime(post.body);
 const publishedDate = post.data.date.toISOString().slice(0, 10);
 const slug = post.id.replace(/\.md$/, '');
+const shareUrl = new URL(`/blog/${slug}/`, SITE.url).toString();
+const shareTitle = post.data.title;
+const shareDescription = post.data.description;
 ---
 
 <Base title={post.data.title} description={post.data.description} current="blog">
@@ -52,6 +57,9 @@ const slug = post.id.replace(/\.md$/, '');
       <div class="applause-inline" data-blog-applause>
         <BlogApplauseButton variant="inline" />
         <p class="applause-count"><span data-applause-count>0</span> <span>applause</span></p>
+      </div>
+      <div class="share-inline" data-blog-share>
+        <BlogShare variant="inline" url={shareUrl} title={shareTitle} description={shareDescription} />
       </div>
       {(post.data.tags.length > 0 || post.data.categories.length > 0) && (
         <ul class="blog-post-tags" aria-label="Post topics">
@@ -110,12 +118,141 @@ const slug = post.id.replace(/\.md$/, '');
     <p class="blog-applause-status muted" data-applause-status role="status"></p>
     <input type="text" name="company" value="" autocomplete="off" tabindex="-1" aria-hidden="true" data-applause-trap class="blog-applause-trap" />
   </section>
+
+  <section class="blog-share-footer" data-blog-share data-share-footer aria-labelledby="blog-share-title">
+    <h2 id="blog-share-title">Share this note</h2>
+    <p class="muted">Send it to someone who would enjoy it.</p>
+    <BlogShare variant="footer" url={shareUrl} title={shareTitle} description={shareDescription} />
+  </section>
+  </div>
+
+  <aside class="share-rail" data-blog-share data-share-rail role="group" aria-label="Share this post">
+    <BlogShare variant="rail" url={shareUrl} title={shareTitle} description={shareDescription} />
+  </aside>
+
+  <div class="share-dock" data-blog-share data-share-dock role="group" aria-label="Share this post">
+    <BlogShare variant="dock" url={shareUrl} title={shareTitle} description={shareDescription} />
   </div>
 
   <div class="applause-dock" data-blog-applause data-applause-dock role="group" aria-label="Applaud this post">
     <BlogApplauseButton variant="dock" />
     <p class="applause-count"><span data-applause-count>0</span></p>
   </div>
+
+  <script is:inline>
+    (() => {
+      const blocks = Array.from(document.querySelectorAll('[data-share-block]'));
+      if (blocks.length === 0) return;
+
+      const canNativeShare = typeof navigator !== 'undefined' && typeof navigator.share === 'function';
+      if (canNativeShare) {
+        blocks.forEach((block) => {
+          block.querySelectorAll('[data-share-native]').forEach((button) => {
+            if (button instanceof HTMLButtonElement) button.removeAttribute('hidden');
+          });
+        });
+      }
+
+      const setStatus = (block, message) => {
+        const status = block.querySelector('[data-share-status]');
+        if (status) status.textContent = message;
+      };
+
+      const copyText = async (text) => {
+        try {
+          await navigator.clipboard.writeText(text);
+          return true;
+        } catch {}
+        try {
+          const area = document.createElement('textarea');
+          area.value = text;
+          area.setAttribute('readonly', '');
+          area.style.position = 'fixed';
+          area.style.opacity = '0';
+          document.body.appendChild(area);
+          area.select();
+          const ok = document.execCommand('copy');
+          area.remove();
+          return ok;
+        } catch {
+          return false;
+        }
+      };
+
+      blocks.forEach((block) => {
+        const url = block.getAttribute('data-share-url') || window.location.href;
+        const title = block.getAttribute('data-share-title') || document.title;
+        const text = block.getAttribute('data-share-text') || '';
+
+        block.querySelectorAll('[data-share-copy]').forEach((button) => {
+          if (!(button instanceof HTMLButtonElement)) return;
+          button.addEventListener('click', async () => {
+            const ok = await copyText(url);
+            setStatus(block, ok ? 'Link copied.' : 'Copy failed. Long press the address bar to copy.');
+          });
+        });
+
+        block.querySelectorAll('[data-share-native]').forEach((button) => {
+          if (!(button instanceof HTMLButtonElement)) return;
+          button.addEventListener('click', async () => {
+            if (typeof navigator.share !== 'function') {
+              setStatus(block, 'System share is not available. Use copy link instead.');
+              return;
+            }
+            try {
+              await navigator.share({ title, text, url });
+            } catch (error) {
+              if (error && error.name !== 'AbortError') {
+                setStatus(block, 'Share failed. Use copy link instead.');
+              }
+            }
+          });
+        });
+      });
+
+      const rail = document.querySelector('[data-share-rail]');
+      const dock = document.querySelector('[data-share-dock]');
+      const footer = document.querySelector('[data-share-footer]');
+      const header = document.querySelector('.blog-post-header');
+      if (!rail && !dock) return;
+
+      let pastHeader = false;
+      let footerVisible = false;
+      const updateVisibility = () => {
+        const show = pastHeader && !footerVisible;
+        if (rail instanceof HTMLElement) rail.classList.toggle('is-visible', show);
+        if (dock instanceof HTMLElement) dock.classList.toggle('is-visible', show);
+      };
+
+      const updatePastHeader = () => {
+        if (!(header instanceof HTMLElement)) {
+          pastHeader = true;
+        } else {
+          pastHeader = window.scrollY + window.innerHeight * 0.3 > header.getBoundingClientRect().bottom + window.scrollY;
+        }
+        updateVisibility();
+      };
+
+      let scrollFrame = 0;
+      window.addEventListener('scroll', () => {
+        if (scrollFrame) return;
+        scrollFrame = window.requestAnimationFrame(() => {
+          scrollFrame = 0;
+          updatePastHeader();
+        });
+      }, { passive: true });
+      window.addEventListener('resize', updatePastHeader);
+
+      if (footer instanceof Element && typeof IntersectionObserver === 'function') {
+        const footerObserver = new IntersectionObserver((entries) => {
+          footerVisible = entries.some((entry) => entry.isIntersecting);
+          updateVisibility();
+        }, { threshold: 0.15 });
+        footerObserver.observe(footer);
+      }
+      updatePastHeader();
+    })();
+  </script>
 
   <script is:inline>
     (() => {

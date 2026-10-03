@@ -25,6 +25,7 @@ sessionStorage.removeItem('bioRefresh');
 sessionStorage.removeItem('blogApplause');
 sessionStorage.removeItem('readingProgress');
 sessionStorage.removeItem('homeCta');
+sessionStorage.removeItem('blogShare');
 location.reload();
 ```
 
@@ -62,6 +63,14 @@ The home page has a separate call to action experiment:
 - It lives in the same developer panel, stores `off` or `on` in `sessionStorage` for the current tab, and sets `data-home-cta` on the document.
 - The stable row stays visible unless the flag is `on`, so visitors see no change by default. The experiment keeps the same labels and destinations, but gives View selected work primary emphasis, keeps Get in touch secondary, and moves GitHub to a quiet external link with an icon and new tab indication.
 - To promote it, keep the experiment markup and remove the flag hooks. To drop it, remove the experiment block and its styles.
+
+The blog has a separate share experiment:
+
+- `blogShare` shows share actions on blog posts (`off` by default, `on` to show).
+- It lives in the same developer panel, stores `off` or `on` in `sessionStorage` for the current tab, and sets `data-blog-share` on the document.
+- The control is a shared `BlogShare.astro` block with four placements: a compact row under the post header, an end of article section, a sticky side rail on wide screens, and a sticky bottom dock on narrow screens. Rail and dock appear only while reading and hide near the footer. All placements share the same absolute post URL.
+- Actions are LinkedIn share, X post intent, copy link with clipboard fallback and status text, and native system share shown only when `navigator.share` exists.
+- Visitors never see the controls unless the flag is `on`. To promote it, keep the share blocks and remove the flag hooks. To drop it, remove the share blocks and their styles.
 
 ## Global Styles
 

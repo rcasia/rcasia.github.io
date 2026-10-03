@@ -72,6 +72,7 @@ const projectsLayoutValues = PROJECTS_LAYOUTS.map(({ value }) => value);
             sessionStorage.removeItem('blogApplause');
             sessionStorage.removeItem('readingProgress');
             sessionStorage.removeItem('homeCta');
+            sessionStorage.removeItem('blogShare');
             sessionStorage.setItem('siteDeploymentVersion', deployedVersion);
           }
         } catch {}
@@ -83,6 +84,7 @@ const projectsLayoutValues = PROJECTS_LAYOUTS.map(({ value }) => value);
           localStorage.removeItem('blogApplause');
           localStorage.removeItem('readingProgress');
           localStorage.removeItem('homeCta');
+          localStorage.removeItem('blogShare');
         } catch {}
         const storedStyle = sessionStorage.getItem('siteStyle');
         const siteStyle = siteStyleValues.includes(storedStyle) ? storedStyle : defaultSiteStyle;
@@ -106,6 +108,9 @@ const projectsLayoutValues = PROJECTS_LAYOUTS.map(({ value }) => value);
         // Home CTA experiment. Disabled by default, no visible UI for visitors.
         const homeCta = sessionStorage.getItem('homeCta');
         root.setAttribute('data-home-cta', homeCta === 'on' ? 'on' : 'off');
+        // Blog share experiment. Disabled by default, no visible UI for visitors.
+        const blogShare = sessionStorage.getItem('blogShare');
+        root.setAttribute('data-blog-share', blogShare === 'on' ? 'on' : 'off');
       } catch {}
     </script>
 
@@ -510,6 +515,28 @@ const projectsLayoutValues = PROJECTS_LAYOUTS.map(({ value }) => value);
               </div>
             </div>
           </div>
+          <div class="feature-flag-item">
+            <button type="button" class="feature-flag-trigger" id="feature-flag-trigger-blogShare" data-accordion-for="blogShare" aria-expanded="false" aria-controls="feature-flag-detail-blogShare">
+              <span class="feature-flag-trigger-meta">
+                <span class="feature-flag-trigger-name">Blog share</span>
+              </span>
+              <span class="feature-flag-trigger-side">
+                <span class="feature-flag-badge" data-badge-for="blogShare" data-state="default">Default</span>
+                <span class="feature-flag-chevron" aria-hidden="true">▾</span>
+              </span>
+            </button>
+            <div class="feature-flag-detail" id="feature-flag-detail-blogShare" data-accordion-panel="blogShare" role="region" aria-labelledby="feature-flag-trigger-blogShare" hidden>
+              <div class="feature-flag-field">
+                <label for="feature-flag-blogShare">Blog share</label>
+                <select id="feature-flag-blogShare" data-feature-flag="blogShare" aria-describedby="feature-flag-blogShare-description">
+                  <option value="off">Off</option>
+                  <option value="on">On</option>
+                </select>
+                <p id="feature-flag-blogShare-description">Blog. Share links on posts. Default: Off.</p>
+                <button type="button" class="feature-flag-mini" data-reset-flag="blogShare">Reset to default</button>
+              </div>
+            </div>
+          </div>
         </div>
         <div class="feature-flag-panel-actions">
           <button id="feature-flag-reset" type="button">Reset to defaults</button>
@@ -600,7 +627,7 @@ const projectsLayoutValues = PROJECTS_LAYOUTS.map(({ value }) => value);
       const getFlagDefault = (key) => {
         if (key === 'siteStyle') return defaultSiteStyle;
         if (key === 'projectsLayout') return defaultProjectsLayout;
-        if (key === 'bioRefresh' || key === 'blogApplause' || key === 'readingProgress' || key === 'homeCta') return 'off';
+        if (key === 'bioRefresh' || key === 'blogApplause' || key === 'readingProgress' || key === 'homeCta' || key === 'blogShare') return 'off';
         return '';
       };
 
@@ -611,6 +638,7 @@ const projectsLayoutValues = PROJECTS_LAYOUTS.map(({ value }) => value);
         if (key === 'blogApplause') return 'data-blog-applause';
         if (key === 'readingProgress') return 'data-reading-progress';
         if (key === 'homeCta') return 'data-home-cta';
+        if (key === 'blogShare') return 'data-blog-share';
         return null;
       };
 
@@ -650,7 +678,7 @@ const projectsLayoutValues = PROJECTS_LAYOUTS.map(({ value }) => value);
         if (attribute) document.documentElement.setAttribute(attribute, value);
         if (key === 'bioRefresh') syncBioHero(value);
         if (key === 'homeCta') syncHomeCta(value);
-        if (key === 'readingProgress' || key === 'blogApplause') {
+        if (key === 'readingProgress' || key === 'blogApplause' || key === 'blogShare') {
           try {
             window.dispatchEvent(new Event('resize'));
             window.dispatchEvent(new Event('scroll'));
@@ -774,6 +802,7 @@ const projectsLayoutValues = PROJECTS_LAYOUTS.map(({ value }) => value);
             localStorage.removeItem('blogApplause');
             localStorage.removeItem('readingProgress');
             localStorage.removeItem('homeCta');
+            localStorage.removeItem('blogShare');
           } catch {}
           featureFlagPanel.close();
           location.reload();
@@ -789,6 +818,7 @@ const projectsLayoutValues = PROJECTS_LAYOUTS.map(({ value }) => value);
           sessionStorage.removeItem('blogApplause');
           sessionStorage.removeItem('readingProgress');
           sessionStorage.removeItem('homeCta');
+          sessionStorage.removeItem('blogShare');
           try {
             localStorage.removeItem('siteStyle');
             localStorage.removeItem('projectsLayout');
@@ -797,6 +827,7 @@ const projectsLayoutValues = PROJECTS_LAYOUTS.map(({ value }) => value);
             localStorage.removeItem('blogApplause');
             localStorage.removeItem('readingProgress');
             localStorage.removeItem('homeCta');
+            localStorage.removeItem('blogShare');
           } catch {}
           featureFlagPanel.close();
           location.reload();
@@ -825,6 +856,9 @@ const projectsLayoutValues = PROJECTS_LAYOUTS.map(({ value }) => value);
           document.querySelectorAll('[data-cta-experiment][hidden]').forEach((el) => {
             el.removeAttribute('hidden');
           });
+        }
+        if (sessionStorage.getItem('blogShare') === 'on') {
+          document.documentElement.setAttribute('data-blog-share', 'on');
         }
       } catch {}
     </script>

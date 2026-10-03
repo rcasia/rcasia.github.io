@@ -1474,6 +1474,166 @@ html[data-reading-progress='ring'] [data-rail-progress-ring] {
   }
 }
 
+/* Blog share experiment. Hidden unless the flag is on. Remove with the experiment block to promote or drop it. */
+html:not([data-blog-share='on']) [data-blog-share] {
+  display: none;
+}
+
+.blog-share {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.share-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-width: 2.75rem;
+  min-height: 2.75rem;
+  padding: 0.5rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--bg-soft);
+  color: var(--text);
+  cursor: pointer;
+  font: inherit;
+  text-decoration: none;
+  touch-action: manipulation;
+}
+
+.share-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.share-btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.share-btn svg {
+  display: block;
+  flex-shrink: 0;
+}
+
+.share-btn-text {
+  font-size: 0.9rem;
+  font-weight: 600;
+  padding-right: 0.5rem;
+}
+
+.share-status {
+  flex-basis: 100%;
+  min-height: 1.5em;
+  margin: 0.25rem 0 0;
+  font-size: 0.85rem;
+}
+
+.blog-share-inline .share-status,
+.blog-share-rail .share-status,
+.blog-share-dock .share-status {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+}
+
+.share-inline {
+  margin-top: 1rem;
+}
+
+.blog-share-footer {
+  max-width: 68ch;
+  margin-top: 2.5rem;
+  border-top: 1px solid var(--border);
+  padding-top: 1.5rem;
+}
+
+.blog-share-footer h2 {
+  margin: 0 0 0.35rem;
+  font-size: 1.25rem;
+}
+
+.blog-share-footer .blog-share {
+  margin-top: 1rem;
+}
+
+.share-rail {
+  position: fixed;
+  left: clamp(1rem, 4vw, 3rem);
+  top: calc(50% + 7rem);
+  transform: translateY(-50%);
+  z-index: 40;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.2s ease, visibility 0.2s ease;
+}
+
+.share-rail.is-visible {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.share-rail .blog-share {
+  flex-direction: column;
+  align-items: center;
+}
+
+.share-dock {
+  position: fixed;
+  right: 1rem;
+  bottom: calc(4.75rem + env(safe-area-inset-bottom));
+  z-index: 41;
+  padding: 0.45rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--bg-soft) 92%, transparent);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 10px 30px rgb(0 0 0 / 18%);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.2s ease, visibility 0.2s ease;
+}
+
+.share-dock.is-visible {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.share-dock .blog-share {
+  flex-wrap: nowrap;
+  gap: 0.4rem;
+}
+
+@media (max-width: 1199px) {
+  .share-rail {
+    display: none;
+  }
+}
+
+@media (min-width: 1200px) {
+  .share-dock {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .share-rail,
+  .share-dock {
+    transition: none;
+  }
+}
+
 html[data-site-style='current'] .section-block {
   margin-top: 0;
 }
