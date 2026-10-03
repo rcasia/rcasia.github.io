@@ -126,7 +126,7 @@ const projectsLayoutValues = PROJECTS_LAYOUTS.map(({ value }) => value);
     </script>
     <style>
       #feature-flag-panel {
-        width: min(360px, calc(100% - 2rem));
+        width: min(440px, calc(100% - 2rem));
         padding: 0;
         border: 1px solid var(--border);
         border-radius: 12px;
@@ -142,6 +142,8 @@ const projectsLayoutValues = PROJECTS_LAYOUTS.map(({ value }) => value);
         display: grid;
         gap: 1rem;
         padding: 1.25rem;
+        max-height: min(80vh, 640px);
+        overflow: auto;
       }
 
       .feature-flag-panel h2,
@@ -154,11 +156,39 @@ const projectsLayoutValues = PROJECTS_LAYOUTS.map(({ value }) => value);
         font-size: 0.9rem;
       }
 
+      .feature-flag-head {
+        display: grid;
+        gap: 0.35rem;
+      }
+
+      .feature-flag-summary {
+        font-size: 0.85rem;
+      }
+
+      .feature-flag-summary[data-state='modified'] {
+        color: var(--accent);
+      }
+
       .feature-flag-panel label {
         display: flex;
         align-items: center;
         justify-content: space-between;
         gap: 0.6rem;
+      }
+
+      .feature-flag-group {
+        display: grid;
+        gap: 0.75rem;
+        margin: 0;
+        padding: 0.75rem;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+      }
+
+      .feature-flag-group legend {
+        padding: 0 0.4rem;
+        font-size: 0.85rem;
+        font-weight: 600;
       }
 
       .feature-flag-field {
@@ -168,6 +198,27 @@ const projectsLayoutValues = PROJECTS_LAYOUTS.map(({ value }) => value);
 
       .feature-flag-field label {
         font-weight: 600;
+      }
+
+      .feature-flag-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.6rem;
+      }
+
+      .feature-flag-badge {
+        flex: none;
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        padding: 0.1rem 0.55rem;
+        font-size: 0.75rem;
+        color: var(--muted);
+      }
+
+      .feature-flag-badge[data-state='modified'] {
+        border-color: var(--accent);
+        color: var(--accent);
       }
 
       .feature-flag-field select {
@@ -191,6 +242,15 @@ const projectsLayoutValues = PROJECTS_LAYOUTS.map(({ value }) => value);
         background: var(--bg);
         color: var(--text);
         font: inherit;
+      }
+
+      .feature-flag-mini {
+        justify-self: start;
+        font-size: 0.8rem;
+      }
+
+      .feature-flag-hint {
+        font-size: 0.85rem;
       }
 
       .feature-flag-panel-actions {
@@ -255,53 +315,86 @@ const projectsLayoutValues = PROJECTS_LAYOUTS.map(({ value }) => value);
 
     <dialog id="feature-flag-panel" aria-labelledby="feature-flag-panel-title" aria-describedby="feature-flag-panel-description">
       <form class="feature-flag-panel" method="dialog">
-        <h2 id="feature-flag-panel-title">Feature flags</h2>
+        <div class="feature-flag-head">
+          <h2 id="feature-flag-panel-title">Feature flags</h2>
+          <p id="feature-flag-status" class="feature-flag-summary" role="status" aria-live="polite">All defaults</p>
+        </div>
         <p id="feature-flag-panel-description">
-          Developer-only controls for this tab only. Flags use session storage, so reloading keeps them but closing the tab resets to defaults. Press Ctrl+Alt+Shift+F, or Control+Command+Shift+F on macOS, on any page to reopen this panel.
+          Developer-only controls for this tab only. Flags use session storage, so reloading keeps them but closing the tab resets to defaults. Changing a value previews it right away. Use Apply and reload for a full refresh. Press Ctrl+Alt+Shift+F, or Control+Command+Shift+F on macOS, on any page to reopen this panel.
         </p>
-        <div class="feature-flag-field">
-          <label for="feature-flag-siteStyle">Global site style</label>
-          <select id="feature-flag-siteStyle" data-feature-flag="siteStyle" aria-describedby="feature-flag-siteStyle-description">
-            {SITE_STYLES.map((style) => <option value={style.value}>{style.label}</option>)}
-          </select>
-          <p id="feature-flag-siteStyle-description">The visual language shared by home, blog, projects, and error pages.</p>
-        </div>
-        <div class="feature-flag-field">
-          <label for="feature-flag-projectsLayout">Projects layout</label>
-          <select id="feature-flag-projectsLayout" data-feature-flag="projectsLayout" aria-describedby="feature-flag-projectsLayout-description">
-            {PROJECTS_LAYOUTS.map((layout) => <option value={layout.value}>{layout.label}</option>)}
-          </select>
-          <p id="feature-flag-projectsLayout-description">A Projects-only composition that can be tested with every site style.</p>
-        </div>
-        <div class="feature-flag-field">
-          <label for="feature-flag-bioRefresh">Home bio refresh</label>
-          <select id="feature-flag-bioRefresh" data-feature-flag="bioRefresh" aria-describedby="feature-flag-bioRefresh-description">
-            <option value="off">Off</option>
-            <option value="on">On</option>
-          </select>
-          <p id="feature-flag-bioRefresh-description">Shows the LinkedIn-informed home hero bio. Off by default.</p>
-        </div>
-        <div class="feature-flag-field">
-          <label for="feature-flag-blogApplause">Blog applause</label>
-          <select id="feature-flag-blogApplause" data-feature-flag="blogApplause" aria-describedby="feature-flag-blogApplause-description">
-            <option value="off">Off</option>
-            <option value="on">On</option>
-          </select>
-          <p id="feature-flag-blogApplause-description">Shows the local applause controls on blog posts. Off by default.</p>
-        </div>
-        <div class="feature-flag-field">
-          <label for="feature-flag-readingProgress">Blog reading progress</label>
-          <select id="feature-flag-readingProgress" data-feature-flag="readingProgress" aria-describedby="feature-flag-readingProgress-description">
-            <option value="off">Off</option>
-            <option value="on">On</option>
-          </select>
-          <p id="feature-flag-readingProgress-description">Shows a top progress bar on blog posts. Off by default.</p>
-        </div>
+        <fieldset class="feature-flag-group">
+          <legend>Global appearance</legend>
+          <div class="feature-flag-field">
+            <div class="feature-flag-row">
+              <label for="feature-flag-siteStyle">Global site style</label>
+              <span class="feature-flag-badge" data-badge-for="siteStyle" data-state="default">Default</span>
+            </div>
+            <select id="feature-flag-siteStyle" data-feature-flag="siteStyle" aria-describedby="feature-flag-siteStyle-description">
+              {SITE_STYLES.map((style) => <option value={style.value}>{style.label}</option>)}
+            </select>
+            <p id="feature-flag-siteStyle-description">The visual language shared by home, blog, projects, and error pages. Default: Technical. Previews instantly.</p>
+            <button type="button" class="feature-flag-mini" data-reset-flag="siteStyle">Reset to default</button>
+          </div>
+          <div class="feature-flag-field">
+            <div class="feature-flag-row">
+              <label for="feature-flag-projectsLayout">Projects layout</label>
+              <span class="feature-flag-badge" data-badge-for="projectsLayout" data-state="default">Default</span>
+            </div>
+            <select id="feature-flag-projectsLayout" data-feature-flag="projectsLayout" aria-describedby="feature-flag-projectsLayout-description">
+              {PROJECTS_LAYOUTS.map((layout) => <option value={layout.value}>{layout.label}</option>)}
+            </select>
+            <p id="feature-flag-projectsLayout-description">A Projects-only composition that can be tested with every site style. Default: Full-width showcase. Previews instantly.</p>
+            <button type="button" class="feature-flag-mini" data-reset-flag="projectsLayout">Reset to default</button>
+          </div>
+        </fieldset>
+        <fieldset class="feature-flag-group">
+          <legend>Home content</legend>
+          <div class="feature-flag-field">
+            <div class="feature-flag-row">
+              <label for="feature-flag-bioRefresh">Home bio refresh</label>
+              <span class="feature-flag-badge" data-badge-for="bioRefresh" data-state="default">Default</span>
+            </div>
+            <select id="feature-flag-bioRefresh" data-feature-flag="bioRefresh" aria-describedby="feature-flag-bioRefresh-description">
+              <option value="off">Off</option>
+              <option value="on">On</option>
+            </select>
+            <p id="feature-flag-bioRefresh-description">Shows the LinkedIn-informed home hero bio. Default: Off. Previews instantly on the home page.</p>
+            <button type="button" class="feature-flag-mini" data-reset-flag="bioRefresh">Reset to default</button>
+          </div>
+        </fieldset>
+        <fieldset class="feature-flag-group">
+          <legend>Blog</legend>
+          <div class="feature-flag-field">
+            <div class="feature-flag-row">
+              <label for="feature-flag-blogApplause">Blog applause</label>
+              <span class="feature-flag-badge" data-badge-for="blogApplause" data-state="default">Default</span>
+            </div>
+            <select id="feature-flag-blogApplause" data-feature-flag="blogApplause" aria-describedby="feature-flag-blogApplause-description">
+              <option value="off">Off</option>
+              <option value="on">On</option>
+            </select>
+            <p id="feature-flag-blogApplause-description">Shows the local applause controls on blog posts. Default: Off. Previews instantly on posts.</p>
+            <button type="button" class="feature-flag-mini" data-reset-flag="blogApplause">Reset to default</button>
+          </div>
+          <div class="feature-flag-field">
+            <div class="feature-flag-row">
+              <label for="feature-flag-readingProgress">Blog reading progress</label>
+              <span class="feature-flag-badge" data-badge-for="readingProgress" data-state="default">Default</span>
+            </div>
+            <select id="feature-flag-readingProgress" data-feature-flag="readingProgress" aria-describedby="feature-flag-readingProgress-description">
+              <option value="off">Off</option>
+              <option value="on">On</option>
+            </select>
+            <p id="feature-flag-readingProgress-description">Shows a top progress bar on blog posts. Default: Off. Previews instantly on posts.</p>
+            <button type="button" class="feature-flag-mini" data-reset-flag="readingProgress">Reset to default</button>
+          </div>
+        </fieldset>
         <div class="feature-flag-panel-actions">
           <button id="feature-flag-reset" type="button">Reset to defaults</button>
           <button type="submit" value="cancel">Close</button>
           <button id="feature-flag-apply" type="button">Apply and reload</button>
         </div>
+        <p class="feature-flag-hint">Tip: changing a value saves it for this tab and previews it right away. No reload is needed to compare.</p>
       </form>
     </dialog>
 
@@ -346,6 +439,9 @@ const projectsLayoutValues = PROJECTS_LAYOUTS.map(({ value }) => value);
       const featureFlagInputs = Array.from(document.querySelectorAll('select[data-feature-flag]'));
       const featureFlagApply = document.getElementById('feature-flag-apply');
       const featureFlagReset = document.getElementById('feature-flag-reset');
+      const featureFlagStatus = document.getElementById('feature-flag-status');
+      const featureFlagBadges = Array.from(document.querySelectorAll('[data-badge-for]'));
+      const featureFlagSingleResets = Array.from(document.querySelectorAll('[data-reset-flag]'));
       let featureFlagPanelReturnFocus = null;
 
       const readFeatureFlag = (key) => {
@@ -358,11 +454,78 @@ const projectsLayoutValues = PROJECTS_LAYOUTS.map(({ value }) => value);
 
       const isFeatureFlagEnabled = (key) => readFeatureFlag(key) === 'true';
 
+      const getFlagDefault = (key) => {
+        if (key === 'siteStyle') return defaultSiteStyle;
+        if (key === 'projectsLayout') return defaultProjectsLayout;
+        if (key === 'bioRefresh' || key === 'blogApplause' || key === 'readingProgress') return 'off';
+        return '';
+      };
+
+      const getFlagAttribute = (key) => {
+        if (key === 'siteStyle') return 'data-site-style';
+        if (key === 'projectsLayout') return 'data-projects-layout';
+        if (key === 'bioRefresh') return 'data-bio-refresh';
+        if (key === 'blogApplause') return 'data-blog-applause';
+        if (key === 'readingProgress') return 'data-reading-progress';
+        return null;
+      };
+
+      const syncBioHero = (value) => {
+        const isOn = value === 'on';
+        document.querySelectorAll('[data-hero-stable]').forEach((el) => {
+          if (isOn) el.setAttribute('hidden', '');
+          else el.removeAttribute('hidden');
+        });
+        document.querySelectorAll('[data-hero-experiment]').forEach((el) => {
+          if (isOn) el.removeAttribute('hidden');
+          else el.setAttribute('hidden', '');
+        });
+      };
+
+      const applyFlagLive = (key, value) => {
+        try {
+          sessionStorage.setItem(key, value);
+        } catch {}
+        try {
+          localStorage.removeItem(key);
+          if (key === 'projectsLayout') localStorage.removeItem('projectsV2');
+        } catch {}
+        const attribute = getFlagAttribute(key);
+        if (attribute) document.documentElement.setAttribute(attribute, value);
+        if (key === 'bioRefresh') syncBioHero(value);
+        if (key === 'readingProgress' || key === 'blogApplause') {
+          try {
+            window.dispatchEvent(new Event('resize'));
+            window.dispatchEvent(new Event('scroll'));
+          } catch {}
+        }
+      };
+
+      const updateFlagBadges = () => {
+        let modified = 0;
+        featureFlagInputs.forEach((input) => {
+          const key = input.dataset.featureFlag;
+          if (!key) return;
+          const isModified = input.value !== getFlagDefault(key);
+          if (isModified) modified += 1;
+          const badge = featureFlagBadges.find((item) => item.getAttribute('data-badge-for') === key);
+          if (badge) {
+            badge.textContent = isModified ? 'Modified' : 'Default';
+            badge.setAttribute('data-state', isModified ? 'modified' : 'default');
+          }
+        });
+        if (featureFlagStatus) {
+          const total = featureFlagInputs.length;
+          featureFlagStatus.textContent = modified === 0 ? 'All defaults' : `${modified} of ${total} modified, previewing live`;
+          featureFlagStatus.setAttribute('data-state', modified === 0 ? 'default' : 'modified');
+        }
+      };
+
       const syncFeatureFlagInputs = () => {
         featureFlagInputs.forEach((input) => {
           const key = input.dataset.featureFlag;
           if (!key) return;
-          const fallback = key === 'siteStyle' ? defaultSiteStyle : key === 'projectsLayout' ? defaultProjectsLayout : key === 'bioRefresh' ? 'off' : key === 'blogApplause' ? 'off' : key === 'readingProgress' ? 'off' : '';
+          const fallback = getFlagDefault(key);
           const storedValue = readFeatureFlag(key);
           const stored = key === 'projectsLayout' && !storedValue
             ? (isFeatureFlagEnabled('projectsV2') ? 'expanded' : defaultProjectsLayout)
@@ -370,6 +533,7 @@ const projectsLayoutValues = PROJECTS_LAYOUTS.map(({ value }) => value);
           const optionValues = Array.from(input.options).map((option) => option.value);
           input.value = stored && optionValues.includes(stored) ? stored : fallback;
         });
+        updateFlagBadges();
       };
 
       const openFeatureFlagPanel = () => {
@@ -392,6 +556,30 @@ const projectsLayoutValues = PROJECTS_LAYOUTS.map(({ value }) => value);
       featureFlagPanel?.addEventListener('close', () => {
         if (featureFlagPanelReturnFocus instanceof HTMLElement) featureFlagPanelReturnFocus.focus();
         featureFlagPanelReturnFocus = null;
+      });
+
+      featureFlagInputs.forEach((input) => {
+        input.addEventListener('change', () => {
+          const key = input.dataset.featureFlag;
+          if (!key) return;
+          applyFlagLive(key, input.value);
+          updateFlagBadges();
+        });
+      });
+
+      featureFlagSingleResets.forEach((button) => {
+        button.addEventListener('click', (event) => {
+          event.preventDefault();
+          const key = button.getAttribute('data-reset-flag');
+          if (!key) return;
+          const input = featureFlagInputs.find((item) => item.dataset.featureFlag === key);
+          const fallback = getFlagDefault(key);
+          if (input) input.value = fallback;
+          applyFlagLive(key, fallback);
+          updateFlagBadges();
+          const target = featureFlagInputs.find((item) => item.dataset.featureFlag === key);
+          target?.focus();
+        });
       });
 
       featureFlagApply?.addEventListener('click', () => {
