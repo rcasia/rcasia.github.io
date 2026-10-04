@@ -60,8 +60,9 @@ The blog has a separate share experiment:
 
 - `blogShare` shows share actions on blog posts (`off` by default, `on` to show).
 - It lives in the same developer panel, stores `off` or `on` in `sessionStorage` for the current tab, and sets `data-blog-share` on the document.
-- The control is a shared `BlogShare.astro` block with four placements: a compact row under the post header, an end of article section, a sticky side rail on wide screens, and a sticky bottom dock on narrow screens. Rail and dock appear only while reading and hide near the footer. All placements share the same absolute post URL.
-- Actions are LinkedIn share, X post intent, copy link with clipboard fallback and status text, and native system share shown only when `navigator.share` exists.
+- The control is a shared `BlogShare.astro` block with four placements: a quiet trigger under the post header, a low emphasis footer row, a sticky side rail on wide screens, and a sticky corner dock on narrow screens. Rail and dock appear only while reading and hide near the footer. All placements share the same absolute post URL.
+- Each placement shows a single subtle trigger that expands to LinkedIn share, X post intent, copy link with clipboard fallback and status text, and native system share shown only when `navigator.share` exists. The trigger stays smaller and muted next to applause, which keeps the primary action.
+- The sticky rail lives in the right gutter, opposite the applause rail, so it never overlaps the applause button or its reading progress variants. The sticky dock lives in the opposite bottom corner from the applause dock, so the two never stack.
 - Visitors never see the controls unless the flag is `on`. To promote it, keep the share blocks and remove the flag hooks. To drop it, remove the share blocks and their styles.
 
 ## Global Styles

@@ -115,9 +115,8 @@ const shareDescription = post.data.description;
     <input type="text" name="company" value="" autocomplete="off" tabindex="-1" aria-hidden="true" data-applause-trap class="blog-applause-trap" />
   </section>
 
-  <section class="blog-share-footer" data-blog-share data-share-footer aria-labelledby="blog-share-title">
-    <h2 id="blog-share-title">Share this note</h2>
-    <p class="muted">Send it to someone who would enjoy it.</p>
+  <section class="blog-share-footer" data-blog-share data-share-footer aria-label="Share this post">
+    <p class="share-footer-note muted">Pass it on</p>
     <BlogShare variant="footer" url={shareUrl} title={shareTitle} description={shareDescription} />
   </section>
   </div>
@@ -148,6 +147,40 @@ const shareDescription = post.data.description;
           });
         });
       }
+
+      const setExpanded = (block, open) => {
+        const trigger = block.querySelector('[data-share-trigger]');
+        const panel = block.querySelector('[data-share-panel]');
+        if (!(trigger instanceof HTMLButtonElement) || !(panel instanceof HTMLElement)) return;
+        trigger.setAttribute('aria-expanded', String(open));
+        if (open) panel.removeAttribute('hidden');
+        else panel.setAttribute('hidden', '');
+      };
+
+      blocks.forEach((block) => {
+        const trigger = block.querySelector('[data-share-trigger]');
+        if (trigger instanceof HTMLButtonElement) {
+          trigger.addEventListener('click', () => {
+            const isOpen = trigger.getAttribute('aria-expanded') === 'true';
+            blocks.forEach((other) => {
+              if (other !== block) setExpanded(other, false);
+            });
+            setExpanded(block, !isOpen);
+          });
+        }
+      });
+
+      document.addEventListener('keydown', (event) => {
+        if (event.key !== 'Escape') return;
+        blocks.forEach((block) => setExpanded(block, false));
+      });
+
+      document.addEventListener('click', (event) => {
+        const target = event.target;
+        if (!(target instanceof Element)) return;
+        if (target.closest('[data-share-block]')) return;
+        blocks.forEach((block) => setExpanded(block, false));
+      });
 
       const setStatus = (block, message) => {
         const status = block.querySelector('[data-share-status]');
