@@ -23,7 +23,6 @@ sessionStorage.removeItem('projectsLayout');
 sessionStorage.removeItem('projectsV2');
 sessionStorage.removeItem('bioRefresh');
 sessionStorage.removeItem('blogApplause');
-sessionStorage.removeItem('readingProgress');
 sessionStorage.removeItem('homeCta');
 sessionStorage.removeItem('blogShare');
 location.reload();
@@ -48,14 +47,7 @@ The blog has a separate applause experiment:
 - Repeat presses are allowed with a short cooldown, holding the button repeats, and the button kindly ignores non trusted events and honeypot fills.
 - Visitors never see the controls unless the flag is `on`. To promote it, keep the applause blocks and remove the flag hooks. To drop it, remove the applause blocks and their styles.
 
-The blog has a separate reading experiment:
-
-- `readingProgress` shows reading progress on blog post pages (`off` by default; `top`, `percent`, `vbar`, or `ring` to show).
-- It lives in the same developer panel, stores the mode in `sessionStorage` for the current tab, and sets `data-reading-progress` on the document.
-- `top` shows the thin top progress bar. `percent`, `vbar`, and `ring` add a readout beside the left applause icon: a percent label, a vertical fill bar, or a ring around the button. The top bar stays visible in every mode until a winner is picked.
-- Rail readouts live in the applause rail, so they need `blogApplause` set to `on` and a wide screen. Rail visuals are decorative; the top bar keeps the accessible progress role.
-- Everything is hidden by CSS and skipped by script unless a mode is set, so visitors see no change by default. The table of contents highlighting stays always on.
-- To promote a mode, keep its markup, styles, and script and remove the flag hooks. To drop the experiment, remove the progress blocks, their styles, and their script.
+The blog rail shows a reading progress ring around the applause button. The ring is part of the rail markup and follows it: it appears with the rail while reading on wide screens and stays hidden with it otherwise. The ring carries the accessible progress role and updates from the same scroll handler as the table of contents highlighting, which stays always on. The earlier top bar, percent, and vertical bar variants were removed when the ring was promoted.
 
 The home page has a separate call to action experiment:
 

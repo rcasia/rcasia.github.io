@@ -70,7 +70,6 @@ const projectsLayoutValues = PROJECTS_LAYOUTS.map(({ value }) => value);
             sessionStorage.removeItem('projectsV2');
             sessionStorage.removeItem('bioRefresh');
             sessionStorage.removeItem('blogApplause');
-            sessionStorage.removeItem('readingProgress');
             sessionStorage.removeItem('homeCta');
             sessionStorage.removeItem('blogShare');
             sessionStorage.setItem('siteDeploymentVersion', deployedVersion);
@@ -80,10 +79,9 @@ const projectsLayoutValues = PROJECTS_LAYOUTS.map(({ value }) => value);
           localStorage.removeItem('siteStyle');
           localStorage.removeItem('projectsLayout');
           localStorage.removeItem('projectsV2');
-          localStorage.removeItem('bioRefresh');
-          localStorage.removeItem('blogApplause');
-          localStorage.removeItem('readingProgress');
-          localStorage.removeItem('homeCta');
+            localStorage.removeItem('bioRefresh');
+            localStorage.removeItem('blogApplause');
+            localStorage.removeItem('homeCta');
           localStorage.removeItem('blogShare');
         } catch {}
         const storedStyle = sessionStorage.getItem('siteStyle');
@@ -99,12 +97,6 @@ const projectsLayoutValues = PROJECTS_LAYOUTS.map(({ value }) => value);
         // Blog applause experiment. Disabled by default, no visible UI for visitors.
         const blogApplause = sessionStorage.getItem('blogApplause');
         root.setAttribute('data-blog-applause', blogApplause === 'on' ? 'on' : 'off');
-        // Blog reading progress experiment. Disabled by default, no visible UI for visitors.
-        // Modes: off, top, percent, vbar, ring. Unknown values fall back to off.
-        const readingProgressOptions = ['top', 'percent', 'vbar', 'ring'];
-        const storedReadingProgress = sessionStorage.getItem('readingProgress');
-        const readingProgress = readingProgressOptions.includes(storedReadingProgress) ? storedReadingProgress : 'off';
-        root.setAttribute('data-reading-progress', readingProgress);
         // Home CTA experiment. Disabled by default, no visible UI for visitors.
         const homeCta = sessionStorage.getItem('homeCta');
         root.setAttribute('data-home-cta', homeCta === 'on' ? 'on' : 'off');
@@ -469,31 +461,6 @@ const projectsLayoutValues = PROJECTS_LAYOUTS.map(({ value }) => value);
             </div>
           </div>
           <div class="feature-flag-item">
-            <button type="button" class="feature-flag-trigger" id="feature-flag-trigger-readingProgress" data-accordion-for="readingProgress" aria-expanded="false" aria-controls="feature-flag-detail-readingProgress">
-              <span class="feature-flag-trigger-meta">
-                <span class="feature-flag-trigger-name">Blog reading progress</span>
-              </span>
-              <span class="feature-flag-trigger-side">
-                <span class="feature-flag-badge" data-badge-for="readingProgress" data-state="default">Default</span>
-                <span class="feature-flag-chevron" aria-hidden="true">▾</span>
-              </span>
-            </button>
-            <div class="feature-flag-detail" id="feature-flag-detail-readingProgress" data-accordion-panel="readingProgress" role="region" aria-labelledby="feature-flag-trigger-readingProgress" hidden>
-              <div class="feature-flag-field">
-                <label for="feature-flag-readingProgress">Blog reading progress</label>
-                <select id="feature-flag-readingProgress" data-feature-flag="readingProgress" aria-describedby="feature-flag-readingProgress-description">
-                  <option value="off">Off</option>
-                  <option value="top">Top bar</option>
-                  <option value="percent">Percent in left rail</option>
-                  <option value="vbar">Vertical bar in left rail</option>
-                  <option value="ring">Ring around applause button</option>
-                </select>
-                <p id="feature-flag-readingProgress-description">Blog. Top bar, or a readout beside the left applause icon. Rail readouts need Blog applause set to On and a wide screen. Default: Off.</p>
-                <button type="button" class="feature-flag-mini" data-reset-flag="readingProgress">Reset to default</button>
-              </div>
-            </div>
-          </div>
-          <div class="feature-flag-item">
             <button type="button" class="feature-flag-trigger" id="feature-flag-trigger-homeCta" data-accordion-for="homeCta" aria-expanded="false" aria-controls="feature-flag-detail-homeCta">
               <span class="feature-flag-trigger-meta">
                 <span class="feature-flag-trigger-name">Home CTAs</span>
@@ -627,7 +594,7 @@ const projectsLayoutValues = PROJECTS_LAYOUTS.map(({ value }) => value);
       const getFlagDefault = (key) => {
         if (key === 'siteStyle') return defaultSiteStyle;
         if (key === 'projectsLayout') return defaultProjectsLayout;
-        if (key === 'bioRefresh' || key === 'blogApplause' || key === 'readingProgress' || key === 'homeCta' || key === 'blogShare') return 'off';
+        if (key === 'bioRefresh' || key === 'blogApplause' || key === 'homeCta' || key === 'blogShare') return 'off';
         return '';
       };
 
@@ -636,7 +603,6 @@ const projectsLayoutValues = PROJECTS_LAYOUTS.map(({ value }) => value);
         if (key === 'projectsLayout') return 'data-projects-layout';
         if (key === 'bioRefresh') return 'data-bio-refresh';
         if (key === 'blogApplause') return 'data-blog-applause';
-        if (key === 'readingProgress') return 'data-reading-progress';
         if (key === 'homeCta') return 'data-home-cta';
         if (key === 'blogShare') return 'data-blog-share';
         return null;
@@ -678,7 +644,7 @@ const projectsLayoutValues = PROJECTS_LAYOUTS.map(({ value }) => value);
         if (attribute) document.documentElement.setAttribute(attribute, value);
         if (key === 'bioRefresh') syncBioHero(value);
         if (key === 'homeCta') syncHomeCta(value);
-        if (key === 'readingProgress' || key === 'blogApplause' || key === 'blogShare') {
+        if (key === 'blogApplause' || key === 'blogShare') {
           try {
             window.dispatchEvent(new Event('resize'));
             window.dispatchEvent(new Event('scroll'));
@@ -800,7 +766,6 @@ const projectsLayoutValues = PROJECTS_LAYOUTS.map(({ value }) => value);
             localStorage.removeItem('projectsV2');
             localStorage.removeItem('bioRefresh');
             localStorage.removeItem('blogApplause');
-            localStorage.removeItem('readingProgress');
             localStorage.removeItem('homeCta');
             localStorage.removeItem('blogShare');
           } catch {}
@@ -816,7 +781,6 @@ const projectsLayoutValues = PROJECTS_LAYOUTS.map(({ value }) => value);
           sessionStorage.removeItem('projectsV2');
           sessionStorage.removeItem('bioRefresh');
           sessionStorage.removeItem('blogApplause');
-          sessionStorage.removeItem('readingProgress');
           sessionStorage.removeItem('homeCta');
           sessionStorage.removeItem('blogShare');
           try {
@@ -825,7 +789,6 @@ const projectsLayoutValues = PROJECTS_LAYOUTS.map(({ value }) => value);
             localStorage.removeItem('projectsV2');
             localStorage.removeItem('bioRefresh');
             localStorage.removeItem('blogApplause');
-            localStorage.removeItem('readingProgress');
             localStorage.removeItem('homeCta');
             localStorage.removeItem('blogShare');
           } catch {}

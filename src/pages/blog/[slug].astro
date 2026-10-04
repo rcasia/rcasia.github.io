@@ -29,19 +29,6 @@ const shareDescription = post.data.description;
 ---
 
 <Base title={post.data.title} description={post.data.description} current="blog">
-  <div
-    class="reading-progress"
-    data-reading-progress
-    role="progressbar"
-    aria-label="Reading progress"
-    aria-valuemin="0"
-    aria-valuemax="100"
-    aria-valuenow="0"
-    aria-valuetext="0% read"
-  >
-    <span class="reading-progress-bar" data-reading-progress-bar></span>
-  </div>
-
   <div data-applause-root data-slug={slug}>
   <article class="blog-post">
     <header class="blog-post-header">
@@ -98,14 +85,23 @@ const shareDescription = post.data.description;
   <aside class="applause-rail" data-blog-applause data-applause-rail role="group" aria-label="Applaud this post">
     <span class="rail-ring-wrap" data-rail-ring-wrap>
       <BlogApplauseButton variant="rail" />
-      <svg class="rail-progress-ring" data-rail-progress-ring viewBox="0 0 62 62" aria-hidden="true" focusable="false">
-        <circle cx="31" cy="31" r="27" fill="none" stroke="var(--border)" stroke-width="3" />
-        <circle data-rail-progress-ring-fill cx="31" cy="31" r="27" fill="none" stroke="var(--accent)" stroke-width="3" stroke-linecap="round" transform="rotate(-90 31 31)" />
+      <svg
+        class="rail-progress-ring"
+        data-rail-progress-ring
+        viewBox="0 0 62 62"
+        role="progressbar"
+        aria-label="Reading progress"
+        aria-valuemin="0"
+        aria-valuemax="100"
+        aria-valuenow="0"
+        aria-valuetext="0% read"
+        focusable="false"
+      >
+        <circle cx="31" cy="31" r="27" fill="none" stroke="var(--border)" stroke-width="3" aria-hidden="true" />
+        <circle data-rail-progress-ring-fill cx="31" cy="31" r="27" fill="none" stroke="var(--accent)" stroke-width="3" stroke-linecap="round" transform="rotate(-90 31 31)" aria-hidden="true" />
       </svg>
     </span>
     <p class="applause-count"><span data-applause-count>0</span></p>
-    <p class="rail-progress-percent" data-rail-progress-percent aria-hidden="true">0%</p>
-    <span class="rail-progress-vbar" data-rail-progress-vbar aria-hidden="true"><span data-rail-progress-vbar-fill></span></span>
   </aside>
 
   <section class="blog-applause" data-blog-applause data-applause-footer aria-labelledby="blog-applause-title">
@@ -417,10 +413,7 @@ const shareDescription = post.data.description;
 
   <script is:inline>
     const article = document.querySelector('.blog-post');
-    const progress = document.querySelector('.reading-progress[data-reading-progress]');
-    const progressBar = document.querySelector('[data-reading-progress-bar]');
-    const railPercent = document.querySelector('[data-rail-progress-percent]');
-    const railVbarFill = document.querySelector('[data-rail-progress-vbar-fill]');
+    const railRing = document.querySelector('[data-rail-progress-ring]');
     const railRingFill = document.querySelector('[data-rail-progress-ring-fill]');
     const RAIL_RING_CIRCUMFERENCE = 2 * Math.PI * 27;
     const toc = document.querySelector('[data-blog-toc]');
@@ -429,20 +422,19 @@ const shareDescription = post.data.description;
       .map((link) => document.getElementById(link.getAttribute('href')?.slice(1) ?? ''))
       .filter(Boolean);
 
-    const isReadingProgressEnabled = () => {
-      const mode = document.documentElement.getAttribute('data-reading-progress');
-      if (mode && mode !== 'off') return true;
+    // The ring follows the applause rail: it only runs while the rail experiment is on.
+    const isRailProgressEnabled = () => {
+      if (document.documentElement.getAttribute('data-blog-applause') === 'on') return true;
       try {
-        const stored = sessionStorage.getItem('readingProgress');
-        return stored !== null && stored !== 'off' && stored !== '';
+        return sessionStorage.getItem('blogApplause') === 'on';
       } catch {
         return false;
       }
     };
 
     const updateProgress = () => {
-      if (!isReadingProgressEnabled()) return;
-      if (!article || !progress || !progressBar) return;
+      if (!isRailProgressEnabled()) return;
+      if (!article || !railRing || !railRingFill) return;
       const articleBounds = article.getBoundingClientRect();
       const articleStart = articleBounds.top + window.scrollY;
       const articleEnd = articleBounds.bottom + window.scrollY - window.innerHeight;
@@ -450,15 +442,10 @@ const shareDescription = post.data.description;
       const percent = Math.min(100, Math.max(0, ((window.scrollY - articleStart) / range) * 100));
       const rounded = Math.round(percent);
 
-      progressBar.style.transform = `scaleX(${percent / 100})`;
-      progress.setAttribute('aria-valuenow', String(rounded));
-      progress.setAttribute('aria-valuetext', `${rounded}% read`);
-      if (railPercent) railPercent.textContent = `${rounded}%`;
-      if (railVbarFill) railVbarFill.style.transform = `scaleY(${percent / 100})`;
-      if (railRingFill) {
-        railRingFill.style.strokeDasharray = String(RAIL_RING_CIRCUMFERENCE);
-        railRingFill.style.strokeDashoffset = String(RAIL_RING_CIRCUMFERENCE * (1 - percent / 100));
-      }
+      railRingFill.style.strokeDasharray = String(RAIL_RING_CIRCUMFERENCE);
+      railRingFill.style.strokeDashoffset = String(RAIL_RING_CIRCUMFERENCE * (1 - percent / 100));
+      railRing.setAttribute('aria-valuenow', String(rounded));
+      railRing.setAttribute('aria-valuetext', `${rounded}% read`);
     };
 
     const updateActive = () => {
