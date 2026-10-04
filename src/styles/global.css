@@ -1483,23 +1483,84 @@ html:not([data-blog-share='on']) [data-blog-share] {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.45rem;
+}
+
+/* Quiet trigger. Deliberately smaller and muted next to the applause button,
+   so sharing stays available without competing with the primary action. */
+.share-trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  min-height: 2rem;
+  padding: 0.3rem 0.7rem;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.8rem;
+  touch-action: manipulation;
+}
+
+.share-trigger:hover {
+  border-color: var(--border);
+  color: var(--text);
+}
+
+.share-trigger:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.share-trigger[aria-expanded='true'] {
+  border-color: var(--border);
+  color: var(--text);
+}
+
+.share-trigger svg {
+  display: block;
+  flex-shrink: 0;
+}
+
+.blog-share-rail .share-trigger,
+.blog-share-dock .share-trigger {
+  min-width: 2rem;
+  padding: 0.3rem;
+}
+
+.share-panel {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.share-panel[hidden] {
+  display: none;
+}
+
+.blog-share-rail .share-panel {
+  flex-direction: column;
 }
 
 .share-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
-  min-width: 2.75rem;
-  min-height: 2.75rem;
-  padding: 0.5rem;
+  gap: 0.45rem;
+  min-width: 2.25rem;
+  min-height: 2.25rem;
+  padding: 0.35rem;
   border: 1px solid var(--border);
   border-radius: 999px;
-  background: var(--bg-soft);
-  color: var(--text);
+  background: transparent;
+  color: var(--muted);
   cursor: pointer;
   font: inherit;
+  font-size: 0.82rem;
   text-decoration: none;
   touch-action: manipulation;
 }
@@ -1521,16 +1582,15 @@ html:not([data-blog-share='on']) [data-blog-share] {
 }
 
 .share-btn-text {
-  font-size: 0.9rem;
   font-weight: 600;
-  padding-right: 0.5rem;
+  padding-right: 0.45rem;
 }
 
 .share-status {
   flex-basis: 100%;
   min-height: 1.5em;
-  margin: 0.25rem 0 0;
-  font-size: 0.85rem;
+  margin: 0.2rem 0 0;
+  font-size: 0.82rem;
 }
 
 .blog-share-inline .share-status,
@@ -1545,29 +1605,33 @@ html:not([data-blog-share='on']) [data-blog-share] {
 }
 
 .share-inline {
-  margin-top: 1rem;
+  margin-top: 0.6rem;
 }
 
+/* Quiet footer follow-on. No top border and no heading, so it reads as a
+   secondary row after the applause section rather than a peer section. */
 .blog-share-footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem 0.7rem;
   max-width: 68ch;
-  margin-top: 2.5rem;
-  border-top: 1px solid var(--border);
-  padding-top: 1.5rem;
+  margin-top: 1.5rem;
 }
 
-.blog-share-footer h2 {
-  margin: 0 0 0.35rem;
-  font-size: 1.25rem;
+.share-footer-note {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  letter-spacing: 0.06em;
 }
 
-.blog-share-footer .blog-share {
-  margin-top: 1rem;
-}
-
+/* Right gutter, opposite the applause rail. Stays clear of the applause rail
+   and its reading progress variants at any height. */
 .share-rail {
   position: fixed;
-  left: clamp(1rem, 4vw, 3rem);
-  top: calc(50% + 7rem);
+  right: clamp(1rem, 4vw, 3rem);
+  top: 50%;
   transform: translateY(-50%);
   z-index: 40;
   opacity: 0;
@@ -1587,17 +1651,16 @@ html:not([data-blog-share='on']) [data-blog-share] {
   align-items: center;
 }
 
+/* Bottom-left corner, opposite the applause dock. Never stacks with it. */
 .share-dock {
   position: fixed;
-  right: 1rem;
-  bottom: calc(4.75rem + env(safe-area-inset-bottom));
-  z-index: 41;
-  padding: 0.45rem;
-  border: 1px solid var(--border);
+  left: 1rem;
+  bottom: calc(1rem + env(safe-area-inset-bottom));
+  z-index: 40;
+  padding: 0.3rem;
+  border: 1px solid transparent;
   border-radius: 999px;
-  background: color-mix(in srgb, var(--bg-soft) 92%, transparent);
-  backdrop-filter: blur(12px);
-  box-shadow: 0 10px 30px rgb(0 0 0 / 18%);
+  background: transparent;
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
@@ -1612,7 +1675,11 @@ html:not([data-blog-share='on']) [data-blog-share] {
 
 .share-dock .blog-share {
   flex-wrap: nowrap;
-  gap: 0.4rem;
+  gap: 0.35rem;
+}
+
+.share-dock .share-panel {
+  flex-wrap: nowrap;
 }
 
 @media (max-width: 1199px) {

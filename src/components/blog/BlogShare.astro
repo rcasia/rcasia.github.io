@@ -9,7 +9,9 @@ interface Props {
 const { url, title, description = '', variant } = Astro.props;
 const linkedInHref = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`;
 const xHref = `https://x.com/intent/post?url=${encodeURIComponent(url)}&text=${encodeURIComponent(title)}`;
-const showLabel = variant === 'footer';
+const panelId = `share-panel-${variant}`;
+const showTriggerText = variant === 'inline' || variant === 'footer';
+const showActionLabels = variant === 'footer';
 ---
 
 <div
@@ -18,52 +20,64 @@ const showLabel = variant === 'footer';
   data-share-url={url}
   data-share-title={title}
   data-share-text={description}
-  role="group"
-  aria-label="Share this post"
 >
-  <a
-    class="share-btn"
-    href={linkedInHref}
-    target="_blank"
-    rel="noopener"
-    aria-label="Share on LinkedIn"
-    title="Share on LinkedIn"
-  >
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M4.98 3.5A2.49 2.49 0 1 1 0 3.5a2.49 2.49 0 0 1 4.98 0ZM.2 8.4h4.6V24H.2V8.4Zm7.6 0h4.4v2.1h.1c.6-1.2 2.1-2.4 4.4-2.4 4.7 0 5.6 3.1 5.6 7.1V24h-4.6v-7.7c0-1.8 0-4.2-2.6-4.2s-3 2-3 4V24H7.8V8.4Z"/></svg>
-    {showLabel && <span class="share-btn-text">LinkedIn</span>}
-  </a>
-  <a
-    class="share-btn"
-    href={xHref}
-    target="_blank"
-    rel="noopener"
-    aria-label="Share on X"
-    title="Share on X"
-  >
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M18.9 2H22l-6.8 7.8L23.2 22h-6.3l-4.9-6.4L6.4 22H3.3l7.3-8.3L1.6 2H8l4.4 5.9L18.9 2Zm-1.1 18h1.7L7 3.9H5.2L17.8 20Z"/></svg>
-    {showLabel && <span class="share-btn-text">X</span>}
-  </a>
   <button
     type="button"
-    class="share-btn"
-    data-share-copy
-    data-copy-url={url}
-    aria-label="Copy link to this post"
-    title="Copy link"
-  >
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M10 13.5a4.5 4.5 0 0 0 6.4.4l3-3a4.5 4.5 0 0 0-6.4-6.4l-1.7 1.7" /><path d="M14 10.5a4.5 4.5 0 0 0-6.4-.4l-3 3a4.5 4.5 0 0 0 6.4 6.4l1.7-1.7" /></svg>
-    {showLabel && <span class="share-btn-text">Copy link</span>}
-  </button>
-  <button
-    type="button"
-    class="share-btn"
-    data-share-native
-    hidden
+    class="share-trigger"
+    data-share-trigger
+    aria-expanded="false"
+    aria-controls={panelId}
     aria-label="Share this post"
-    title="Share"
+    title="Share this post"
   >
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="18" cy="5" r="2.5" /><circle cx="6" cy="12" r="2.5" /><circle cx="18" cy="19" r="2.5" /><path d="M8.2 10.8l7.6-4M8.2 13.2l7.6 4" /></svg>
-    {showLabel && <span class="share-btn-text">Share</span>}
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="18" cy="5" r="2.5" /><circle cx="6" cy="12" r="2.5" /><circle cx="18" cy="19" r="2.5" /><path d="M8.2 10.8l7.6-4M8.2 13.2l7.6 4" /></svg>
+    {showTriggerText && <span class="share-trigger-text">Share</span>}
   </button>
+  <div class="share-panel" data-share-panel id={panelId} hidden>
+    <a
+      class="share-btn"
+      href={linkedInHref}
+      target="_blank"
+      rel="noopener"
+      aria-label="Share on LinkedIn"
+      title="Share on LinkedIn"
+    >
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M4.98 3.5A2.49 2.49 0 1 1 0 3.5a2.49 2.49 0 0 1 4.98 0ZM.2 8.4h4.6V24H.2V8.4Zm7.6 0h4.4v2.1h.1c.6-1.2 2.1-2.4 4.4-2.4 4.7 0 5.6 3.1 5.6 7.1V24h-4.6v-7.7c0-1.8 0-4.2-2.6-4.2s-3 2-3 4V24H7.8V8.4Z"/></svg>
+      {showActionLabels && <span class="share-btn-text">LinkedIn</span>}
+    </a>
+    <a
+      class="share-btn"
+      href={xHref}
+      target="_blank"
+      rel="noopener"
+      aria-label="Share on X"
+      title="Share on X"
+    >
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M18.9 2H22l-6.8 7.8L23.2 22h-6.3l-4.9-6.4L6.4 22H3.3l7.3-8.3L1.6 2H8l4.4 5.9L18.9 2Zm-1.1 18h1.7L7 3.9H5.2L17.8 20Z"/></svg>
+      {showActionLabels && <span class="share-btn-text">X</span>}
+    </a>
+    <button
+      type="button"
+      class="share-btn"
+      data-share-copy
+      data-copy-url={url}
+      aria-label="Copy link to this post"
+      title="Copy link"
+    >
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M10 13.5a4.5 4.5 0 0 0 6.4.4l3-3a4.5 4.5 0 0 0-6.4-6.4l-1.7 1.7" /><path d="M14 10.5a4.5 4.5 0 0 0-6.4-.4l-3 3a4.5 4.5 0 0 0 6.4 6.4l1.7-1.7" /></svg>
+      {showActionLabels && <span class="share-btn-text">Copy link</span>}
+    </button>
+    <button
+      type="button"
+      class="share-btn"
+      data-share-native
+      hidden
+      aria-label="Share this post"
+      title="Share"
+    >
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="18" cy="5" r="2.5" /><circle cx="6" cy="12" r="2.5" /><circle cx="18" cy="19" r="2.5" /><path d="M8.2 10.8l7.6-4M8.2 13.2l7.6 4" /></svg>
+      {showActionLabels && <span class="share-btn-text">Share</span>}
+    </button>
+  </div>
   <span class="share-status muted" data-share-status role="status" aria-live="polite"></span>
 </div>
